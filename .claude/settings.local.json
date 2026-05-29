@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"H:\\\\SolarShop\\\\DymoEnergyUserSite\" -Recurse -Depth 2)",
+      "Bash(Select-Object FullName)",
+      "PowerShell(head -100)",
+      "Bash(grep -E \"\\\\.\\(ts|html|json\\)$\")",
+      "Bash(xargs -I {} basename {})",
+      "Bash(npx ng *)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ]
+  }
+}

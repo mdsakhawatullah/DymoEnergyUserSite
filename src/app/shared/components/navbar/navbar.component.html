@@ -1,0 +1,92 @@
+<nav
+  class="navbar"
+  [style.background-color]="navbarBgColor || '#ffffff'"
+  [style.color]="navbarTextColor || '#333333'"
+>
+  <div class="navbar-container">
+    <!-- Brand -->
+    <a class="brand" routerLink="/">
+      @if (logoUrl) {
+        <img [src]="logoUrl" [alt]="siteName" class="brand-logo" />
+      } @else {
+        <span class="brand-icon">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="36" height="36" rx="6" fill="#f0f0f0"/>
+            <rect x="8" y="8" width="20" height="24" rx="2" fill="#bfbfbf"/>
+            <rect x="11" y="14" width="14" height="2" rx="1" fill="#8c8c8c"/>
+            <rect x="11" y="18" width="14" height="2" rx="1" fill="#8c8c8c"/>
+            <rect x="11" y="22" width="9" height="2" rx="1" fill="#8c8c8c"/>
+            <circle cx="25" cy="10" r="4" fill="#4a90d9"/>
+          </svg>
+        </span>
+      }
+      <span class="brand-name" [style.color]="primaryColor || '#1677ff'">{{ siteName }}</span>
+    </a>
+
+    <!-- Desktop Nav -->
+    <ul class="nav-links">
+      @for (item of navItems; track item.route) {
+        <li>
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+            class="nav-link"
+            [style.color]="navbarTextColor || '#333333'"
+          >{{ item.label }}</a>
+        </li>
+      }
+    </ul>
+
+    <!-- Action Icons -->
+    <div class="nav-actions">
+      <button class="icon-btn" title="Cart" aria-label="Cart">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+      </button>
+      <button class="icon-btn" title="Account" aria-label="Account">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </button>
+      <button class="icon-btn" title="Settings" aria-label="Settings">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+        </svg>
+      </button>
+      <button class="icon-btn" title="Wishlist" aria-label="Wishlist">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+        </svg>
+      </button>
+
+      <!-- Mobile hamburger -->
+      <button class="icon-btn hamburger" (click)="toggleMobile()" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Nav Drawer -->
+  @if (mobileOpen()) {
+    <div class="mobile-nav">
+      @for (item of navItems; track item.route) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          class="mobile-nav-link"
+          (click)="toggleMobile()"
+        >{{ item.label }}</a>
+      }
+    </div>
+  }
+</nav>

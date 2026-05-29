@@ -1,0 +1,29 @@
+export interface AdminSiteSetting {
+  id: number;
+  siteName?: string;
+  logoUrl?: string;
+  tagline?: string;
+  buttonColor?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  accentColor?: string;
+  textColor?: string;
+  textMutedColor?: string;
+  linkColor?: string;
+  backgroundColor?: string;
+  cardBgColor?: string;
+  navbarBgColor?: string;
+  navbarTextColor?: string;
+  fontFamily?: string;
+  fontSizeBase?: string;
+  isActive: boolean;
+  address?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  country?: string;
+  phone?: string;
+  email?: string;
+  supportEmail?: string;
+  whatsApp?: string;
+}
