@@ -1,5 +1,6 @@
 import { Component, Input, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { CartService } from '../../../core/services/cart.service';
 
 export interface NavItem {
   label: string;
@@ -32,7 +33,13 @@ export class NavbarComponent {
 
   mobileOpen = signal(false);
 
-  toggleMobile() {
+  constructor(public cartService: CartService) {}
+
+  toggleMobile(): void {
     this.mobileOpen.update(v => !v);
+  }
+
+  openCart(): void {
+    this.cartService.openSidebar();
   }
 }

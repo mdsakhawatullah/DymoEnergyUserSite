@@ -101,6 +101,31 @@
   display: none;
 }
 
+// ── Cart badge ────────────────────────────────────────────────────────
+.cart-icon-btn {
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: #e03e3e;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 10px;
+  font-family: 'HellixSemiBold', sans-serif;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  line-height: 1;
+}
+
 .mobile-nav {
   display: none;
   flex-direction: column;

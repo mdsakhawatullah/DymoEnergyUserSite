@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdminSiteSettingService } from '../../core/services/admin-site-setting.service';
 import { CatalogueService } from '../../core/services/catalogue.service';
@@ -23,8 +23,6 @@ interface Review {
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
-  private siteService      = inject(AdminSiteSettingService);
-  private catalogueService = inject(CatalogueService);
 
   // ── Signals ─────────────────────────────────────────────────────────────
   settings          = signal<AdminSiteSetting | null>(null);
@@ -80,10 +78,15 @@ export class HomeComponent implements OnInit {
     },
   ];
 
+  constructor(
+    private siteService:      AdminSiteSettingService,
+    private catalogueService: CatalogueService,
+  ) {}
+
   // ─────────────────────────────────────────────────────────────────────────
   //  Lifecycle
   // ─────────────────────────────────────────────────────────────────────────
-  ngOnInit() {
+  ngOnInit(): void {
     this.siteService.getActive().subscribe(s => {
       this.settings.set(s);
       this.loading.set(false);
@@ -100,31 +103,20 @@ export class HomeComponent implements OnInit {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  //  Card helpers — per-catalogue theming driven by admin
+  //  Card helpers
   // ─────────────────────────────────────────────────────────────────────────
 
-  /**
-   * Best image for the card thumbnail:
-   * 1. thumbnailImageUrl (admin-set dedicated thumbnail)
-   * 2. primaryBackgroundImageUrl (background used as card image)
-   * Both are direct URL fields on the Catalogue — no images[] join needed.
-   */
+  /** Priority: thumbnailImageUrl → primaryBackgroundImageUrl → null */
   getCardThumb(cat: Catalogue): string | null {
     return cat.thumbnailImageUrl || cat.primaryBackgroundImageUrl || null;
   }
 
-  /**
-   * Whether the card image is a background image (needs an overlay).
-   * True when there is no dedicated thumbnail but there is a bg image.
-   */
+  /** True when only a background image is available (no dedicated thumbnail). */
   isBgImage(cat: Catalogue): boolean {
     return !cat.thumbnailImageUrl && !!cat.primaryBackgroundImageUrl;
   }
 
-  /**
-   * Per-catalogue accent colour (featured badge, CTA link, hover underline).
-   * Falls back to the global accent from AdminSiteSettings.
-   */
+  /** Per-catalogue accent colour, falls back to global accent. */
   getCardAccent(cat: Catalogue): string {
     return cat.accentColor || this.accentColor();
   }
@@ -132,17 +124,17 @@ export class HomeComponent implements OnInit {
   // ─────────────────────────────────────────────────────────────────────────
   //  Search
   // ─────────────────────────────────────────────────────────────────────────
-  onSearch(event: Event) {
+  onSearch(event: Event): void {
     this.searchQuery.set((event.target as HTMLInputElement).value);
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  //  Theme application
+  //  Theme
   // ─────────────────────────────────────────────────────────────────────────
-  private applyTheme(s: AdminSiteSetting) {
+  private applyTheme(s: AdminSiteSetting): void {
     const root = document.documentElement;
-    if (s.primaryColor)   root.style.setProperty('--primary', s.primaryColor);
+    if (s.primaryColor)    root.style.setProperty('--primary', s.primaryColor);
     if (s.backgroundColor) root.style.setProperty('--bg', s.backgroundColor);
-    if (s.fontFamily)     root.style.setProperty('--font', s.fontFamily);
+    if (s.fontFamily)      root.style.setProperty('--font', s.fontFamily);
   }
 }

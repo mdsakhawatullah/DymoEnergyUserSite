@@ -1,0 +1,205 @@
+<app-navbar
+  [siteName]="settings()?.siteName || 'Org Name'"
+  [logoUrl]="settings()?.logoUrl"
+  [navbarBgColor]="settings()?.navbarBgColor"
+  [navbarTextColor]="settings()?.navbarTextColor"
+  [primaryColor]="settings()?.primaryColor"
+  [navItems]="navItems"
+/>
+
+<!-- ─── PAGE HEADER ─── -->
+<div class="page-header" [style.background-color]="primaryColor()">
+  <div class="page-header-inner">
+    <h1 class="page-title">
+      @if (loading()) {
+        Processing…
+      } @else if (order()) {
+        Order Placed Successfully!
+      } @else {
+        Order Details
+      }
+    </h1>
+    @if (order()?.orderNumber) {
+      <p class="page-subtitle">Order #{{ order()!.orderNumber }}</p>
+    }
+  </div>
+</div>
+
+<!-- ─── CONTENT ─── -->
+<section class="confirmation-section">
+  <div class="confirmation-container">
+
+    <!-- Loading -->
+    @if (loading()) {
+      <div class="state-center">
+        <div class="big-spinner"></div>
+        <p class="state-text">Loading your order…</p>
+      </div>
+
+    <!-- Error -->
+    } @else if (error()) {
+      <div class="state-center">
+        <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#ffb3b3"
+             stroke-width="1.2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <p class="state-text error-text">{{ error() }}</p>
+        <a routerLink="/" class="action-btn" [style.background-color]="primaryColor()">
+          Back to Home
+        </a>
+      </div>
+
+    <!-- Order detail -->
+    } @else if (order(); as o) {
+
+      <!-- Success banner -->
+      <div class="success-banner">
+        <div class="success-icon-wrap">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
+               stroke="#3c9e3c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div>
+          <p class="success-title">Thank you, {{ o.customerName || 'Customer' }}!</p>
+          <p class="success-sub">
+            Your order has been received and is being processed.
+            @if (o.customerEmail) {
+              A confirmation will be sent to <strong>{{ o.customerEmail }}</strong>.
+            }
+          </p>
+        </div>
+      </div>
+
+      <!-- Order info cards -->
+      <div class="info-grid">
+
+        <div class="info-card">
+          <p class="info-card-label">Order Number</p>
+          <p class="info-card-value">{{ o.orderNumber || '—' }}</p>
+        </div>
+
+        <div class="info-card">
+          <p class="info-card-label">Order Date</p>
+          <p class="info-card-value">{{ formatDate(o.orderDate) }}</p>
+        </div>
+
+        <div class="info-card">
+          <p class="info-card-label">Status</p>
+          <span class="status-badge status-badge--pending">{{ statusLabel(o.status) }}</span>
+        </div>
+
+        <div class="info-card">
+          <p class="info-card-label">Order Total</p>
+          <p class="info-card-value value--accent" [style.color]="accentColor()">
+            {{ formatPrice(o.grandTotal) }}
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Details section -->
+      <div class="detail-layout">
+
+        <!-- Customer & delivery -->
+        <div class="detail-card">
+          <h3 class="detail-card-title">Customer Details</h3>
+          <table class="detail-table">
+            @if (o.customerName) {
+              <tr>
+                <td class="dt-label">Name</td>
+                <td class="dt-value">{{ o.customerName }}</td>
+              </tr>
+            }
+            @if (o.customerEmail) {
+              <tr>
+                <td class="dt-label">Email</td>
+                <td class="dt-value">{{ o.customerEmail }}</td>
+              </tr>
+            }
+            @if (o.customerPhone) {
+              <tr>
+                <td class="dt-label">Phone</td>
+                <td class="dt-value">{{ o.customerPhone }}</td>
+              </tr>
+            }
+            @if (o.customerReference) {
+              <tr>
+                <td class="dt-label">Reference</td>
+                <td class="dt-value">{{ o.customerReference }}</td>
+              </tr>
+            }
+            @if (o.deliveryAddress) {
+              <tr>
+                <td class="dt-label">Delivery</td>
+                <td class="dt-value">{{ o.deliveryAddress }}</td>
+              </tr>
+            }
+            @if (o.billingAddress) {
+              <tr>
+                <td class="dt-label">Billing</td>
+                <td class="dt-value">{{ o.billingAddress }}</td>
+              </tr>
+            }
+            @if (o.notes) {
+              <tr>
+                <td class="dt-label">Notes</td>
+                <td class="dt-value">{{ o.notes }}</td>
+              </tr>
+            }
+          </table>
+        </div>
+
+        <!-- Financial summary -->
+        <div class="detail-card">
+          <h3 class="detail-card-title">Financial Summary</h3>
+          <table class="detail-table">
+            <tr>
+              <td class="dt-label">Subtotal</td>
+              <td class="dt-value">{{ formatPrice(o.subtotal) }}</td>
+            </tr>
+            <tr>
+              <td class="dt-label">Discount</td>
+              <td class="dt-value">{{ formatPrice(o.discountTotal) }}</td>
+            </tr>
+            <tr>
+              <td class="dt-label">Shipping</td>
+              <td class="dt-value">{{ formatPrice(o.shippingCost) }}</td>
+            </tr>
+            <tr class="dt-row--total">
+              <td class="dt-label"><strong>Grand Total</strong></td>
+              <td class="dt-value"><strong>{{ formatPrice(o.grandTotal) }}</strong></td>
+            </tr>
+            <tr>
+              <td class="dt-label">Amount Paid</td>
+              <td class="dt-value">{{ formatPrice(o.amountPaid) }}</td>
+            </tr>
+            <tr>
+              <td class="dt-label">Balance Due</td>
+              <td class="dt-value dt-value--highlight" [style.color]="accentColor()">
+                {{ formatPrice(o.balanceDue) }}
+              </td>
+            </tr>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- CTA buttons -->
+      <div class="cta-row">
+        <a routerLink="/" class="cta-btn cta-btn--primary" [style.background-color]="primaryColor()">
+          Continue Shopping
+        </a>
+        <a routerLink="/orders" class="cta-btn cta-btn--secondary">
+          View My Orders
+        </a>
+      </div>
+
+    }
+
+  </div>
+</section>
+
+<app-footer [settings]="settings()" />

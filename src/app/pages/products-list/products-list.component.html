@@ -1,0 +1,237 @@
+<app-navbar
+  [siteName]="settings()?.siteName || 'Org Name'"
+  [logoUrl]="settings()?.logoUrl"
+  [navbarBgColor]="settings()?.navbarBgColor"
+  [navbarTextColor]="settings()?.navbarTextColor"
+  [primaryColor]="settings()?.primaryColor"
+  [navItems]="navItems"
+/>
+
+<!-- ─── PAGE HEADER ─── -->
+<div class="page-header"
+     [style.background-color]="primaryColor()"
+     [ngStyle]="headerBgStyle()">
+  <div class="page-header-inner">
+    <a routerLink="/" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Back to Catalogues
+    </a>
+    <h1 class="page-title">{{ catalogue()?.name || 'Products' }}</h1>
+    @if (catalogue()?.description) {
+      <p class="page-subtitle">{{ catalogue()!.description }}</p>
+    }
+  </div>
+</div>
+
+<!-- ─── PRODUCTS SECTION ─── -->
+<section class="products-section">
+  <div class="section-container">
+
+    <!-- Section header -->
+    <div class="section-header">
+      <div class="section-header-left">
+        <h2 class="section-title" [style.color]="primaryColor()">
+          Products
+          @if (!productsLoading()) {
+            <span class="section-count">({{ filteredProducts().length }})</span>
+          }
+        </h2>
+        <p class="section-desc">
+          Browse all products in this catalogue. Adjust quantity and add items to your cart.
+        </p>
+      </div>
+      <div class="search-box">
+        <span class="search-label">Search</span>
+        <div class="search-input-wrap">
+          <input
+            type="text"
+            placeholder="Search products..."
+            class="search-input"
+            (input)="onSearch($event)"
+          />
+          <button class="search-btn" [style.background-color]="primaryColor()" aria-label="Search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading skeletons -->
+    @if (productsLoading()) {
+      <div class="prod-grid">
+        @for (i of [1,2,3,4]; track i) {
+          <div class="prod-skeleton">
+            <div class="prod-skeleton-img shimmer"></div>
+            <div class="prod-skeleton-body">
+              <div class="prod-skeleton-line w80 shimmer"></div>
+              <div class="prod-skeleton-line w60 shimmer"></div>
+              <div class="prod-skeleton-line w40 shimmer"></div>
+              <div class="prod-skeleton-line w50 shimmer"></div>
+              <div class="prod-skeleton-btn shimmer"></div>
+              <div class="prod-skeleton-btn shimmer"></div>
+            </div>
+          </div>
+        }
+      </div>
+
+    <!-- Empty state — ghost skeleton + message overlay -->
+    } @else if (filteredProducts().length === 0) {
+      <div class="prod-empty-wrap">
+
+        <!-- Static ghost skeleton cards (no shimmer animation) -->
+        <div class="prod-grid prod-grid--ghost" aria-hidden="true">
+          @for (i of [1,2,3,4]; track i) {
+            <div class="prod-skeleton prod-skeleton--ghost">
+              <div class="prod-skeleton-img"></div>
+              <div class="prod-skeleton-body">
+                <div class="prod-skeleton-line w80"></div>
+                <div class="prod-skeleton-line w60"></div>
+                <div class="prod-skeleton-line w40"></div>
+                <div class="prod-skeleton-line w50"></div>
+                <div class="prod-skeleton-btn"></div>
+                <div class="prod-skeleton-btn"></div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Centred message panel -->
+        <div class="prod-empty-overlay">
+          <div class="prod-empty-panel">
+            <div class="prod-empty-icon-wrap">
+              <svg width="42" height="42" viewBox="0 0 24 24" fill="none"
+                   stroke="#c8c8c8" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 01-8 0"/>
+              </svg>
+            </div>
+            <p class="prod-empty-title">No product list found</p>
+            <p class="prod-empty-sub">There are no products in this catalogue yet.</p>
+          </div>
+        </div>
+
+      </div>
+
+    <!-- Product cards -->
+    } @else {
+      <div class="prod-grid">
+        @for (product of filteredProducts(); track product.id) {
+
+          <article class="prod-card">
+
+            <!-- Image area -->
+            <div class="prod-card-img-wrap">
+              @if (product.primaryImage) {
+                <img
+                  [src]="product.primaryImage"
+                  [alt]="product.name"
+                  class="prod-card-img"
+                  loading="lazy"
+                />
+              } @else {
+                <div class="prod-card-img-placeholder">
+                  <svg width="52" height="52" viewBox="0 0 24 24" fill="none"
+                       stroke="#d4d4d4" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                </div>
+              }
+              <!-- Wishlist button -->
+              <button class="prod-wishlist-btn" aria-label="Add to wishlist">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                     stroke="#bbb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Thin divider -->
+            <div class="prod-card-divider"></div>
+
+            <!-- Body -->
+            <div class="prod-card-body">
+
+              <h3 class="prod-card-title">{{ product.name }}</h3>
+
+              @if (product.summary || product.sku) {
+                <p class="prod-card-sub">{{ product.summary || product.sku }}</p>
+              }
+
+              <!-- Price row -->
+              <div class="prod-price-row">
+                @if (product.discountPrice) {
+                  <span class="prod-price" [style.color]="accentColor()">
+                    {{ formatPrice(product.discountPrice) }}
+                  </span>
+                  <span class="prod-price-original">{{ formatPrice(product.price) }}</span>
+                } @else {
+                  <span class="prod-price" [style.color]="accentColor()">
+                    {{ formatPrice(product.price) }}
+                  </span>
+                }
+              </div>
+
+              <!-- Stock row -->
+              <div class="prod-stock-row">
+                @if (product.stockQuantity > 0) {
+                  <span class="prod-stock-available" [style.color]="accentColor()">
+                    {{ product.stockQuantity }} in stock
+                  </span>
+                } @else {
+                  <span class="prod-stock-none">No stock information available</span>
+                }
+              </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="prod-card-footer">
+
+              <!-- View Details -->
+              <a [routerLink]="['/products', product.id]" class="prod-view-btn">
+                View Details
+              </a>
+
+              <!-- Quantity + Add to cart -->
+              <div class="prod-cart-section">
+                <label class="prod-qty-label">Quantity</label>
+                <div class="prod-cart-controls">
+                  <input
+                    type="number"
+                    min="1"
+                    class="prod-qty-input"
+                    [value]="getQuantity(product.id)"
+                    (change)="setQuantity(product.id, $any($event.target).value)"
+                  />
+                  <button
+                    class="prod-add-btn"
+                    [class.prod-add-btn--disabled]="product.price === 0"
+                    [disabled]="product.price === 0"
+                    [style.background-color]="product.price > 0 ? primaryColor() : null"
+                    (click)="addToCart(product)"
+                  >Add to cart</button>
+                </div>
+              </div>
+
+            </div>
+
+          </article>
+
+        }
+      </div>
+    }
+
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<app-footer [settings]="settings()" />
