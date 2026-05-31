@@ -1,13 +1,11 @@
 .footer {
   background: #1a1a2e;
   color: #ccc;
-  margin-top: auto;
+  margin: 0 32px;
 }
 
 .footer-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 56px 24px 0;
+  padding: 56px 40px 0;
 }
 
 .footer-grid {
@@ -93,6 +91,16 @@
   .footer-grid {
     grid-template-columns: 1fr 1fr;
     gap: 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    margin: 0 16px;
+  }
+
+  .footer-container {
+    padding: 40px 24px 0;
   }
 }
 

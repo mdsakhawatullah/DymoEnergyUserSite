@@ -1,17 +1,69 @@
+// ─── Hellix Font Faces ────────────────────────────────────────────────
+@font-face {
+  font-family: 'HellixRegular';
+  src: url('./assets/font/hellix/Hellix-Regular.woff2') format('woff2'),
+       url('./assets/font/hellix/Hellix-Regular.woff')  format('woff'),
+       url('./assets/font/hellix/Hellix-Regular.ttf')   format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'HellixMedium';
+  src: url('./assets/font/hellix/Hellix-Medium.woff2') format('woff2'),
+       url('./assets/font/hellix/Hellix-Medium.woff')  format('woff'),
+       url('./assets/font/hellix/Hellix-Medium.ttf')   format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'HellixSemiBold';
+  src: url('./assets/font/hellix/Hellix-SemiBold.woff2') format('woff2'),
+       url('./assets/font/hellix/Hellix-SemiBold.woff')  format('woff'),
+       url('./assets/font/hellix/Hellix-SemiBold.ttf')   format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'HellixBold';
+  src: url('./assets/font/hellix/Hellix-Bold.woff2') format('woff2'),
+       url('./assets/font/hellix/Hellix-Bold.woff')  format('woff'),
+       url('./assets/font/hellix/Hellix-Bold.ttf')   format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'HellixExtraBold';
+  src: url('./assets/font/hellix/Hellix-ExtraBold.woff2') format('woff2'),
+       url('./assets/font/hellix/Hellix-ExtraBold.woff')  format('woff'),
+       url('./assets/font/hellix/Hellix-ExtraBold.ttf')   format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+// ─── Global Reset & Base ─────────────────────────────────────────────
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
 :root {
   --primary: #1677ff;
-  --bg: #ffffff;
-  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --bg:      #ffffff;
+  --font:    'HellixRegular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 html, body {
-  margin: 0;
+  margin:  0;
   padding: 0;
-  height: 100%;
+  height:  100%;
   font-family: var(--font);
   background: var(--bg);
   color: #333;
@@ -19,6 +71,5 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-a { color: inherit; }
-
+a   { color: inherit; }
 img { max-width: 100%; }
