@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { AdminSiteSettingService } from '../../core/services/admin-site-setting.service';
 import { CatalogueService } from '../../core/services/catalogue.service';
 import { AdminSiteSetting } from '../../core/models/admin-site-setting.model';
-import { Catalogue, CatalogueLayoutType, CatalogueLayoutTypeLabel } from '../../core/models/catalogue.model';
+import { Catalogue } from '../../core/models/catalogue.model';
 import { NavbarComponent, DEFAULT_NAV_ITEMS } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 
@@ -127,36 +127,6 @@ export class HomeComponent implements OnInit {
    */
   getCardAccent(cat: Catalogue): string {
     return cat.accentColor || this.accentColor();
-  }
-
-  /**
-   * Per-catalogue primary text colour for title.
-   * Falls back to solid dark — never undefined.
-   */
-  getCardTextColor(cat: Catalogue): string {
-    return cat.primaryTextColor || '#1a1a1a';
-  }
-
-  /**
-   * CTA button label — admin can customise per catalogue via heroCtaText.
-   */
-  getCardCtaText(cat: Catalogue): string {
-    return cat.heroCtaText || 'View Catalogue';
-  }
-
-  /**
-   * Human-readable layout type label shown as a subtle chip.
-   */
-  getLayoutLabel(cat: Catalogue): string {
-    return CatalogueLayoutTypeLabel[cat.layoutType] ?? '';
-  }
-
-  /**
-   * Whether to show the heroTitle as a sub-heading on the card.
-   * Only shown when it differs from the catalogue name.
-   */
-  showHeroTitle(cat: Catalogue): boolean {
-    return !!cat.heroTitle && cat.heroTitle !== cat.name;
   }
 
   // ─────────────────────────────────────────────────────────────────────────

@@ -122,14 +122,15 @@
 
     <!-- Loading skeletons -->
     @if (cataloguesLoading()) {
-      <div class="catalogue-grid">
-        @for (i of [1,2,3,4,5,6]; track i) {
-          <div class="skeleton-card">
-            <div class="skeleton-img"></div>
-            <div class="skeleton-body">
-              <div class="skeleton-line wide"></div>
-              <div class="skeleton-line medium"></div>
-              <div class="skeleton-line short"></div>
+      <div class="cat-grid">
+        @for (i of [1,2,3,4]; track i) {
+          <div class="cat-skeleton">
+            <div class="cat-skeleton-img shimmer"></div>
+            <div class="cat-skeleton-body">
+              <div class="cat-skeleton-line w70 shimmer"></div>
+              <div class="cat-skeleton-line w90 shimmer"></div>
+              <div class="cat-skeleton-line w55 shimmer"></div>
+              <div class="cat-skeleton-btn shimmer"></div>
             </div>
           </div>
         }
@@ -137,105 +138,82 @@
 
     <!-- Empty state -->
     } @else if (filteredCatalogues().length === 0) {
-      <div class="empty-state">
-        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#d9d9d9" stroke-width="1.2"
-             stroke-linecap="round" stroke-linejoin="round">
+      <div class="cat-empty">
+        <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4"
+             stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
         </svg>
-        <p class="empty-title">No catalogues available</p>
-        <p class="empty-sub">Check back later or contact your administrator.</p>
+        <p class="cat-empty-title">No catalogues available</p>
+        <p class="cat-empty-sub">Check back later or contact your administrator.</p>
       </div>
 
-    <!-- Catalogue cards -->
+    <!-- ── Catalogue cards (isPublished = true, ordered by DisplayOrder) ── -->
     } @else {
-      <div class="catalogue-grid">
+      <div class="cat-grid">
         @for (cat of filteredCatalogues(); track cat.id) {
 
-          <article
-            class="catalogue-card"
-            [style.background-color]="cat.sectionBackgroundColor || '#fff'"
-          >
-            <!-- ── Thumbnail ── -->
-            <div class="card-thumb">
+          <article class="cat-card">
+
+            <!-- Image area
+                 Source priority:
+                 1. Catalogue.thumbnailImageUrl  (admin-set direct URL for card grids)
+                 2. Catalogue.primaryBackgroundImageUrl  (fallback from banner field)
+                 3. Placeholder SVG
+                 Note: images[] is NOT included in the list endpoint (no JOIN).
+                 thumbnailImageUrl is the dedicated field for this purpose. -->
+            <div class="cat-card-img-wrap">
               @if (getCardThumb(cat)) {
                 <img
                   [src]="getCardThumb(cat)!"
                   [alt]="cat.name"
-                  class="card-thumb-img"
+                  class="cat-card-img"
                   loading="lazy"
                 />
-                <!-- Overlay only when using a bg image (not a dedicated thumbnail) -->
-                @if (isBgImage(cat)) {
-                  <div
-                    class="card-thumb-overlay"
-                    [style.background-color]="cat.overlayColor || 'rgba(0,0,0,0)'"
-                    [style.opacity]="cat.overlayOpacity || 0.25"
-                  ></div>
-                }
               } @else {
-                <!-- Placeholder -->
-                <div class="card-thumb-placeholder">
-                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none"
-                       stroke="#d4d4d4" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <div class="cat-card-img-placeholder">
+                  <svg width="52" height="52" viewBox="0 0 24 24" fill="none"
+                       stroke="#d4d4d4" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="3" width="18" height="18" rx="2"/>
                     <circle cx="8.5" cy="8.5" r="1.5"/>
                     <polyline points="21 15 16 10 5 21"/>
                   </svg>
                 </div>
               }
-
-              <!-- Badges row -->
-              <div class="card-badges">
-                @if (cat.isFeatured) {
-                  <span class="badge badge-featured" [style.background-color]="getCardAccent(cat)">
-                    Featured
-                  </span>
-                }
-                @if (cat.layoutType) {
-                  <span class="badge badge-layout">{{ getLayoutLabel(cat) }}</span>
-                }
-              </div>
             </div>
 
-            <!-- ── Body ── -->
-            <div class="card-body">
-              <!-- Title -->
-              <h3 class="card-title" [style.color]="getCardTextColor(cat)">
-                {{ cat.name }}
-              </h3>
+            <!-- Divider -->
+            <div class="cat-card-divider"></div>
 
-              <!-- Hero title as subtitle (only when different from name) -->
-              @if (showHeroTitle(cat)) {
-                <p class="card-hero-subtitle">{{ cat.heroTitle }}</p>
-              }
+            <!-- Body — name, description, optional info link -->
+            <div class="cat-card-body">
 
-              <!-- Description -->
+              <h3 class="cat-card-title">{{ cat.name }}</h3>
+
               @if (cat.description) {
-                <p class="card-desc">{{ cat.description }}</p>
+                <p class="cat-card-desc">{{ cat.description }}</p>
               }
 
-              <!-- Hero subtitle -->
-              @if (cat.heroSubtitle) {
-                <p class="card-sub">{{ cat.heroSubtitle }}</p>
-              }
-
-              <!-- CTA -->
-              <div class="card-footer">
+              <!-- heroCtaText: optional coloured info line set by admin
+                   e.g. "Catalogue renews on 03/06/2026" -->
+              @if (cat.heroCtaText) {
                 <a
-                  [routerLink]="['/catalogues', cat.slug || cat.id]"
-                  class="card-cta"
+                  [href]="cat.heroCtaUrl || '#'"
+                  class="cat-card-info-link"
                   [style.color]="getCardAccent(cat)"
-                >
-                  {{ getCardCtaText(cat) }}
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                       stroke="currentColor" stroke-width="2.5"
-                       stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"/>
-                    <polyline points="12 5 19 12 12 19"/>
-                  </svg>
-                </a>
-              </div>
+                  (click)="cat.heroCtaUrl ? null : $event.preventDefault()"
+                >{{ cat.heroCtaText }}</a>
+              }
+
             </div>
+
+            <!-- View Details button -->
+            <div class="cat-card-footer">
+              <a
+                [routerLink]="['/catalogues', cat.slug || cat.id]"
+                class="cat-card-btn"
+              >View Details</a>
+            </div>
+
           </article>
 
         }
