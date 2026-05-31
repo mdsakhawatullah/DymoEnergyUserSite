@@ -7,62 +7,84 @@
   [navItems]="navItems"
 />
 
-<!-- ─── HERO / COMPANY INFO ─── -->
-<section class="hero-section">
-  <div class="hero-container">
+<!-- ─── HERO BANNER ─── -->
+<section class="banner-section">
+  <div class="banner-row">
 
-    <!-- Left: Company Info -->
-    <div class="hero-left">
-      <p class="hero-label">Purchasing Portal</p>
-      <h1 class="hero-org-name" [style.color]="primaryColor()">
+    <!-- Left: Primary colour panel -->
+    <div class="banner-left" [style.background-color]="primaryColor()">
+
+      <h3 class="banner-portal-title">Purchasing Portal</h3>
+
+      <h1 class="banner-org-name" [style.color]="accentColor()">
         {{ settings()?.siteName || 'Org Name' }}
       </h1>
+
       @if (settings()?.tagline) {
-        <p class="hero-tagline">{{ settings()!.tagline }}</p>
+        <p class="banner-desc">{{ settings()!.tagline }}</p>
       } @else {
-        <p class="hero-tagline">
+        <p class="banner-desc">
           Your one-stop destination for sourcing, ordering, and managing all
           your energy products and solutions efficiently.
         </p>
       }
-      <a routerLink="/about" class="btn-primary" [style.background-color]="primaryColor()">
-        About this portal
-      </a>
 
-      <!-- Company Card -->
-      <div class="company-card">
+      <div class="banner-btn-wrap">
+        <a routerLink="/about" class="banner-btn" [style.background-color]="accentColor()">
+          About this portal
+        </a>
+      </div>
+
+      <!-- Brand footer block -->
+      <div class="banner-brand">
         @if (settings()?.logoUrl) {
-          <img [src]="settings()!.logoUrl!" [alt]="settings()?.siteName" class="company-logo" />
+          <img [src]="settings()!.logoUrl!" [alt]="settings()?.siteName" class="banner-brand-logo" />
         } @else {
-          <div class="company-logo-text" [style.color]="primaryColor()">
-            {{ settings()?.siteName || 'ORG NAME' }}
-          </div>
+          <div class="banner-brand-name">{{ settings()?.siteName || 'DYMO ENERGY' }}</div>
         }
-        <p class="company-desc">
-          We are committed to delivering quality energy solutions and products
-          with seamless procurement experiences tailored to your business needs.
+        <p class="banner-brand-desc">
+          This purchasing portal is provided and managed by
+          {{ settings()?.siteName || 'Dymo Energy' }}.
+          Orders placed through this portal are subject to our standard terms and conditions.
         </p>
+      </div>
+
+    </div>
+
+    <!-- Right: Image panel with dark overlay -->
+    <div class="banner-right" [style.background-color]="primaryColor()">
+      <div class="banner-right-overlay"></div>
+      <div class="banner-right-content">
+        @if (settings()?.logoUrl) {
+          <img
+            [src]="settings()!.logoUrl!"
+            [alt]="settings()?.siteName"
+            class="banner-right-logo"
+          />
+        } @else {
+          <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"
+               class="banner-right-icon">
+            <circle cx="60" cy="46" r="20" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2.5"/>
+            <line x1="60" y1="18" x2="60" y2="12" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="60" y1="80" x2="60" y2="74" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="88" y1="46" x2="94" y2="46" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="26" y1="46" x2="20" y2="46" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="79.9" y1="26.1" x2="84.2" y2="21.8" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="35.8" y1="70.2" x2="40.1" y2="65.9" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="79.9" y1="65.9" x2="84.2" y2="70.2" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="35.8" y1="21.8" x2="40.1" y2="26.1" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
+            <rect x="14" y="84" width="92" height="12" rx="3" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+            <line x1="44" y1="84" x2="44" y2="96" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+            <line x1="76" y1="84" x2="76" y2="96" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+            <line x1="34" y1="96" x2="34" y2="108" stroke="rgba(255,255,255,0.35)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="86" y1="96" x2="86" y2="108" stroke="rgba(255,255,255,0.35)" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="16" y1="108" x2="104" y2="108" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <p class="banner-right-label">Energy Solutions Portal</p>
+        }
       </div>
     </div>
 
-    <!-- Right: Hero Visual -->
-    <div class="hero-right">
-      @if (settings()?.logoUrl) {
-        <img [src]="settings()!.logoUrl!" [alt]="settings()?.siteName" class="hero-image" />
-      } @else {
-        <div class="hero-placeholder">
-          <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="16" y="8" width="64" height="80" rx="6" fill="#d9d9d9"/>
-            <rect x="28" y="28" width="40" height="6" rx="3" fill="#bfbfbf"/>
-            <rect x="28" y="40" width="40" height="6" rx="3" fill="#bfbfbf"/>
-            <rect x="28" y="52" width="28" height="6" rx="3" fill="#bfbfbf"/>
-            <circle cx="68" cy="20" r="12" fill="#8c8c8c"/>
-            <path d="M62 20l4 4 8-8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <p>Portal Image</p>
-        </div>
-      }
-    </div>
   </div>
 </section>
 
@@ -70,7 +92,7 @@
 <section class="catalogues-section">
   <div class="section-container">
 
-    <!-- Section Header -->
+    <!-- Section header -->
     <div class="section-header">
       <div class="section-header-left">
         <h2 class="section-title" [style.color]="primaryColor()">Catalogues</h2>
@@ -98,100 +120,173 @@
       </div>
     </div>
 
-    <!-- Loading State -->
+    <!-- Loading skeletons -->
     @if (cataloguesLoading()) {
-      <div class="loading-grid">
+      <div class="catalogue-grid">
         @for (i of [1,2,3,4,5,6]; track i) {
-          <div class="skeleton-card"></div>
+          <div class="skeleton-card">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-body">
+              <div class="skeleton-line wide"></div>
+              <div class="skeleton-line medium"></div>
+              <div class="skeleton-line short"></div>
+            </div>
+          </div>
         }
       </div>
+
+    <!-- Empty state -->
     } @else if (filteredCatalogues().length === 0) {
       <div class="empty-state">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#d9d9d9" stroke-width="1.5">
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#d9d9d9" stroke-width="1.2"
+             stroke-linecap="round" stroke-linejoin="round">
           <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
         </svg>
-        <p>No catalogues available</p>
+        <p class="empty-title">No catalogues available</p>
+        <p class="empty-sub">Check back later or contact your administrator.</p>
       </div>
+
+    <!-- Catalogue cards -->
     } @else {
       <div class="catalogue-grid">
         @for (cat of filteredCatalogues(); track cat.id) {
-          <div class="catalogue-card">
-            <div class="card-image-wrap">
-              @if (getThumbnail(cat)) {
-                <img [src]="getThumbnail(cat)!" [alt]="cat.name" class="card-image" />
+
+          <article
+            class="catalogue-card"
+            [style.background-color]="cat.sectionBackgroundColor || '#fff'"
+          >
+            <!-- ── Thumbnail ── -->
+            <div class="card-thumb">
+              @if (getCardThumb(cat)) {
+                <img
+                  [src]="getCardThumb(cat)!"
+                  [alt]="cat.name"
+                  class="card-thumb-img"
+                  loading="lazy"
+                />
+                <!-- Overlay only when using a bg image (not a dedicated thumbnail) -->
+                @if (isBgImage(cat)) {
+                  <div
+                    class="card-thumb-overlay"
+                    [style.background-color]="cat.overlayColor || 'rgba(0,0,0,0)'"
+                    [style.opacity]="cat.overlayOpacity || 0.25"
+                  ></div>
+                }
               } @else {
-                <div class="card-image-placeholder">
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#bfbfbf" stroke-width="1.2">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <!-- Placeholder -->
+                <div class="card-thumb-placeholder">
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none"
+                       stroke="#d4d4d4" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
                     <circle cx="8.5" cy="8.5" r="1.5"/>
                     <polyline points="21 15 16 10 5 21"/>
                   </svg>
                 </div>
               }
-              @if (cat.isFeatured) {
-                <span class="badge-featured" [style.background-color]="primaryColor()">Featured</span>
-              }
+
+              <!-- Badges row -->
+              <div class="card-badges">
+                @if (cat.isFeatured) {
+                  <span class="badge badge-featured" [style.background-color]="getCardAccent(cat)">
+                    Featured
+                  </span>
+                }
+                @if (cat.layoutType) {
+                  <span class="badge badge-layout">{{ getLayoutLabel(cat) }}</span>
+                }
+              </div>
             </div>
 
+            <!-- ── Body ── -->
             <div class="card-body">
-              <h3 class="card-title">{{ cat.name }}</h3>
+              <!-- Title -->
+              <h3 class="card-title" [style.color]="getCardTextColor(cat)">
+                {{ cat.name }}
+              </h3>
+
+              <!-- Hero title as subtitle (only when different from name) -->
+              @if (showHeroTitle(cat)) {
+                <p class="card-hero-subtitle">{{ cat.heroTitle }}</p>
+              }
+
+              <!-- Description -->
               @if (cat.description) {
                 <p class="card-desc">{{ cat.description }}</p>
               }
-              <a
-                [routerLink]="['/catalogues', cat.slug || cat.id]"
-                class="card-btn"
-                [style.color]="primaryColor()"
-                [style.border-color]="primaryColor()"
-              >
-                View Catalogue
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <line x1="5" y1="12" x2="19" y2="12"/>
-                  <polyline points="12 5 19 12 12 19"/>
-                </svg>
-              </a>
+
+              <!-- Hero subtitle -->
+              @if (cat.heroSubtitle) {
+                <p class="card-sub">{{ cat.heroSubtitle }}</p>
+              }
+
+              <!-- CTA -->
+              <div class="card-footer">
+                <a
+                  [routerLink]="['/catalogues', cat.slug || cat.id]"
+                  class="card-cta"
+                  [style.color]="getCardAccent(cat)"
+                >
+                  {{ getCardCtaText(cat) }}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="2.5"
+                       stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </a>
+              </div>
             </div>
-          </div>
+          </article>
+
         }
       </div>
     }
+
   </div>
 </section>
 
-<!-- ─── REVIEWS ─── -->
-<section class="reviews-section">
-  <div class="section-container">
-    <div class="reviews-header">
-      <h2 class="section-title" [style.color]="primaryColor()">What Our Clients Say</h2>
-      <p class="section-desc">Trusted by procurement teams across industries</p>
-    </div>
+<!-- ─── QUICK ACTIONS ─── -->
+<section class="features-section" [style.background-color]="primaryColor()">
+  <div class="features-inner">
 
-    <div class="reviews-grid">
-      @for (review of reviews; track review.author) {
-        <div class="review-card">
-          <div class="review-stars">
-            @for (s of [1,2,3,4,5]; track s) {
-              <svg
-                width="16" height="16" viewBox="0 0 24 24"
-                [attr.fill]="s <= review.rating ? '#faad14' : '#e8e8e8'"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-              </svg>
-            }
-          </div>
-          <p class="review-comment">"{{ review.comment }}"</p>
-          <div class="review-author">
-            <div class="review-avatar" [style.background-color]="primaryColor()">
-              {{ review.initials }}
-            </div>
-            <div>
-              <div class="review-name">{{ review.author }}</div>
-              <div class="review-role">{{ review.role }}</div>
-            </div>
-          </div>
-        </div>
-      }
-    </div>
+    <a routerLink="/catalogues" class="feature-item">
+      <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="26" height="26"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+        stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7"/>
+        <rect x="14" y="3" width="7" height="7"/>
+        <rect x="14" y="14" width="7" height="7"/>
+        <rect x="3" y="14" width="7" height="7"/>
+      </svg>
+      <h4 class="feature-title">Browse Catalogues</h4>
+      <span class="feature-link">Click here</span>
+    </a>
+
+    <a routerLink="/orders" class="feature-item">
+      <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="26" height="26"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+        <line x1="6" y1="9" x2="18" y2="9"/>
+        <line x1="6" y1="13" x2="18" y2="13"/>
+        <line x1="6" y1="17" x2="12" y2="17"/>
+      </svg>
+      <h4 class="feature-title">View My Orders</h4>
+      <span class="feature-link">Click here</span>
+    </a>
+
+    <a routerLink="/help" class="feature-item">
+      <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="26" height="26"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+      <h4 class="feature-title">Get Help</h4>
+      <span class="feature-link">Click here</span>
+    </a>
+
   </div>
 </section>
 
