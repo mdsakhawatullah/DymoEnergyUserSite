@@ -1,8 +1,10 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdminSiteSettingService } from '../../core/services/admin-site-setting.service';
+import { UserSiteSettingService } from '../../core/services/user-site-setting.service';
 import { CatalogueService } from '../../core/services/catalogue.service';
 import { AdminSiteSetting } from '../../core/models/admin-site-setting.model';
+import { UserSiteSetting, UserSiteSettingImage } from '../../core/models/user-site-setting.model';
 import { Catalogue } from '../../core/models/catalogue.model';
 import { NavbarComponent, DEFAULT_NAV_ITEMS } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
@@ -26,6 +28,7 @@ export class HomeComponent implements OnInit {
 
   // ── Signals ─────────────────────────────────────────────────────────────
   settings          = signal<AdminSiteSetting | null>(null);
+  userSiteSetting   = signal<UserSiteSetting | null>(null);
   catalogues        = signal<Catalogue[]>([]);
   searchQuery       = signal('');
   loading           = signal(true);
@@ -33,12 +36,19 @@ export class HomeComponent implements OnInit {
 
   navItems = DEFAULT_NAV_ITEMS;
 
-  // ── Global theme colours (fallbacks when a catalogue has none) ───────────
+  // ── Global theme colours ─────────────────────────────────────────────────
   primaryColor = computed(() => this.settings()?.primaryColor  || '#1a3a6b');
   accentColor  = computed(() =>
     this.settings()?.buttonColor    ||
     this.settings()?.secondaryColor ||
     '#f5a623'
+  );
+
+  // ── Active images for sticky card stack (sorted by DisplayOrder) ─────────
+  siteImages = computed<UserSiteSettingImage[]>(() =>
+    (this.userSiteSetting()?.images ?? [])
+      .filter(img => img.isActive && img.imageUrl)
+      .sort((a, b) => a.displayOrder - b.displayOrder)
   );
 
   // ── Filtered catalogue list ──────────────────────────────────────────────
@@ -79,8 +89,9 @@ export class HomeComponent implements OnInit {
   ];
 
   constructor(
-    private siteService:      AdminSiteSettingService,
-    private catalogueService: CatalogueService,
+    private siteService:         AdminSiteSettingService,
+    private userSettingService:  UserSiteSettingService,
+    private catalogueService:    CatalogueService,
   ) {}
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -93,7 +104,11 @@ export class HomeComponent implements OnInit {
       if (s) this.applyTheme(s);
     });
 
-    // Fetch published catalogues ordered by DisplayOrder (server-side)
+    this.userSettingService.getActive().subscribe(us => {
+      this.userSiteSetting.set(us);
+      console.log('User site settings loaded:', us);
+    });
+
     this.catalogueService
       .getList({ isPublished: true, maxResultCount: 50 })
       .subscribe(result => {
@@ -105,18 +120,14 @@ export class HomeComponent implements OnInit {
   // ─────────────────────────────────────────────────────────────────────────
   //  Card helpers
   // ─────────────────────────────────────────────────────────────────────────
-
-  /** Priority: thumbnailImageUrl → primaryBackgroundImageUrl → null */
   getCardThumb(cat: Catalogue): string | null {
     return cat.thumbnailImageUrl || cat.primaryBackgroundImageUrl || null;
   }
 
-  /** True when only a background image is available (no dedicated thumbnail). */
   isBgImage(cat: Catalogue): boolean {
     return !cat.thumbnailImageUrl && !!cat.primaryBackgroundImageUrl;
   }
 
-  /** Per-catalogue accent colour, falls back to global accent. */
   getCardAccent(cat: Catalogue): string {
     return cat.accentColor || this.accentColor();
   }

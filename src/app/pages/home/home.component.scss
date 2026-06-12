@@ -1,289 +1,377 @@
-// ─── Banner ───────────────────────────────────────────────────────────
-.banner-section {
-  margin: 0 32px;
+// ─────────────────────────────────────────────────────────────────
+//  STICKY CARD STACK
+//  Navbar height: 56px (top row) + 44px (bottom row) = 100px total.
+//  Each card sticks at top:100px and is 68vh tall.
+//  z-index increases per card → later card slides OVER earlier one.
+// ─────────────────────────────────────────────────────────────────
+$navbar-h : 108px;
+$card-h   : 68vh;
+
+.sticky-stack {
+  // Height = sum of children = N × 68vh  (enough scroll distance)
 }
 
-.banner-row {
-  display: flex;
-  min-height: 500px;
+.sticky-card {
+  position : sticky;
+  top      : $navbar-h;
+  height   : $card-h;
+  overflow : hidden;
+  display  : flex;
 }
 
-// ─── Banner Left ──────────────────────────────────────────────────────
-.banner-left {
-  flex: 0 0 50%;
-  padding: 48px 40px;
-  display: flex;
+// ── Shared background layer ──────────────────────────────────────
+.sc-bg {
+  position : absolute;
+  inset    : 0;
+}
+
+.sc-bg-img {
+  background-size     : cover;
+  background-position : center;
+  background-repeat   : no-repeat;
+}
+
+// ── Card 1: Portal Hero ──────────────────────────────────────────
+// Left content panel
+.sc-content {
+  position    : relative;
+  z-index     : 2;
+  flex        : 0 0 52%;
+  padding     : 52px 60px;
+  display     : flex;
   flex-direction: column;
+  justify-content: center;
 }
 
-.banner-portal-title {
-  font-family: 'HellixSemiBold', sans-serif;
-  font-size: 20px;
-  font-weight: 600;
-  color: #fff;
-  margin: 0 0 10px;
-  line-height: 1.4;
+.sc-eyebrow {
+  font-family    : 'HellixRegular', sans-serif;
+  font-size      : 12px;
+  color          : rgba(255, 255, 255, 0.60);
+  letter-spacing : 0.12em;
+  text-transform : uppercase;
+  margin         : 0 0 18px;
 }
 
-.banner-org-name {
-  font-family: 'HellixSemiBold', sans-serif;
-  font-size: 38px;
-  font-weight: 600;
-  line-height: 1.2;
-  margin: 0;
-  letter-spacing: -0.01em;
+.sc-title {
+  font-family    : 'HellixExtraBold', sans-serif;
+  font-size      : 44px;
+  font-weight    : 800;
+  color          : #fff;
+  line-height    : 1.15;
+  margin         : 0 0 18px;
+  letter-spacing : -0.02em;
 }
 
-.banner-desc {
-  font-family: 'HellixRegular', sans-serif;
-  display: block;
-  font-size: 15px;
-  line-height: 1.65;
-  color: rgba(255, 255, 255, 0.9);
-  margin-top: 24px;
-  max-width: 440px;
+.sc-accent {
+  display : block;
 }
 
-.banner-btn-wrap {
-  margin-top: 28px;
+.sc-sub {
+  font-family : 'HellixRegular', sans-serif;
+  font-size   : 15px;
+  color       : rgba(255, 255, 255, 0.80);
+  line-height : 1.7;
+  margin      : 0 0 32px;
+  max-width   : 420px;
 }
 
-.banner-btn {
-  font-family: 'HellixRegular', sans-serif;
-  display: inline-block;
-  padding: 10px 26px;
-  border-radius: 4px;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 400;
-  text-decoration: none;
-  transition: opacity 0.15s;
+.sc-actions {
+  display    : flex;
+  align-items: center;
+  gap        : 16px;
+  flex-wrap  : wrap;
+}
+
+.sc-cta-primary {
+  font-family     : 'HellixSemiBold', sans-serif;
+  display         : inline-block;
+  padding         : 11px 28px;
+  border-radius   : 4px;
+  color           : #fff;
+  font-size       : 14px;
+  text-decoration : none;
+  font-weight     : 600;
+  transition      : opacity 0.15s;
 
   &:hover { opacity: 0.88; }
 }
 
-.banner-brand {
-  margin-top: auto;
-  padding-top: 52px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.sc-cta-ghost {
+  font-family     : 'HellixRegular', sans-serif;
+  display         : inline-block;
+  padding         : 10px 24px;
+  border-radius   : 4px;
+  color           : rgba(255,255,255,0.85);
+  font-size       : 14px;
+  text-decoration : none;
+  border          : 1px solid rgba(255,255,255,0.35);
+  transition      : border-color 0.15s, color 0.15s;
+
+  &:hover {
+    border-color: rgba(255,255,255,0.75);
+    color       : #fff;
+  }
 }
 
-.banner-brand-logo {
-  height: 36px;
-  width: auto;
-  object-fit: contain;
+.sc-brand {
+  margin-top : auto;
+  padding-top: 32px;
+}
+
+.sc-brand-logo {
+  height      : 32px;
+  width       : auto;
+  object-fit  : contain;
   object-position: left;
-  filter: brightness(0) invert(1);
-  opacity: 0.9;
+  filter      : brightness(0) invert(1);
+  opacity     : 0.7;
 }
 
-.banner-brand-name {
-  font-family: 'HellixExtraBold', sans-serif;
-  font-size: 26px;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  line-height: 1.1;
+.sc-brand-name {
+  font-family    : 'HellixExtraBold', sans-serif;
+  font-size      : 18px;
+  font-weight    : 800;
+  color          : rgba(255,255,255,0.55);
+  letter-spacing : 0.06em;
+  text-transform : uppercase;
 }
 
-.banner-brand-desc {
-  font-family: 'HellixRegular', sans-serif;
-  font-size: 11px;
-  line-height: 1.8;
-  color: rgba(255, 255, 255, 0.55);
-  margin: 0;
-  max-width: 400px;
-}
-
-// ─── Banner Right ─────────────────────────────────────────────────────
-.banner-right {
-  flex: 0 0 50%;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
+// Right decorative panel
+.sc-deco {
+  flex     : 1;
+  position : relative;
+  overflow : hidden;
+  display  : flex;
+  align-items    : center;
   justify-content: center;
-  min-height: 400px;
 }
 
-.banner-right-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.30);
-  z-index: 0;
+.sc-deco-overlay {
+  position   : absolute;
+  inset      : 0;
+  background : rgba(0, 0, 0, 0.20);
+  z-index    : 0;
 }
 
-.banner-right-content {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 18px;
+.sc-deco-inner {
+  position        : relative;
+  z-index         : 1;
+  display         : flex;
+  flex-direction  : column;
+  align-items     : center;
+  gap             : 14px;
 }
 
-.banner-right-logo {
-  max-width: 220px;
-  max-height: 220px;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
-  opacity: 0.8;
+.sc-deco-logo {
+  max-width   : 200px;
+  max-height  : 200px;
+  object-fit  : contain;
+  filter      : brightness(0) invert(1);
+  opacity     : 0.75;
 }
 
-.banner-right-icon { opacity: 0.85; }
-
-.banner-right-label {
-  font-family: 'HellixMedium', sans-serif;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.65);
-  margin: 0;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.sc-deco-label {
+  font-family    : 'HellixRegular', sans-serif;
+  font-size      : 12px;
+  color          : rgba(255,255,255,0.50);
+  letter-spacing : 0.10em;
+  text-transform : uppercase;
+  margin         : 0;
 }
 
-// ─── Catalogues section wrapper ───────────────────────────────────────
+// ── Cards 2+: UserSiteSettingImage hero cards ────────────────────
+// Left-heavy directional overlay (Sungrow style)
+.sc-img-overlay {
+  position   : absolute;
+  inset      : 0;
+  background : linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.68) 0%,
+    rgba(0, 0, 0, 0.40) 40%,
+    rgba(0, 0, 0, 0.08) 100%
+  );
+  z-index    : 1;
+}
+
+// Content on image cards — same layout as hero but larger text
+.sc-content-img {
+  flex           : 0 0 55%;
+  padding        : 52px 80px;
+  justify-content: center;
+}
+
+.sc-img-title {
+  font-family    : 'HellixExtraBold', sans-serif;
+  font-size      : 52px;
+  font-weight    : 800;
+  color          : #fff;
+  margin         : 0 0 16px;
+  line-height    : 1.1;
+  letter-spacing : -0.025em;
+}
+
+.sc-img-sub {
+  font-family : 'HellixRegular', sans-serif;
+  font-size   : 20px;
+  color       : rgba(255, 255, 255, 0.82);
+  margin      : 0;
+  line-height : 1.5;
+}
+
+// Bouncing scroll chevron on last image card
+.sc-scroll-hint {
+  position  : absolute;
+  bottom    : 28px;
+  left      : 50%;
+  transform : translateX(-50%);
+  z-index   : 3;
+  animation : sc-bounce 2s ease-in-out infinite;
+}
+
+@keyframes sc-bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0);   }
+  50%       { transform: translateX(-50%) translateY(9px); }
+}
+
+// ─── Sections that scroll OVER the sticky stack ───────────────────
+// z-index must be higher than the tallest sticky card z-index
 .catalogues-section {
-  background: #f7f8fa;
-  padding: 64px 40px;
-  margin: 0 32px;
+  position   : relative;
+  z-index    : 500;
+  background : #f7f8fa;
+  padding    : 64px 40px;
 }
 
 .section-container {
-  max-width: 1280px;
-  margin: 0 auto;
+  max-width : 1280px;
+  margin    : 0 auto;
 }
 
-// ─── Section header (title + search) ─────────────────────────────────
 .section-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 32px;
-  margin-bottom: 40px;
-  flex-wrap: wrap;
+  display         : flex;
+  align-items     : flex-start;
+  justify-content : space-between;
+  gap             : 32px;
+  margin-bottom   : 40px;
+  flex-wrap       : wrap;
 }
 
 .section-header-left {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display        : flex;
+  flex-direction : column;
+  gap            : 8px;
 }
 
 .section-title {
-  font-family: 'HellixSemiBold', sans-serif;
-  font-size: 26px;
-  font-weight: 600;
-  margin: 0;
-  letter-spacing: -0.01em;
+  font-family    : 'HellixSemiBold', sans-serif;
+  font-size      : 26px;
+  font-weight    : 600;
+  margin         : 0;
+  letter-spacing : -0.01em;
 }
 
 .section-desc {
-  font-family: 'HellixRegular', sans-serif;
-  font-size: 14px;
-  color: #8c8c8c;
-  line-height: 1.6;
-  margin: 0;
-  max-width: 480px;
+  font-family : 'HellixRegular', sans-serif;
+  font-size   : 14px;
+  color       : #8c8c8c;
+  line-height : 1.6;
+  margin      : 0;
+  max-width   : 480px;
 }
 
 .search-box {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 280px;
+  display        : flex;
+  flex-direction : column;
+  gap            : 6px;
+  min-width      : 280px;
 }
 
 .search-label {
-  font-family: 'HellixSemiBold', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: #595959;
+  font-family : 'HellixSemiBold', sans-serif;
+  font-size   : 13px;
+  font-weight : 600;
+  color       : #595959;
 }
 
 .search-input-wrap {
-  display: flex;
-  border: 1px solid #d9d9d9;
-  border-radius: 6px;
-  overflow: hidden;
-  background: #fff;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  display         : flex;
+  border          : 1px solid #d9d9d9;
+  border-radius   : 6px;
+  overflow        : hidden;
+  background      : #fff;
+  transition      : border-color 0.15s, box-shadow 0.15s;
 
   &:focus-within {
-    border-color: var(--primary, #1677ff);
-    box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.12);
+    border-color : var(--primary, #1677ff);
+    box-shadow   : 0 0 0 2px rgba(22, 119, 255, 0.12);
   }
 }
 
 .search-input {
-  font-family: 'HellixRegular', sans-serif;
-  flex: 1;
-  border: none;
-  outline: none;
-  padding: 10px 14px;
-  font-size: 14px;
-  color: #333;
-  background: transparent;
+  font-family : 'HellixRegular', sans-serif;
+  flex        : 1;
+  border      : none;
+  outline     : none;
+  padding     : 10px 14px;
+  font-size   : 14px;
+  color       : #333;
+  background  : transparent;
 
   &::placeholder { color: #bfbfbf; }
 }
 
 .search-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  border: none;
-  cursor: pointer;
-  transition: opacity 0.15s;
-  flex-shrink: 0;
+  display         : flex;
+  align-items     : center;
+  justify-content : center;
+  width           : 44px;
+  border          : none;
+  cursor          : pointer;
+  transition      : opacity 0.15s;
+  flex-shrink     : 0;
 
   &:hover { opacity: 0.88; }
 }
 
-// ─── Shimmer animation (shared) ───────────────────────────────────────
+// ── Shimmer ───────────────────────────────────────────────────────
 @keyframes shimmer {
   0%   { background-position: -200% 0; }
   100% { background-position:  200% 0; }
 }
 
 .shimmer {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e6e6e6 50%, #f0f0f0 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  background      : linear-gradient(90deg, #f0f0f0 25%, #e6e6e6 50%, #f0f0f0 75%);
+  background-size : 200% 100%;
+  animation       : shimmer 1.5s infinite;
 }
 
-// ─── 4-column catalogue grid ──────────────────────────────────────────
+// ── 4-column grid ─────────────────────────────────────────────────
 .cat-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  display               : grid;
+  grid-template-columns : repeat(4, 1fr);
+  gap                   : 20px;
 }
 
-// ─── Skeleton loader ──────────────────────────────────────────────────
+// ── Skeleton ──────────────────────────────────────────────────────
 .cat-skeleton {
-  background: #fff;
-  border: 1px solid #ebebeb;
-  border-radius: 4px;
-  overflow: hidden;
+  background    : #fff;
+  border        : 1px solid #ebebeb;
+  border-radius : 4px;
+  overflow      : hidden;
 }
 
-.cat-skeleton-img {
-  height: 210px;
-}
+.cat-skeleton-img  { height: 210px; }
 
 .cat-skeleton-body {
-  padding: 16px 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  padding        : 16px 16px 20px;
+  display        : flex;
+  flex-direction : column;
+  gap            : 10px;
 }
 
 .cat-skeleton-line {
-  height: 11px;
-  border-radius: 4px;
+  height        : 11px;
+  border-radius : 4px;
 
   &.w90 { width: 90%; }
   &.w70 { width: 70%; }
@@ -291,240 +379,250 @@
 }
 
 .cat-skeleton-btn {
-  height: 36px;
-  border-radius: 6px;
-  margin-top: 8px;
+  height        : 36px;
+  border-radius : 6px;
+  margin-top    : 8px;
 }
 
-// ─── Empty state ──────────────────────────────────────────────────────
+// ── Empty state ───────────────────────────────────────────────────
 .cat-empty {
-  text-align: center;
-  padding: 72px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  text-align      : center;
+  padding         : 72px 0;
+  display         : flex;
+  flex-direction  : column;
+  align-items     : center;
+  gap             : 8px;
 }
 
 .cat-empty-title {
-  font-family: 'HellixSemiBold', sans-serif;
-  font-size: 16px;
-  color: #8c8c8c;
-  margin: 6px 0 0;
+  font-family : 'HellixSemiBold', sans-serif;
+  font-size   : 16px;
+  color       : #8c8c8c;
+  margin      : 6px 0 0;
 }
 
 .cat-empty-sub {
-  font-family: 'HellixRegular', sans-serif;
-  font-size: 13px;
-  color: #bfbfbf;
-  margin: 0;
+  font-family : 'HellixRegular', sans-serif;
+  font-size   : 13px;
+  color       : #bfbfbf;
+  margin      : 0;
 }
 
-// ─── Catalogue card ───────────────────────────────────────────────────
+// ── Catalogue card ────────────────────────────────────────────────
 .cat-card {
-  background: #fff;
-  border: 1px solid #e8e8e8;
-  border-radius: 4px;
-  display: flex;
+  background    : #fff;
+  border        : 1px solid #e8e8e8;
+  border-radius : 4px;
+  display       : flex;
   flex-direction: column;
-  overflow: hidden;
-  transition: box-shadow 0.18s;
+  overflow      : hidden;
+  transition    : box-shadow 0.18s;
 
   &:hover {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.09);
-
     .cat-card-img { transform: scale(1.03); }
   }
 }
 
-// ── Image area ────────────────────────────────────────────────────────
-// object-fit: contain so product images show fully (not cropped)
-// White background so PNG transparent products look correct
 .cat-card-img-wrap {
-  height: 210px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  background: #fff;
-  overflow: hidden;
-  flex-shrink: 0;
+  height          : 210px;
+  display         : flex;
+  align-items     : center;
+  justify-content : center;
+  padding         : 16px;
+  background      : #fff;
+  overflow        : hidden;
+  flex-shrink     : 0;
 }
 
 .cat-card-img {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  display: block;
-  transition: transform 0.28s ease;
+  max-width   : 100%;
+  max-height  : 100%;
+  width       : auto;
+  height      : auto;
+  object-fit  : contain;
+  display     : block;
+  transition  : transform 0.28s ease;
 }
 
 .cat-card-img-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  background: #fafafa;
+  display         : flex;
+  align-items     : center;
+  justify-content : center;
+  width           : 100%;
+  height          : 100%;
+  background      : #fafafa;
 }
 
-// ── Thin divider ──────────────────────────────────────────────────────
 .cat-card-divider {
-  height: 1px;
-  background: #f0f0f0;
+  height     : 1px;
+  background : #f0f0f0;
   flex-shrink: 0;
 }
 
-// ── Body ─────────────────────────────────────────────────────────────
 .cat-card-body {
-  padding: 16px 16px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
+  padding        : 16px 16px 12px;
+  display        : flex;
+  flex-direction : column;
+  gap            : 8px;
+  flex           : 1;
 }
 
 .cat-card-title {
-  font-family: 'HellixSemiBold', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0;
-  line-height: 1.4;
+  font-family    : 'HellixSemiBold', sans-serif;
+  font-size      : 14px;
+  font-weight    : 700;
+  color          : #1a1a1a;
+  margin         : 0;
+  line-height    : 1.4;
 }
 
 .cat-card-desc {
-  font-family: 'HellixRegular', sans-serif;
-  font-size: 13px;
-  color: #666;
-  line-height: 1.6;
-  margin: 0;
-  // Clamp to 3 lines — matches wireframe
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  font-family     : 'HellixRegular', sans-serif;
+  font-size       : 13px;
+  color           : #666;
+  line-height     : 1.6;
+  margin          : 0;
+  display         : -webkit-box;
+  -webkit-line-clamp   : 3;
+  -webkit-box-orient   : vertical;
+  overflow        : hidden;
 }
 
-// heroCtaText — optional coloured info line (e.g. "Catalogue renews on 03/06/2026")
 .cat-card-info-link {
-  font-family: 'HellixRegular', sans-serif;
-  font-size: 13px;
+  font-family : 'HellixRegular', sans-serif;
+  font-size   : 13px;
   text-decoration: none;
-  line-height: 1.4;
-  margin-top: 2px;
+  line-height : 1.4;
+  margin-top  : 2px;
 
   &:hover { text-decoration: underline; }
 }
 
-// ── "View Details" button ─────────────────────────────────────────────
 .cat-card-footer {
-  padding: 12px 16px 16px;
-  margin-top: auto;
+  padding    : 12px 16px 16px;
+  margin-top : auto;
 }
 
 .cat-card-btn {
-  font-family: 'HellixRegular', sans-serif;
-  display: block;
-  width: 100%;
-  padding: 10px 0;
-  text-align: center;
-  font-size: 14px;
-  color: #333;
-  background: #fff;
-  border: 1px solid #d4d4d4;
-  border-radius: 6px;
-  text-decoration: none;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  font-family     : 'HellixRegular', sans-serif;
+  display         : block;
+  width           : 100%;
+  padding         : 10px 0;
+  text-align      : center;
+  font-size       : 14px;
+  color           : #333;
+  background      : #fff;
+  border          : 1px solid #d4d4d4;
+  border-radius   : 6px;
+  text-decoration : none;
+  transition      : background 0.15s, border-color 0.15s, color 0.15s;
 
   &:hover {
-    background: #f5f5f5;
-    border-color: #aaa;
-    color: #111;
+    background   : #f5f5f5;
+    border-color : #aaa;
+    color        : #111;
   }
 }
 
-// ─── Quick Actions ────────────────────────────────────────────────────
+// ── Quick Actions ─────────────────────────────────────────────────
 .features-section {
-  margin: 0 32px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  position   : relative;
+  z-index    : 500;
+  border-top : 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .features-inner {
-  padding: 0 40px;
-  display: flex;
+  padding : 0 40px;
+  display : flex;
   align-items: stretch;
 }
 
 .feature-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 42px 24px;
-  text-decoration: none;
-  cursor: pointer;
-  border-right: 1px solid rgba(255, 255, 255, 0.12);
-  transition: background 0.15s;
+  flex            : 1;
+  display         : flex;
+  flex-direction  : column;
+  align-items     : center;
+  text-align      : center;
+  padding         : 42px 24px;
+  text-decoration : none;
+  cursor          : pointer;
+  border-right    : 1px solid rgba(255, 255, 255, 0.12);
+  transition      : background 0.15s;
 
   &:last-child { border-right: none; }
   &:hover      { background: rgba(255, 255, 255, 0.08); }
 }
 
 .feature-icon {
-  color: #fff;
-  margin-bottom: 12px;
-  opacity: 0.9;
+  color         : #fff;
+  margin-bottom : 12px;
+  opacity       : 0.9;
 }
 
 .feature-title {
-  font-family: 'HellixSemiBold', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  color: #fff;
-  margin: 0 0 8px;
+  font-family : 'HellixSemiBold', sans-serif;
+  font-size   : 16px;
+  font-weight : 600;
+  color       : #fff;
+  margin      : 0 0 8px;
 }
 
 .feature-link {
-  font-family: 'HellixRegular', sans-serif;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.78);
-  text-decoration: underline;
+  font-family       : 'HellixRegular', sans-serif;
+  font-size         : 13px;
+  color             : rgba(255, 255, 255, 0.78);
+  text-decoration   : underline;
   text-underline-offset: 3px;
 }
 
-// ─── Responsive ───────────────────────────────────────────────────────
+// ─── Responsive ───────────────────────────────────────────────────
 @media (max-width: 1100px) {
   .cat-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
+@media (max-width: 900px) {
+  .sc-content     { padding: 40px 40px; }
+  .sc-content-img { padding: 40px 40px; }
+  .sc-title       { font-size: 34px; }
+  .sc-img-title   { font-size: 38px; }
+  .sc-img-sub     { font-size: 17px; }
+}
+
 @media (max-width: 768px) {
-  .banner-section,
-  .catalogues-section,
-  .features-section { margin: 0 16px; }
+  // On mobile the navbar only shows the top row (56px)
+  $nm: 56px; // matches .row1 mobile height
 
-  .banner-row        { flex-direction: column; }
-  .banner-left       { flex: unset; padding: 36px 24px; }
-  .banner-right      { flex: unset; min-height: 220px; }
-  .banner-org-name   { font-size: 28px; }
-
-  .catalogues-section { padding: 40px 24px; }
-
-  .features-inner    { flex-direction: column; padding: 0; }
-  .feature-item {
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    padding: 28px 24px;
-    &:last-child { border-bottom: none; }
+  .sticky-card {
+    top    : $nm;
+    height : calc(100vh - #{$nm});
+    flex-direction: column;
   }
 
-  .section-header  { flex-direction: column; }
-  .search-box      { min-width: unset; width: 100%; }
+  .sc-content,
+  .sc-content-img {
+    flex    : none;
+    padding : 40px 28px 24px;
+  }
 
-  .cat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sc-deco  { display: none; }
+
+  .sc-title     { font-size: 28px; }
+  .sc-img-title { font-size: 30px; }
+  .sc-img-sub   { font-size: 15px; }
+
+  .catalogues-section { padding: 40px 20px; }
+  .section-header     { flex-direction: column; }
+  .search-box         { min-width: unset; width: 100%; }
+  .cat-grid           { grid-template-columns: repeat(2, 1fr); }
+
+  .features-inner { flex-direction: column; padding: 0; }
+  .feature-item {
+    border-right  : none;
+    border-bottom : 1px solid rgba(255,255,255,0.12);
+    padding       : 28px 24px;
+    &:last-child  { border-bottom: none; }
+  }
 }
 
 @media (max-width: 480px) {

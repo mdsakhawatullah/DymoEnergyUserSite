@@ -1,98 +1,123 @@
 <app-navbar
   [siteName]="settings()?.siteName || 'Org Name'"
   [logoUrl]="settings()?.logoUrl"
-  [navbarBgColor]="settings()?.navbarBgColor"
   [navbarTextColor]="settings()?.navbarTextColor"
   [primaryColor]="settings()?.primaryColor"
   [navItems]="navItems"
 />
 
-<!-- ─── HERO BANNER ─── -->
-<section class="banner-section">
-  <div class="banner-row">
+<!-- ═══════════════════════════════════════════════════════════════
+     STICKY CARD STACK
+     Every card is position:sticky with the SAME top offset.
+     z-index increases per card so each new card slides OVER the
+     previous one as you scroll. The catalogues section (z-index 500)
+     then scrolls over the entire stack.
+  ════════════════════════════════════════════════════════════════ -->
+<div class="sticky-stack">
 
-    <!-- Left: Primary colour panel -->
-    <div class="banner-left" [style.background-color]="primaryColor()">
+  <!-- ─── Card 1: Portal Hero (always visible, z-index 1) ─── -->
+  <section class="sticky-card" style="z-index:1;">
+    <!-- Background: solid primary colour -->
+    <div class="sc-bg" [style.background-color]="primaryColor()"></div>
 
-      <h3 class="banner-portal-title">Purchasing Portal</h3>
+    <!-- Content -->
+    <div class="sc-content">
+      <p class="sc-eyebrow">Purchasing Portal</p>
 
-      <h1 class="banner-org-name" [style.color]="accentColor()">
-        {{ settings()?.siteName || 'Org Name' }}
+      <h1 class="sc-title">
+        Welcome to<br>
+        <span class="sc-accent" [style.color]="accentColor()">
+          {{ settings()?.siteName || 'Dymo Energy' }}
+        </span>
       </h1>
 
       @if (settings()?.tagline) {
-        <p class="banner-desc">{{ settings()!.tagline }}</p>
+        <p class="sc-sub">{{ settings()!.tagline }}</p>
       } @else {
-        <p class="banner-desc">
-          Your one-stop destination for sourcing, ordering, and managing all
-          your energy products and solutions efficiently.
+        <p class="sc-sub">
+          Your one-stop destination for sourcing, ordering, and managing
+          all your energy products and solutions efficiently.
         </p>
       }
 
-      <div class="banner-btn-wrap">
-        <a routerLink="/about" class="banner-btn" [style.background-color]="accentColor()">
+      <div class="sc-actions">
+        <a routerLink="/catalogues" class="sc-cta-primary" [style.background-color]="accentColor()">
+          Browse Catalogues
+        </a>
+        <a routerLink="/about" class="sc-cta-ghost">
           About this portal
         </a>
       </div>
 
-      <!-- Brand footer block -->
-      <div class="banner-brand">
+      <!-- Brand footer -->
+      <div class="sc-brand">
         @if (settings()?.logoUrl) {
-          <img [src]="settings()!.logoUrl!" [alt]="settings()?.siteName" class="banner-brand-logo" />
+          <img [src]="settings()!.logoUrl!" [alt]="settings()?.siteName" class="sc-brand-logo" />
         } @else {
-          <div class="banner-brand-name">{{ settings()?.siteName || 'DYMO ENERGY' }}</div>
+          <span class="sc-brand-name">{{ settings()?.siteName || 'DYMO ENERGY' }}</span>
         }
-        <p class="banner-brand-desc">
-          This purchasing portal is provided and managed by
-          {{ settings()?.siteName || 'Dymo Energy' }}.
-          Orders placed through this portal are subject to our standard terms and conditions.
-        </p>
       </div>
-
     </div>
 
-    <!-- Right: Image panel with dark overlay -->
-    <div class="banner-right" [style.background-color]="primaryColor()">
-      <div class="banner-right-overlay"></div>
-      <div class="banner-right-content">
+    <!-- Right decorative panel -->
+    <div class="sc-deco" [style.background-color]="primaryColor()">
+      <div class="sc-deco-overlay"></div>
+      <div class="sc-deco-inner">
         @if (settings()?.logoUrl) {
-          <img
-            [src]="settings()!.logoUrl!"
-            [alt]="settings()?.siteName"
-            class="banner-right-logo"
-          />
+          <img [src]="settings()!.logoUrl!" [alt]="settings()?.siteName" class="sc-deco-logo" />
         } @else {
-          <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"
-               class="banner-right-icon">
-            <circle cx="60" cy="46" r="20" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2.5"/>
-            <line x1="60" y1="18" x2="60" y2="12" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="60" y1="80" x2="60" y2="74" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="88" y1="46" x2="94" y2="46" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="26" y1="46" x2="20" y2="46" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="79.9" y1="26.1" x2="84.2" y2="21.8" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="35.8" y1="70.2" x2="40.1" y2="65.9" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="79.9" y1="65.9" x2="84.2" y2="70.2" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="35.8" y1="21.8" x2="40.1" y2="26.1" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
-            <rect x="14" y="84" width="92" height="12" rx="3" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
-            <line x1="44" y1="84" x2="44" y2="96" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
-            <line x1="76" y1="84" x2="76" y2="96" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
-            <line x1="34" y1="96" x2="34" y2="108" stroke="rgba(255,255,255,0.35)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="86" y1="96" x2="86" y2="108" stroke="rgba(255,255,255,0.35)" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="16" y1="108" x2="104" y2="108" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round"/>
+          <svg width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)"
+               stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
           </svg>
-          <p class="banner-right-label">Energy Solutions Portal</p>
+          <p class="sc-deco-label">Energy Solutions</p>
         }
       </div>
     </div>
+  </section>
 
-  </div>
-</section>
+  <!-- ─── Cards 2+: Images from UserSiteSettingImage ─── -->
+  @for (img of siteImages(); track img.id; let i = $index) {
+    <section class="sticky-card" [style.z-index]="i + 2">
 
-<!-- ─── CATALOGUES ─── -->
+      <!-- Full-bleed background image -->
+      <div class="sc-bg sc-bg-img"
+           [style.background-image]="'url(' + img.imageUrl + ')'">
+      </div>
+
+      <!-- Directional gradient overlay (heavier on left) -->
+      <div class="sc-img-overlay"></div>
+
+      <!-- Text content (left side) -->
+      <div class="sc-content sc-content-img">
+        @if (img.title) {
+          <h2 class="sc-img-title">{{ img.title }}</h2>
+        }
+        @if (img.altText) {
+          <p class="sc-img-sub">{{ img.altText }}</p>
+        }
+      </div>
+
+      <!-- Scroll-down hint on the last image card -->
+      @if (i === siteImages().length - 1) {
+        <div class="sc-scroll-hint">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               stroke="rgba(255,255,255,0.55)" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+      }
+
+    </section>
+  }
+
+</div><!-- /sticky-stack -->
+
+<!-- ─── CATALOGUES — scrolls over the sticky stack ─── -->
 <section class="catalogues-section">
   <div class="section-container">
 
-    <!-- Section header -->
     <div class="section-header">
       <div class="section-header-left">
         <h2 class="section-title" [style.color]="primaryColor()">Catalogues</h2>
@@ -120,7 +145,6 @@
       </div>
     </div>
 
-    <!-- Loading skeletons -->
     @if (cataloguesLoading()) {
       <div class="cat-grid">
         @for (i of [1,2,3,4]; track i) {
@@ -136,7 +160,6 @@
         }
       </div>
 
-    <!-- Empty state -->
     } @else if (filteredCatalogues().length === 0) {
       <div class="cat-empty">
         <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4"
@@ -147,28 +170,15 @@
         <p class="cat-empty-sub">Check back later or contact your administrator.</p>
       </div>
 
-    <!-- ── Catalogue cards (isPublished = true, ordered by DisplayOrder) ── -->
     } @else {
       <div class="cat-grid">
         @for (cat of filteredCatalogues(); track cat.id) {
-
           <article class="cat-card">
 
-            <!-- Image area
-                 Source priority:
-                 1. Catalogue.thumbnailImageUrl  (admin-set direct URL for card grids)
-                 2. Catalogue.primaryBackgroundImageUrl  (fallback from banner field)
-                 3. Placeholder SVG
-                 Note: images[] is NOT included in the list endpoint (no JOIN).
-                 thumbnailImageUrl is the dedicated field for this purpose. -->
             <div class="cat-card-img-wrap">
               @if (getCardThumb(cat)) {
-                <img
-                  [src]="getCardThumb(cat)!"
-                  [alt]="cat.name"
-                  class="cat-card-img"
-                  loading="lazy"
-                />
+                <img [src]="getCardThumb(cat)!" [alt]="cat.name"
+                     class="cat-card-img" loading="lazy" />
               } @else {
                 <div class="cat-card-img-placeholder">
                   <svg width="52" height="52" viewBox="0 0 24 24" fill="none"
@@ -181,41 +191,27 @@
               }
             </div>
 
-            <!-- Divider -->
             <div class="cat-card-divider"></div>
 
-            <!-- Body — name, description, optional info link -->
             <div class="cat-card-body">
-
               <h3 class="cat-card-title">{{ cat.name }}</h3>
-
               @if (cat.description) {
                 <p class="cat-card-desc">{{ cat.description }}</p>
               }
-
-              <!-- heroCtaText: optional coloured info line set by admin
-                   e.g. "Catalogue renews on 03/06/2026" -->
               @if (cat.heroCtaText) {
-                <a
-                  [href]="cat.heroCtaUrl || '#'"
-                  class="cat-card-info-link"
-                  [style.color]="getCardAccent(cat)"
-                  (click)="cat.heroCtaUrl ? null : $event.preventDefault()"
+                <a [href]="cat.heroCtaUrl || '#'" class="cat-card-info-link"
+                   [style.color]="getCardAccent(cat)"
+                   (click)="cat.heroCtaUrl ? null : $event.preventDefault()"
                 >{{ cat.heroCtaText }}</a>
               }
-
             </div>
 
-            <!-- View Details button -->
             <div class="cat-card-footer">
-              <a
-                [routerLink]="['/catalogues', cat.id, 'products-list']"
-                class="cat-card-btn"
-              >View Details</a>
+              <a [routerLink]="['/catalogues', cat.id, 'products-list']"
+                 class="cat-card-btn">View Details</a>
             </div>
 
           </article>
-
         }
       </div>
     }
@@ -268,5 +264,4 @@
   </div>
 </section>
 
-<!-- ─── FOOTER ─── -->
 <app-footer [settings]="settings()" />

@@ -26,7 +26,6 @@ export const DEFAULT_NAV_ITEMS: NavItem[] = [
 export class NavbarComponent {
   @Input() siteName = 'Org Name';
   @Input() logoUrl: string | undefined;
-  @Input() navbarBgColor: string | undefined;
   @Input() navbarTextColor: string | undefined;
   @Input() primaryColor: string | undefined;
   @Input() navItems: NavItem[] = DEFAULT_NAV_ITEMS;
@@ -35,11 +34,27 @@ export class NavbarComponent {
 
   constructor(public cartService: CartService) {}
 
-  toggleMobile(): void {
-    this.mobileOpen.update(v => !v);
+  toggleMobile(): void { this.mobileOpen.update(v => !v); }
+  openCart(): void     { this.cartService.openSidebar(); }
+
+  /** First letter of siteName for the icon square */
+  get brandInitial(): string {
+    return (this.siteName || 'D')[0].toUpperCase();
   }
 
-  openCart(): void {
-    this.cartService.openSidebar();
+  /**
+   * Split "DymoEnergy" → ["Dymo", "Energy"]
+   * Splits at the second uppercase letter; falls back to half-length split.
+   */
+  get brandPart1(): string {
+    const s = this.siteName || 'DymoEnergy';
+    const idx = s.search(/(?<=.)[A-Z]/);
+    return idx > 0 ? s.slice(0, idx) : s.slice(0, Math.ceil(s.length / 2));
+  }
+
+  get brandPart2(): string {
+    const s = this.siteName || 'DymoEnergy';
+    const idx = s.search(/(?<=.)[A-Z]/);
+    return idx > 0 ? s.slice(idx) : s.slice(Math.ceil(s.length / 2));
   }
 }
