@@ -102,6 +102,133 @@ $card-h   : 68vh;
   50%       { transform: translateX(-50%) translateY(9px); }
 }
 
+// ─── About Section ────────────────────────────────────────────────
+.about-section {
+  position   : relative;
+  z-index    : 500;
+  background : #fff;
+  padding    : 96px 40px 88px;
+}
+
+.about-inner {
+  max-width      : 960px;
+  margin         : 0 auto;
+  text-align     : center;
+  display        : flex;
+  flex-direction : column;
+  align-items    : center;
+}
+
+.about-title {
+  font-family    : 'HellixExtraBold', sans-serif;
+  font-size      : 42px;
+  font-weight    : 800;
+  line-height    : 1.2;
+  letter-spacing : -0.02em;
+  margin         : 0 0 40px;
+}
+
+.about-divider {
+  width          : 1px;
+  height         : 120px;
+  margin         : 0 auto 48px;
+  opacity        : 0.7;
+}
+
+.about-desc {
+  font-family : 'HellixRegular', sans-serif;
+  font-size   : 18px;
+  color       : #3d3d3d;
+  line-height : 1.8;
+  margin      : 0 0 72px;
+  max-width   : 680px;
+}
+
+// ── Stats row ──────────────────────────────────────────────────────
+.about-stats {
+  display         : flex;
+  justify-content : center;
+  gap             : 0;
+  width           : 100%;
+  max-width       : 960px;
+  margin-bottom   : 32px;
+}
+
+.stat-item {
+  flex           : 1;
+  display        : flex;
+  flex-direction : column;
+  align-items    : center;
+  text-align     : center;
+  padding        : 24px 72px;
+  border-right   : 1px solid #e8e8e8;
+
+  &:last-child { border-right: none; }
+}
+
+.stat-icon {
+  margin-bottom : 16px;
+  line-height   : 1;
+}
+
+.stat-value {
+  font-family    : 'HellixExtraBold', sans-serif;
+  font-size      : 52px;
+  font-weight    : 800;
+  color          : #2d2d2d;
+  line-height    : 1;
+  margin-bottom  : 12px;
+  letter-spacing : -0.02em;
+}
+
+.stat-unit {
+  font-size   : 22px;
+  font-weight : 700;
+  color       : #2d2d2d;
+}
+
+.stat-sup {
+  font-size      : 22px;
+  vertical-align : super;
+  font-weight    : 700;
+}
+
+.stat-label {
+  font-family : 'HellixRegular', sans-serif;
+  font-size   : 13px;
+  color       : #6b6b6b;
+  line-height : 1.5;
+}
+
+// ── Footnote + CTA ────────────────────────────────────────────────
+.about-footnote {
+  font-family : 'HellixRegular', sans-serif;
+  font-size   : 11px;
+  color       : #aaa;
+  text-align  : center;
+  line-height : 1.7;
+  margin      : 0 0 40px;
+}
+
+.about-cta {
+  display         : inline-block;
+  padding         : 14px 48px;
+  border          : 1.5px solid;
+  border-radius   : 40px;
+  font-family     : 'HellixSemiBold', sans-serif;
+  font-size       : 15px;
+  font-weight     : 600;
+  text-decoration : none;
+  letter-spacing  : 0.01em;
+  transition      : background 0.18s, color 0.18s;
+  background      : transparent;
+
+  &:hover {
+    background : currentColor;
+    color      : #fff !important;
+  }
+}
+
 // ─── Sections that scroll OVER the sticky stack ───────────────────
 // z-index must be higher than the tallest sticky card z-index
 .catalogues-section {
@@ -474,6 +601,13 @@ $card-h   : 68vh;
   .sc-img-title { font-size: 30px; }
   .sc-img-sub   { font-size: 15px; }
 
+  .about-section  { padding: 64px 24px 56px; }
+  .about-title    { font-size: 28px; }
+  .about-desc     { font-size: 16px; }
+  .about-divider  { height: 80px; }
+  .about-stats    { flex-wrap: wrap; gap: 32px 0; }
+  .stat-item      { flex: 0 0 50%; border-right: none; border-bottom: 1px solid #e8e8e8; padding-bottom: 28px; &:nth-child(4), &:last-child { border-bottom: none; } }
+  .stat-value     { font-size: 38px; }
   .catalogues-section { padding: 40px 20px; }
   .section-header     { flex-direction: column; }
   .search-box         { min-width: unset; width: 100%; }

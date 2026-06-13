@@ -61,6 +61,101 @@
 
 </div><!-- /sticky-stack -->
 
+<!-- ─── ABOUT SECTION ─── -->
+@if (userSiteSetting()?.aboutTitle || userSiteSetting()?.aboutDescription) {
+  <section class="about-section">
+    <div class="about-inner">
+
+      @if (userSiteSetting()?.aboutTitle) {
+        <h2 class="about-title" [style.color]="accentColor()">
+          {{ userSiteSetting()!.aboutTitle }}
+        </h2>
+      }
+
+      <div class="about-divider" [style.background-color]="accentColor()"></div>
+
+      @if (userSiteSetting()?.aboutDescription) {
+        <p class="about-desc">{{ userSiteSetting()!.aboutDescription }}</p>
+      }
+
+      <!-- Stats row -->
+      <div class="about-stats">
+
+        <div class="stat-item">
+          <div class="stat-icon" [style.color]="accentColor()">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/>
+              <rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/>
+            </svg>
+          </div>
+          <div class="stat-value">870 <span class="stat-unit">GW</span></div>
+          <div class="stat-label">Power Electronic<br>Converters Installation</div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-icon" [style.color]="accentColor()">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v6l4 2"/>
+              <path d="M9 3.5L12 6l3-2.5"/>
+            </svg>
+          </div>
+          <div class="stat-value">NO.1</div>
+          <div class="stat-label">PV Inverter &amp; ESS &amp; PCS<br>Bankability<sup>*1</sup></div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-icon" [style.color]="accentColor()">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="10" width="4" height="11"/><rect x="10" y="6" width="4" height="15"/>
+              <rect x="17" y="3" width="4" height="18"/>
+            </svg>
+          </div>
+          <div class="stat-value">6</div>
+          <div class="stat-label">R&amp;D<br>Centers</div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-icon" [style.color]="accentColor()">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+            </svg>
+          </div>
+          <div class="stat-value">20<sup class="stat-sup">+</sup></div>
+          <div class="stat-label">International<br>Subsidiaries</div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-icon" [style.color]="accentColor()">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2C6 8 4 13 6 17c2 4 5 5 6 5s4-1 6-5c2-4 0-9-6-15z"/>
+              <path d="M12 2v20"/>
+              <path d="M6 17c2-1 4-1.5 6-1.5s4 .5 6 1.5"/>
+            </svg>
+          </div>
+          <div class="stat-value">AAA</div>
+          <div class="stat-label">MSCI ESG<br>Rating in 2025<sup>*2</sup></div>
+        </div>
+
+      </div><!-- /about-stats -->
+
+      <!-- Source footnotes -->
+      <p class="about-footnote">
+        *1 Source: BloombergNEF<br>
+        *2 Source: Morgan Stanley Capital International
+      </p>
+
+      <!-- CTA -->
+      <a routerLink="/about" class="about-cta" [style.border-color]="accentColor()" [style.color]="accentColor()">
+        Discover Who We Are
+      </a>
+
+    </div>
+  </section>
+}
+
 <!-- ─── CATALOGUES — scrolls over the sticky stack ─── -->
 <section class="catalogues-section">
   <div class="section-container">
