@@ -15,65 +15,12 @@
   ════════════════════════════════════════════════════════════════ -->
 <div class="sticky-stack">
 
-  <!-- ─── Card 1: Portal Hero (always visible, z-index 1) ─── -->
+  <!-- ─── Card 1: Video Hero (always visible, z-index 1) ─── -->
   <section class="sticky-card" style="z-index:1;">
-    <!-- Background: solid primary colour -->
-    <div class="sc-bg" [style.background-color]="primaryColor()"></div>
-
-    <!-- Content -->
-    <div class="sc-content">
-      <p class="sc-eyebrow">Purchasing Portal</p>
-
-      <h1 class="sc-title">
-        Welcome to<br>
-        <span class="sc-accent" [style.color]="accentColor()">
-          {{ settings()?.siteName || 'Dymo Energy' }}
-        </span>
-      </h1>
-
-      @if (settings()?.tagline) {
-        <p class="sc-sub">{{ settings()!.tagline }}</p>
-      } @else {
-        <p class="sc-sub">
-          Your one-stop destination for sourcing, ordering, and managing
-          all your energy products and solutions efficiently.
-        </p>
-      }
-
-      <div class="sc-actions">
-        <a routerLink="/catalogues" class="sc-cta-primary" [style.background-color]="accentColor()">
-          Browse Catalogues
-        </a>
-        <a routerLink="/about" class="sc-cta-ghost">
-          About this portal
-        </a>
-      </div>
-
-      <!-- Brand footer -->
-      <div class="sc-brand">
-        @if (settings()?.logoUrl) {
-          <img [src]="settings()!.logoUrl!" [alt]="settings()?.siteName" class="sc-brand-logo" />
-        } @else {
-          <span class="sc-brand-name">{{ settings()?.siteName || 'DYMO ENERGY' }}</span>
-        }
-      </div>
-    </div>
-
-    <!-- Right decorative panel -->
-    <div class="sc-deco" [style.background-color]="primaryColor()">
-      <div class="sc-deco-overlay"></div>
-      <div class="sc-deco-inner">
-        @if (settings()?.logoUrl) {
-          <img [src]="settings()!.logoUrl!" [alt]="settings()?.siteName" class="sc-deco-logo" />
-        } @else {
-          <svg width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)"
-               stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-          </svg>
-          <p class="sc-deco-label">Energy Solutions</p>
-        }
-      </div>
-    </div>
+    <video #heroVideo class="sc-video" loop playsinline>
+      <source src="https://official-oversears-file.sungrowpower.com/page-assets/78a8c56d-634f-4ff5-830f-6121131fd0b2.mp4" type="video/mp4" />
+    </video>
+    <div class="sc-video-overlay"></div>
   </section>
 
   <!-- ─── Cards 2+: Images from UserSiteSettingImage ─── -->

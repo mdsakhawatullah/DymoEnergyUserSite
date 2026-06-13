@@ -27,6 +27,8 @@ export interface UserSiteSetting {
   buttonPrimaryTextColor?: string;
   fontFamily?: string;
   fontSizeBase?: string;
+  aboutTitle?: string;
+  aboutDescription?: string;
   isActive: boolean;
   images: UserSiteSettingImage[];
 }

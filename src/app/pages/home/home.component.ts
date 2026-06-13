@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdminSiteSettingService } from '../../core/services/admin-site-setting.service';
 import { UserSiteSettingService } from '../../core/services/user-site-setting.service';
@@ -24,7 +24,9 @@ interface Review {
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
+
+  @ViewChild('heroVideo') heroVideoRef!: ElementRef<HTMLVideoElement>;
 
   // ── Signals ─────────────────────────────────────────────────────────────
   settings          = signal<AdminSiteSetting | null>(null);
@@ -115,6 +117,14 @@ export class HomeComponent implements OnInit {
         this.catalogues.set(result.items);
         this.cataloguesLoading.set(false);
       });
+  }
+
+  ngAfterViewInit(): void {
+    const v = this.heroVideoRef?.nativeElement;
+    if (v) {
+      v.muted = true;
+      v.play().catch(() => {});
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────────────
