@@ -1,20 +1,25 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { CartService, CartItem } from '../../../core/services/cart.service';
 
 @Component({
   selector: 'app-cart-sidebar',
   standalone: true,
-  imports: [RouterLink],
+  imports: [],
   templateUrl: './cart-sidebar.component.html',
   styleUrl: './cart-sidebar.component.scss',
 })
 export class CartSidebarComponent {
 
-  constructor(public cartService: CartService) {}
+  constructor(public cartService: CartService, private router: Router) {}
 
   close(): void {
     this.cartService.closeSidebar();
+  }
+
+  goToCheckout(): void {
+    this.cartService.closeSidebar();
+    this.router.navigate(['/checkout']);
   }
 
   remove(productId: number): void {

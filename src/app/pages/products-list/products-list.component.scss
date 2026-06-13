@@ -24,7 +24,6 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: 'HellixRegular', sans-serif;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
@@ -35,7 +34,6 @@
 }
 
 .page-title {
-  font-family: 'HellixSemiBold', sans-serif;
   font-size: 28px;
   font-weight: 600;
   color: #fff;
@@ -44,7 +42,6 @@
 }
 
 .page-subtitle {
-  font-family: 'HellixRegular', sans-serif;
   font-size: 14px;
   color: rgba(255, 255, 255, 0.78);
   margin: 0;
@@ -82,7 +79,6 @@
 }
 
 .section-title {
-  font-family: 'HellixSemiBold', sans-serif;
   font-size: 26px;
   font-weight: 600;
   margin: 0;
@@ -90,7 +86,6 @@
 }
 
 .section-count {
-  font-family: 'HellixRegular', sans-serif;
   font-size: 18px;
   font-weight: 400;
   color: #8c8c8c;
@@ -98,7 +93,6 @@
 }
 
 .section-desc {
-  font-family: 'HellixRegular', sans-serif;
   font-size: 14px;
   color: #8c8c8c;
   line-height: 1.6;
@@ -114,7 +108,6 @@
 }
 
 .search-label {
-  font-family: 'HellixSemiBold', sans-serif;
   font-size: 13px;
   font-weight: 600;
   color: #595959;
@@ -135,7 +128,6 @@
 }
 
 .search-input {
-  font-family: 'HellixRegular', sans-serif;
   flex: 1;
   border: none;
   outline: none;
@@ -271,7 +263,6 @@
 }
 
 .prod-empty-title {
-  font-family: 'HellixSemiBold', sans-serif;
   font-size: 17px;
   font-weight: 600;
   color: #333;
@@ -279,7 +270,6 @@
 }
 
 .prod-empty-sub {
-  font-family: 'HellixRegular', sans-serif;
   font-size: 13px;
   color: #aaa;
   margin: 0;
@@ -373,7 +363,6 @@
 }
 
 .prod-card-title {
-  font-family: 'HellixSemiBold', sans-serif;
   font-size: 14px;
   font-weight: 700;
   color: #1a1a1a;
@@ -386,7 +375,6 @@
 }
 
 .prod-card-sub {
-  font-family: 'HellixRegular', sans-serif;
   font-size: 12px;
   color: #999;
   margin: 0;
@@ -404,14 +392,12 @@
 }
 
 .prod-price {
-  font-family: 'HellixSemiBold', sans-serif;
   font-size: 17px;
   font-weight: 600;
   line-height: 1;
 }
 
 .prod-price-original {
-  font-family: 'HellixRegular', sans-serif;
   font-size: 13px;
   color: #bbb;
   text-decoration: line-through;
@@ -425,13 +411,11 @@
 }
 
 .prod-stock-available {
-  font-family: 'HellixSemiBold', sans-serif;
   font-size: 13px;
   font-weight: 600;
 }
 
 .prod-stock-none {
-  font-family: 'HellixRegular', sans-serif;
   font-size: 13px;
   color: #333;
 }
@@ -446,7 +430,6 @@
 
 // "View Details" button (outlined)
 .prod-view-btn {
-  font-family: 'HellixRegular', sans-serif;
   display: block;
   width: 100%;
   padding: 10px 0;
@@ -474,7 +457,6 @@
 }
 
 .prod-qty-label {
-  font-family: 'HellixRegular', sans-serif;
   font-size: 12px;
   color: #666;
 }
@@ -486,7 +468,6 @@
 }
 
 .prod-qty-input {
-  font-family: 'HellixRegular', sans-serif;
   width: 64px;
   flex-shrink: 0;
   border: 1px solid #d9d9d9;
@@ -507,7 +488,6 @@
 }
 
 .prod-add-btn {
-  font-family: 'HellixSemiBold', sans-serif;
   flex: 1;
   padding: 9px 12px;
   font-size: 14px;

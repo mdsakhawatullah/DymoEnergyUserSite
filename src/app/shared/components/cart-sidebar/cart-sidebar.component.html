@@ -112,11 +112,10 @@
       </div>
       <p class="cart-footer-note">Shipping and taxes calculated at checkout.</p>
 
-      <a
-        routerLink="/checkout"
+      <button
         class="cart-checkout-btn"
-        (click)="close()"
-      >Proceed to Checkout</a>
+        (click)="goToCheckout()"
+      >Proceed to Checkout</button>
 
       <button class="cart-continue-btn" (click)="close()">Continue Shopping</button>
     </div>

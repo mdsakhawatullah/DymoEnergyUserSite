@@ -65,6 +65,20 @@ export class HomeComponent implements OnInit, AfterViewInit {
     );
   });
 
+  // ── Active catalogue (selected via filter buttons) ───────────────────────
+  selectedCatalogueId = signal<number | null>(null);
+
+  activeCatalogue = computed(() => {
+    const cats = this.filteredCatalogues();
+    if (!cats.length) return null;
+    const id = this.selectedCatalogueId();
+    return cats.find(c => c.id === id) ?? cats[0];
+  });
+
+  selectCatalogue(id: number): void {
+    this.selectedCatalogueId.set(id);
+  }
+
   // ── Static review data ───────────────────────────────────────────────────
   reviews: Review[] = [
     {
@@ -108,7 +122,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     this.userSettingService.getActive().subscribe(us => {
       this.userSiteSetting.set(us);
-      console.log('User site settings loaded:', us);
     });
 
     this.catalogueService
@@ -156,6 +169,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     const root = document.documentElement;
     if (s.primaryColor)    root.style.setProperty('--primary', s.primaryColor);
     if (s.backgroundColor) root.style.setProperty('--bg', s.backgroundColor);
-    if (s.fontFamily)      root.style.setProperty('--font', s.fontFamily);
+    // Font is handled globally by App via UserSiteSettings — do not override --font here
   }
 }

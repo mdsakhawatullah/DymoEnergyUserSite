@@ -1,6 +1,6 @@
-// ─── Hellix Font Faces ────────────────────────────────────────────────
+// ─── Hellix Font Faces (all weights under one family) ────────────────────
 @font-face {
-  font-family: 'HellixRegular';
+  font-family: 'Hellix';
   src: url('./assets/font/hellix/Hellix-Regular.woff2') format('woff2'),
        url('./assets/font/hellix/Hellix-Regular.woff')  format('woff'),
        url('./assets/font/hellix/Hellix-Regular.ttf')   format('truetype');
@@ -10,7 +10,7 @@
 }
 
 @font-face {
-  font-family: 'HellixMedium';
+  font-family: 'Hellix';
   src: url('./assets/font/hellix/Hellix-Medium.woff2') format('woff2'),
        url('./assets/font/hellix/Hellix-Medium.woff')  format('woff'),
        url('./assets/font/hellix/Hellix-Medium.ttf')   format('truetype');
@@ -20,7 +20,7 @@
 }
 
 @font-face {
-  font-family: 'HellixSemiBold';
+  font-family: 'Hellix';
   src: url('./assets/font/hellix/Hellix-SemiBold.woff2') format('woff2'),
        url('./assets/font/hellix/Hellix-SemiBold.woff')  format('woff'),
        url('./assets/font/hellix/Hellix-SemiBold.ttf')   format('truetype');
@@ -30,7 +30,7 @@
 }
 
 @font-face {
-  font-family: 'HellixBold';
+  font-family: 'Hellix';
   src: url('./assets/font/hellix/Hellix-Bold.woff2') format('woff2'),
        url('./assets/font/hellix/Hellix-Bold.woff')  format('woff'),
        url('./assets/font/hellix/Hellix-Bold.ttf')   format('truetype');
@@ -40,7 +40,7 @@
 }
 
 @font-face {
-  font-family: 'HellixExtraBold';
+  font-family: 'Hellix';
   src: url('./assets/font/hellix/Hellix-ExtraBold.woff2') format('woff2'),
        url('./assets/font/hellix/Hellix-ExtraBold.woff')  format('woff'),
        url('./assets/font/hellix/Hellix-ExtraBold.ttf')   format('truetype');
@@ -57,7 +57,7 @@
 :root {
   --primary: #1677ff;
   --bg:      #ffffff;
-  --font:    'HellixRegular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font:    'Hellix', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 html {

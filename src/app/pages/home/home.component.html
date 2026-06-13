@@ -158,49 +158,45 @@
 
 <!-- ─── CATALOGUES — scrolls over the sticky stack ─── -->
 <section class="catalogues-section">
-  <div class="section-container">
 
-    <div class="section-header">
-      <div class="section-header-left">
-        <h2 class="section-title" [style.color]="primaryColor()">Catalogues</h2>
-        <p class="section-desc">
-          Browse our full range of products and solutions. Find what you need
-          across all available catalogues.
-        </p>
-      </div>
-      <div class="search-box">
-        <span class="search-label">Search</span>
-        <div class="search-input-wrap">
-          <input
-            type="text"
-            placeholder="Search catalogues..."
-            class="search-input"
-            (input)="onSearch($event)"
-          />
-          <button class="search-btn" [style.background-color]="primaryColor()" aria-label="Search">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
-              <circle cx="11" cy="11" r="8"/>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-          </button>
+  <!-- Gradient header: title + description + filter pills -->
+  <div class="cat-header">
+    <div class="cat-header-arc"></div>
+    <div class="cat-header-inner">
+      <h2 class="cat-header-title">
+        {{ userSiteSetting()?.cataloguesTitle || 'All Solutions' }}
+      </h2>
+      @if (userSiteSetting()?.cataloguesDescription) {
+        <p class="cat-header-desc">{{ userSiteSetting()!.cataloguesDescription }}</p>
+      }
+
+      <!-- Filter pills: one per catalogue -->
+      @if (!cataloguesLoading()) {
+        <div class="cat-filter-row">
+          @for (cat of filteredCatalogues(); track cat.id) {
+            <button
+              class="cat-filter-btn"
+              [class.active]="activeCatalogue()?.id === cat.id"
+              [style.--accent]="accentColor()"
+              (click)="selectCatalogue(cat.id)">
+              {{ cat.name }}
+            </button>
+          }
         </div>
-      </div>
+      } @else {
+        <div class="cat-filter-row">
+          @for (i of [1,2,3]; track i) {
+            <div class="cat-filter-skeleton shimmer"></div>
+          }
+        </div>
+      }
     </div>
+  </div>
 
+  <!-- Feature card for the active catalogue -->
+  <div class="cat-card-wrap">
     @if (cataloguesLoading()) {
-      <div class="cat-grid">
-        @for (i of [1,2,3,4]; track i) {
-          <div class="cat-skeleton">
-            <div class="cat-skeleton-img shimmer"></div>
-            <div class="cat-skeleton-body">
-              <div class="cat-skeleton-line w70 shimmer"></div>
-              <div class="cat-skeleton-line w90 shimmer"></div>
-              <div class="cat-skeleton-line w55 shimmer"></div>
-              <div class="cat-skeleton-btn shimmer"></div>
-            </div>
-          </div>
-        }
-      </div>
+      <div class="cat-feature-skeleton shimmer"></div>
 
     } @else if (filteredCatalogues().length === 0) {
       <div class="cat-empty">
@@ -212,98 +208,97 @@
         <p class="cat-empty-sub">Check back later or contact your administrator.</p>
       </div>
 
-    } @else {
-      <div class="cat-grid">
-        @for (cat of filteredCatalogues(); track cat.id) {
-          <article class="cat-card">
+    } @else if (activeCatalogue(); as cat) {
+      <div class="cat-feature-card">
 
-            <div class="cat-card-img-wrap">
-              @if (getCardThumb(cat)) {
-                <img [src]="getCardThumb(cat)!" [alt]="cat.name"
-                     class="cat-card-img" loading="lazy" />
-              } @else {
-                <div class="cat-card-img-placeholder">
-                  <svg width="52" height="52" viewBox="0 0 24 24" fill="none"
-                       stroke="#d4d4d4" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2"/>
-                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                    <polyline points="21 15 16 10 5 21"/>
-                  </svg>
-                </div>
-              }
+        <!-- Left: text content -->
+        <div class="cat-feature-left">
+          <p class="cat-feature-eyebrow" [style.color]="accentColor()">{{ cat.name }}</p>
+          <h3 class="cat-feature-title">{{ cat.heroTitle || cat.name }}</h3>
+          @if (cat.description) {
+            <p class="cat-feature-desc">{{ cat.description }}</p>
+          }
+          <a [routerLink]="['/catalogues', cat.id, 'products-list']"
+             class="cat-feature-cta"
+             [style.border-color]="accentColor()"
+             [style.color]="accentColor()">
+            Learn More
+          </a>
+        </div>
+
+        <!-- Right: image -->
+        <div class="cat-feature-right">
+          @if (cat.primaryBackgroundImageUrl || cat.thumbnailImageUrl) {
+            <img [src]="cat.primaryBackgroundImageUrl || cat.thumbnailImageUrl"
+                 [alt]="cat.name" class="cat-feature-img" />
+          } @else {
+            <div class="cat-feature-img-placeholder">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none"
+                   stroke="#d4d4d4" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
             </div>
+          }
+        </div>
 
-            <div class="cat-card-divider"></div>
-
-            <div class="cat-card-body">
-              <h3 class="cat-card-title">{{ cat.name }}</h3>
-              @if (cat.description) {
-                <p class="cat-card-desc">{{ cat.description }}</p>
-              }
-              @if (cat.heroCtaText) {
-                <a [href]="cat.heroCtaUrl || '#'" class="cat-card-info-link"
-                   [style.color]="getCardAccent(cat)"
-                   (click)="cat.heroCtaUrl ? null : $event.preventDefault()"
-                >{{ cat.heroCtaText }}</a>
-              }
-            </div>
-
-            <div class="cat-card-footer">
-              <a [routerLink]="['/catalogues', cat.id, 'products-list']"
-                 class="cat-card-btn">View Details</a>
-            </div>
-
-          </article>
-        }
       </div>
     }
-
   </div>
+
 </section>
 
-<!-- ─── QUICK ACTIONS ─── -->
-<section class="features-section" [style.background-color]="primaryColor()">
-  <div class="features-inner">
-
-    <a routerLink="/catalogues" class="feature-item">
-      <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="26" height="26"
-        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-        stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="7" height="7"/>
-        <rect x="14" y="3" width="7" height="7"/>
-        <rect x="14" y="14" width="7" height="7"/>
-        <rect x="3" y="14" width="7" height="7"/>
-      </svg>
-      <h4 class="feature-title">Browse Catalogues</h4>
-      <span class="feature-link">Click here</span>
-    </a>
-
-    <a routerLink="/orders" class="feature-item">
-      <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="26" height="26"
-        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-        stroke-linecap="round" stroke-linejoin="round">
-        <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
-        <line x1="6" y1="9" x2="18" y2="9"/>
-        <line x1="6" y1="13" x2="18" y2="13"/>
-        <line x1="6" y1="17" x2="12" y2="17"/>
-      </svg>
-      <h4 class="feature-title">View My Orders</h4>
-      <span class="feature-link">Click here</span>
-    </a>
-
-    <a routerLink="/help" class="feature-item">
-      <svg class="feature-icon" xmlns="http://www.w3.org/2000/svg" width="26" height="26"
-        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-        stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/>
-        <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/>
-        <line x1="12" y1="17" x2="12.01" y2="17"/>
-      </svg>
-      <h4 class="feature-title">Get Help</h4>
-      <span class="feature-link">Click here</span>
-    </a>
-
+<!-- ─── SOCIAL MEDIA ─── -->
+@if (
+  userSiteSetting()?.socialLinkedinUrl ||
+  userSiteSetting()?.socialInstagramUrl ||
+  userSiteSetting()?.socialFacebookUrl ||
+  userSiteSetting()?.socialTwitterUrl ||
+  userSiteSetting()?.socialYoutubeUrl
+) {
+<section class="social-section">
+  <div class="social-inner">
+    <h2 class="social-title">Follow Us</h2>
+    <div class="social-icons">
+      @if (userSiteSetting()?.socialLinkedinUrl) {
+        <a class="social-icon-link" [href]="userSiteSetting()!.socialLinkedinUrl" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+        </a>
+      }
+      @if (userSiteSetting()?.socialInstagramUrl) {
+        <a class="social-icon-link" [href]="userSiteSetting()!.socialInstagramUrl" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+          </svg>
+        </a>
+      }
+      @if (userSiteSetting()?.socialFacebookUrl) {
+        <a class="social-icon-link" [href]="userSiteSetting()!.socialFacebookUrl" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+        </a>
+      }
+      @if (userSiteSetting()?.socialTwitterUrl) {
+        <a class="social-icon-link" [href]="userSiteSetting()!.socialTwitterUrl" target="_blank" rel="noopener" aria-label="X / Twitter">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.259 5.629 5.905-5.629zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+      }
+      @if (userSiteSetting()?.socialYoutubeUrl) {
+        <a class="social-icon-link" [href]="userSiteSetting()!.socialYoutubeUrl" target="_blank" rel="noopener" aria-label="YouTube">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/>
+          </svg>
+        </a>
+      }
+    </div>
   </div>
 </section>
+}
 
 <app-footer [settings]="settings()" />

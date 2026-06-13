@@ -10,7 +10,6 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: 'HellixRegular', sans-serif;
   font-size: 13px;
   color: rgba(255,255,255,0.8);
   text-decoration: none;
@@ -20,7 +19,6 @@
 }
 
 .page-title {
-  font-family: 'HellixSemiBold', sans-serif;
   font-size: 26px;
   font-weight: 600;
   color: #fff;
@@ -28,7 +26,6 @@
 }
 
 .page-subtitle {
-  font-family: 'HellixRegular', sans-serif;
   font-size: 14px;
   color: rgba(255,255,255,0.75);
   margin: 0;
@@ -58,7 +55,6 @@
 }
 
 .empty-cart-title {
-  font-family: 'HellixSemiBold', sans-serif;
   font-size: 17px;
   color: #555;
   margin: 0;
@@ -67,7 +63,6 @@
 .empty-cart-btn {
   display: inline-block;
   padding: 11px 28px;
-  font-family: 'HellixSemiBold', sans-serif;
   font-size: 14px;
   color: #fff;
   border-radius: 8px;
@@ -96,7 +91,6 @@
 }
 
 .section-card-title {
-  font-family: 'HellixSemiBold', sans-serif;
   font-size: 16px;
   font-weight: 600;
   color: #1a1a1a;
@@ -148,7 +142,6 @@
 }
 
 .item-name {
-  font-family: 'HellixSemiBold', sans-serif;
   font-size: 14px;
   font-weight: 600;
   color: #1a1a1a;
@@ -157,7 +150,6 @@
 }
 
 .item-sku {
-  font-family: 'HellixRegular', sans-serif;
   font-size: 13px;
   margin: 0;
 }
@@ -172,7 +164,6 @@
 }
 
 .item-price {
-  font-family: 'HellixSemiBold', sans-serif;
   font-size: 16px;
   font-weight: 600;
   color: #1a1a1a;
@@ -183,7 +174,6 @@
 }
 
 .item-price-exgst {
-  font-family: 'HellixRegular', sans-serif;
   font-size: 12px;
   font-weight: 400;
   color: #888;
@@ -196,7 +186,6 @@
 }
 
 .item-qty-label {
-  font-family: 'HellixRegular', sans-serif;
   font-size: 13px;
   color: #666;
 }
@@ -204,7 +193,6 @@
 .item-qty-controls { display: flex; }
 
 .item-qty-input {
-  font-family: 'HellixRegular', sans-serif;
   width: 60px;
   border: 1px solid #d9d9d9;
   border-radius: 6px;
@@ -221,7 +209,6 @@
 }
 
 .item-remove-btn {
-  font-family: 'HellixRegular', sans-serif;
   background: none;
   border: none;
   color: #1677ff;
@@ -251,7 +238,6 @@
 }
 
 .form-label {
-  font-family: 'HellixSemiBold', sans-serif;
   font-size: 13px;
   font-weight: 600;
   color: #555;
@@ -261,7 +247,6 @@
 
 .form-input,
 .form-textarea {
-  font-family: 'HellixRegular', sans-serif;
   border: 1px solid #d9d9d9;
   border-radius: 6px;
   padding: 9px 12px;
@@ -297,7 +282,6 @@
 }
 
 .checkbox-label {
-  font-family: 'HellixRegular', sans-serif;
   font-size: 14px;
   color: #555;
 }
@@ -320,14 +304,12 @@
 }
 
 .summary-line {
-  font-family: 'HellixRegular', sans-serif;
   display: flex;
   justify-content: space-between;
   font-size: 14px;
   color: #555;
 
   &.summary-line--total {
-    font-family: 'HellixSemiBold', sans-serif;
     font-size: 16px;
     font-weight: 600;
     color: #1a1a1a;
@@ -338,7 +320,6 @@
 
 .summary-free {
   color: #3c9e3c;
-  font-family: 'HellixSemiBold', sans-serif;
   font-size: 13px;
 }
 
@@ -351,7 +332,6 @@
   background: #fff2f0;
   border: 1px solid #ffd8d4;
   border-radius: 6px;
-  font-family: 'HellixRegular', sans-serif;
   font-size: 13px;
   color: #cf1322;
   margin-bottom: 14px;
@@ -365,7 +345,6 @@
   gap: 8px;
   width: 100%;
   padding: 14px 0;
-  font-family: 'HellixSemiBold', sans-serif;
   font-size: 15px;
   font-weight: 600;
   color: #fff;
@@ -391,7 +370,6 @@
 }
 
 .summary-note {
-  font-family: 'HellixRegular', sans-serif;
   font-size: 11px;
   color: #bbb;
   text-align: center;

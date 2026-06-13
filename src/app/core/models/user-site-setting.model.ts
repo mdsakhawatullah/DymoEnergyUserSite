@@ -29,6 +29,13 @@ export interface UserSiteSetting {
   fontSizeBase?: string;
   aboutTitle?: string;
   aboutDescription?: string;
+  cataloguesTitle?: string;
+  cataloguesDescription?: string;
+  socialLinkedinUrl?: string;
+  socialInstagramUrl?: string;
+  socialFacebookUrl?: string;
+  socialTwitterUrl?: string;
+  socialYoutubeUrl?: string;
   isActive: boolean;
   images: UserSiteSettingImage[];
 }
