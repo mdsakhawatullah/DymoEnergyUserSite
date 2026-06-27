@@ -17,8 +17,7 @@ const CART_KEY = 'dymo_cart';
 export class CartService {
 
   // ── State ──────────────────────────────────────────────────────────────
-  items       = signal<CartItem[]>(this.loadFromStorage());
-  sidebarOpen = signal(false);
+  items = signal<CartItem[]>(this.loadFromStorage());
 
   // ── Derived ────────────────────────────────────────────────────────────
   totalCount = computed(() => this.items().reduce((s, i) => s + i.quantity, 0));
@@ -54,8 +53,6 @@ export class CartService {
       this.saveToStorage(updated);
       return updated;
     });
-
-    this.sidebarOpen.set(true);
   }
 
   removeItem(productId: number): void {
@@ -83,9 +80,6 @@ export class CartService {
     this.items.set([]);
     localStorage.removeItem(CART_KEY);
   }
-
-  openSidebar():  void { this.sidebarOpen.set(true);  }
-  closeSidebar(): void { this.sidebarOpen.set(false); }
 
   // ── Storage ────────────────────────────────────────────────────────────
   private loadFromStorage(): CartItem[] {

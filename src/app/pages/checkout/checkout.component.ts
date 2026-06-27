@@ -1,6 +1,7 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { NgTemplateOutlet } from '@angular/common';
 import { AdminSiteSettingService } from '../../core/services/admin-site-setting.service';
 import { CartService } from '../../core/services/cart.service';
 import { OrderService } from '../../core/services/order.service';
@@ -15,38 +16,47 @@ import { FooterComponent } from '../../shared/components/footer/footer.component
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [RouterLink, FormsModule, NavbarComponent, FooterComponent],
+  imports: [RouterLink, FormsModule, NgTemplateOutlet, NavbarComponent, FooterComponent],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss',
 })
 export class CheckoutComponent implements OnInit {
 
-  settings = signal<AdminSiteSetting | null>(null);
+  settings   = signal<AdminSiteSetting | null>(null);
   submitting = signal(false);
   errorMsg   = signal('');
+  step       = signal(1); // 1 = Shipping, 2 = Review, 3 = Payment
 
-  navItems = DEFAULT_NAV_ITEMS;
+  navItems      = DEFAULT_NAV_ITEMS;
+  shippingCost  = 1500;
+  paymentMethod = 'cod';
 
-  primaryColor = computed(() => this.settings()?.primaryColor  || '#1a3a6b');
+  primaryColor = computed(() => this.settings()?.primaryColor  || '#2D3B60');
   accentColor  = computed(() =>
     this.settings()?.buttonColor    ||
     this.settings()?.secondaryColor ||
-    '#f5a623'
+    '#A4DF38'
   );
 
-  // ── Form model ────────────────────────────────────────────────────────
   form = {
-    customerName:      '',
-    customerEmail:     '',
-    customerPhone:     '',
-    customerReference: '',
-    deliveryAddress:   '',
-    sameAsBilling:     true,
-    billingAddress:    '',
-    deliveryContact:   '',
-    deliveryPhone:     '',
-    notes:             '',
+    firstName:     '',
+    lastName:      '',
+    customerEmail: '',
+    customerPhone: '',
+    streetAddress: '',
+    city:          '',
+    division:      'Dhaka',
+    notes:         '',
   };
+
+  get deliveryAddress(): string {
+    return [this.form.streetAddress, this.form.city, this.form.division, 'Bangladesh']
+      .filter(Boolean).join(', ');
+  }
+
+  get fullName(): string {
+    return `${this.form.firstName} ${this.form.lastName}`.trim();
+  }
 
   constructor(
     private siteService:  AdminSiteSettingService,
@@ -62,38 +72,39 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
-  changeItemQty(productId: number, value: string): void {
-    const n = parseInt(value, 10);
-    this.cartService.updateQuantity(productId, isNaN(n) ? 1 : n);
+  // ── Step navigation ──────────────────────────────────────────────────────
+  goToReview(): void {
+    if (!this.form.firstName.trim()) return;
+    this.errorMsg.set('');
+    this.step.set(2);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  removeItem(productId: number): void {
-    this.cartService.removeItem(productId);
+  goToPayment(): void {
+    this.step.set(3);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  get canSubmit(): boolean {
-    return this.cartService.items().length > 0 && !!this.form.customerName.trim() && !this.submitting();
+  back(): void {
+    this.step.update(s => s - 1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  formatPrice(value: number): string {
-    return value.toLocaleString('en-AU', { style: 'currency', currency: 'AUD' });
-  }
-
+  // ── Final submit ─────────────────────────────────────────────────────────
   placeOrder(): void {
-    if (!this.canSubmit) return;
-
     this.submitting.set(true);
     this.errorMsg.set('');
 
-    const items = this.cartService.items();
+    const items    = this.cartService.items();
     const subtotal = this.cartService.subtotal();
+    const grand    = subtotal + this.shippingCost;
 
     const orderItems: CreateOrderItemDto[] = items.map((item, idx) => ({
-      productId:      item.productId,
-      productName:    item.productName,
-      sku:            item.sku,
-      quantity:       item.quantity,
-      unitPrice:      item.unitPrice,
+      productId:       item.productId,
+      productName:     item.productName,
+      sku:             item.sku,
+      quantity:        item.quantity,
+      unitPrice:       item.unitPrice,
       discountPercent: 0,
       discountAmount:  0,
       taxRate:         0,
@@ -103,39 +114,34 @@ export class CheckoutComponent implements OnInit {
     }));
 
     const dto: CreateOrderDto = {
-      orderDate:          new Date().toISOString(),
-      customerName:       this.form.customerName      || undefined,
-      customerEmail:      this.form.customerEmail     || undefined,
-      customerPhone:      this.form.customerPhone     || undefined,
-      customerReference:  this.form.customerReference || undefined,
-      deliveryAddress:    this.form.deliveryAddress   || undefined,
-      billingAddress:     this.form.sameAsBilling
-                            ? (this.form.deliveryAddress  || undefined)
-                            : (this.form.billingAddress   || undefined),
-      deliveryContact:    this.form.deliveryContact   || undefined,
-      deliveryPhone:      this.form.deliveryPhone     || undefined,
-      notes:              this.form.notes             || undefined,
+      orderDate:        new Date().toISOString(),
+      customerName:     this.fullName      || undefined,
+      customerEmail:    this.form.customerEmail  || undefined,
+      customerPhone:    this.form.customerPhone  || undefined,
+      deliveryAddress:  this.deliveryAddress     || undefined,
+      billingAddress:   this.deliveryAddress     || undefined,
+      notes:            this.form.notes          || undefined,
       status:       OrderStatus.Pending,
       stage:        OrderStage.New,
       priority:     OrderPriority.Normal,
       shipmentType: OrderShipmentType.Standard,
       createMethod: OrderCreateMethod.Web,
-      currencyCode: 'AUD',
+      currencyCode: 'BDT',
       subtotal,
       discountTotal: 0,
       taxRate:       0,
       taxTotal:      0,
-      shippingCost:  0,
-      grandTotal:    subtotal,
+      shippingCost:  this.shippingCost,
+      grandTotal:    grand,
       amountPaid:    0,
-      balanceDue:    subtotal,
+      balanceDue:    grand,
       items:         orderItems,
     };
 
     this.orderService.create(dto).subscribe({
       next: order => {
         this.cartService.clearCart();
-        this.router.navigate(['/order-confirmation', order.id]);
+        this.router.navigate(['/order-confirmation'], { state: { order } });
       },
       error: err => {
         console.error(err);
@@ -145,10 +151,12 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
+  formatPrice(value: number): string {
+    return '৳' + (value || 0).toLocaleString('en-IN');
+  }
+
   private applyTheme(s: AdminSiteSetting): void {
     const root = document.documentElement;
-    if (s.primaryColor)    root.style.setProperty('--primary', s.primaryColor);
-    if (s.backgroundColor) root.style.setProperty('--bg', s.backgroundColor);
-    if (s.fontFamily)      root.style.setProperty('--font', s.fontFamily);
+    if (s.primaryColor) root.style.setProperty('--primary', s.primaryColor);
   }
 }

@@ -1,16 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { CartSidebarComponent } from './shared/components/cart-sidebar/cart-sidebar.component';
 import { UserSiteSettingService } from './core/services/user-site-setting.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CartSidebarComponent],
-  template: `
-    <router-outlet />
-    <app-cart-sidebar />
-  `,
+  imports: [RouterOutlet],
+  template: `<router-outlet />`,
 })
 export class App implements OnInit {
 

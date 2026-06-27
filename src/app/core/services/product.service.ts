@@ -17,6 +17,12 @@ export interface ProductFilter {
 export class ProductService {
   private http = inject(HttpClient);
 
+  getById(id: number): Observable<Product | null> {
+    return this.http
+      .get<Product>(`${environment.apiUrl}/api/app/product/${id}`)
+      .pipe(catchError(() => of(null)));
+  }
+
   getList(filter: ProductFilter = {}): Observable<PagedResult<Product>> {
     let params = new HttpParams();
     if (filter.catalogueId != null) params = params.set('catalogueId', String(filter.catalogueId));

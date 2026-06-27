@@ -1,5 +1,5 @@
 import { Component, Input, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CartService } from '../../../core/services/cart.service';
 
 export interface NavItem {
@@ -32,10 +32,10 @@ export class NavbarComponent {
 
   mobileOpen = signal(false);
 
-  constructor(public cartService: CartService) {}
+  constructor(public cartService: CartService, private router: Router) {}
 
   toggleMobile(): void { this.mobileOpen.update(v => !v); }
-  openCart(): void     { this.cartService.openSidebar(); }
+  openCart(): void     { this.router.navigate(['/cart']); }
 
   /** First letter of siteName for the icon square */
   get brandInitial(): string {

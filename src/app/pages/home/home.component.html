@@ -6,60 +6,196 @@
   [navItems]="navItems"
 />
 
-<!-- ═══════════════════════════════════════════════════════════════
-     STICKY CARD STACK
-     Every card is position:sticky with the SAME top offset.
-     z-index increases per card so each new card slides OVER the
-     previous one as you scroll. The catalogues section (z-index 500)
-     then scrolls over the entire stack.
-  ════════════════════════════════════════════════════════════════ -->
-<div class="sticky-stack">
+<!-- ─── HERO SECTION ─── -->
+<section class="hero-section">
 
-  <!-- ─── Card 1: Video Hero (always visible, z-index 1) ─── -->
-  <section class="sticky-card" style="z-index:1;">
-    <video #heroVideo class="sc-video" loop playsinline>
-      <source src="https://official-oversears-file.sungrowpower.com/page-assets/78a8c56d-634f-4ff5-830f-6121131fd0b2.mp4" type="video/mp4" />
-    </video>
-    <div class="sc-video-overlay"></div>
-  </section>
+  <!-- Decorative backgrounds -->
+  <div class="hero-dots"></div>
+  <div class="hero-glow-tr"></div>
+  <div class="hero-glow-bl"></div>
 
-  <!-- ─── Cards 2+: Images from UserSiteSettingImage ─── -->
-  @for (img of siteImages(); track img.id; let i = $index) {
-    <section class="sticky-card" [style.z-index]="i + 2">
+  <!-- Main hero row: text left + SVG right -->
+  <div class="hero-main">
 
-      <!-- Full-bleed background image -->
-      <div class="sc-bg sc-bg-img"
-           [style.background-image]="'url(' + img.imageUrl + ')'">
+    <!-- Left: text content -->
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-line"></div>
+        <span>Solar Products &amp; Energy Solutions</span>
       </div>
-
-      <!-- Directional gradient overlay (heavier on left) -->
-      <div class="sc-img-overlay"></div>
-
-      <!-- Text content (left side) -->
-      <div class="sc-content sc-content-img">
-        @if (img.title) {
-          <h2 class="sc-img-title">{{ img.title }}</h2>
-        }
-        @if (img.altText) {
-          <p class="sc-img-sub">{{ img.altText }}</p>
-        }
-      </div>
-
-      <!-- Scroll-down hint on the last image card -->
-      @if (i === siteImages().length - 1) {
-        <div class="sc-scroll-hint">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-               stroke="rgba(255,255,255,0.55)" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="6 9 12 15 18 9"/>
+      <h1 class="hero-h1 hero-h1--white">Rethink.</h1>
+      <h1 class="hero-h1 hero-h1--lime">Repower.</h1>
+      <h1 class="hero-h1 hero-h1--blue">Rebuild.</h1>
+      <p class="hero-sub">
+        Premium solar panels, inverters, and battery storage engineered for Bangladesh.
+        Cut energy costs — power a sustainable future.
+      </p>
+      <div class="hero-ctas">
+        <a routerLink="/catalogues" class="hero-cta hero-cta--primary">Shop Now</a>
+        <a routerLink="/quote" class="hero-cta hero-cta--ghost">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="6" stroke="#78CDE0" stroke-width="1.5"/>
+            <polygon points="6.5,5.5 11,8 6.5,10.5" fill="#78CDE0"/>
           </svg>
+          Free Consultation
+        </a>
+      </div>
+      <div class="hero-rating">
+        <div class="hero-stars">
+          @for (s of [1,2,3,4,5]; track s) {
+            <svg width="14" height="14" viewBox="0 0 14 14">
+              <polygon points="7,1 8.5,5 13,5 9.5,8 10.7,13 7,10 3.3,13 4.5,8 1,5 5.5,5" fill="#A4DF38"/>
+            </svg>
+          }
+        </div>
+        <span class="hero-rating-text">
+          <strong>4.9/5</strong> — Trusted by 2,000+ Bangladeshi homes
+        </span>
+      </div>
+    </div>
+
+    <!-- Right: wind turbine illustration -->
+    <div class="hero-right">
+      <svg width="420" height="380" viewBox="0 0 100 100" fill="none" style="opacity:0.9">
+        <g transform="translate(76,22)">
+          <line x1="0" y1="-13" x2="0" y2="-18" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="0" y1="-13" x2="0" y2="-18" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" transform="rotate(45)"/>
+          <line x1="0" y1="-13" x2="0" y2="-18" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" transform="rotate(90)"/>
+          <line x1="0" y1="-13" x2="0" y2="-18" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" transform="rotate(135)"/>
+          <line x1="0" y1="-13" x2="0" y2="-18" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" transform="rotate(180)"/>
+          <line x1="0" y1="-13" x2="0" y2="-18" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" transform="rotate(225)"/>
+          <line x1="0" y1="-13" x2="0" y2="-18" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" transform="rotate(270)"/>
+          <line x1="0" y1="-13" x2="0" y2="-18" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" transform="rotate(315)"/>
+          <circle cx="0" cy="0" r="11" fill="#A4DF38" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+          <ellipse cx="-3.5" cy="-3" rx="4" ry="3" fill="rgba(255,255,255,0.4)"/>
+        </g>
+        <line x1="63" y1="83" x2="63" y2="91" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/>
+        <rect x="59" y="89" width="8" height="5" rx="2.5" fill="#A4DF38" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+        <line x1="79" y1="83" x2="79" y2="91" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/>
+        <rect x="75" y="89" width="8" height="5" rx="2.5" fill="#A4DF38" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+        <g transform="translate(63,73) rotate(-12)">
+          <rect x="-10" y="-9" width="20" height="18" rx="1.5" fill="#78CDE0" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+          <line x1="-3.3" y1="-9" x2="-3.3" y2="9" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
+          <line x1="3.3" y1="-9" x2="3.3" y2="9" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
+          <line x1="-10" y1="-4" x2="10" y2="-4" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
+          <line x1="-10" y1="0" x2="10" y2="0" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
+          <line x1="-10" y1="4" x2="10" y2="4" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
+        </g>
+        <g transform="translate(79,75) rotate(-12)">
+          <rect x="-10" y="-9" width="20" height="18" rx="1.5" fill="#78CDE0" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+          <line x1="-3.3" y1="-9" x2="-3.3" y2="9" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
+          <line x1="3.3" y1="-9" x2="3.3" y2="9" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
+          <line x1="-10" y1="-4" x2="10" y2="-4" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
+          <line x1="-10" y1="0" x2="10" y2="0" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
+          <line x1="-10" y1="4" x2="10" y2="4" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
+        </g>
+        <polygon points="40,52 44,52 47,90 37,90" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linejoin="round"/>
+        <rect x="34" y="88" width="16" height="7" rx="3.5" fill="#A4DF38" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+        <g transform="translate(42,52)">
+          <path d="M 0,0 C -3,-4 -12,-16 -8,-30 C -5,-36 5,-36 8,-30 C 12,-16 3,-4 0,0 Z" fill="#78CDE0" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M 0,0 C -3,-4 -12,-16 -8,-30 C -5,-36 5,-36 8,-30 C 12,-16 3,-4 0,0 Z" fill="#78CDE0" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linejoin="round" transform="rotate(120)"/>
+          <path d="M 0,0 C -3,-4 -12,-16 -8,-30 C -5,-36 5,-36 8,-30 C 12,-16 3,-4 0,0 Z" fill="#78CDE0" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linejoin="round" transform="rotate(240)"/>
+          <circle cx="0" cy="0" r="7" fill="#FFFFFF" stroke="rgba(255,255,255,0.3)" stroke-width="2.5"/>
+          <circle cx="0" cy="0" r="3" fill="#2D3B60"/>
+        </g>
+      </svg>
+    </div>
+
+  </div><!-- /hero-main -->
+
+  <!-- Site images strip (side by side below hero) -->
+  <div class="hero-images">
+
+    <!-- Video panel (always first) -->
+    <div class="hero-img-panel hero-img-panel--video">
+      <video #heroVideo class="hero-video" loop playsinline muted>
+        <source src="https://official-oversears-file.sungrowpower.com/page-assets/78a8c56d-634f-4ff5-830f-6121131fd0b2.mp4" type="video/mp4" />
+      </video>
+      <div class="hero-img-overlay"></div>
+    </div>
+
+    @for (img of siteImages(); track img.id) {
+        <div class="hero-img-panel"
+             [style.background-image]="'url(' + img.imageUrl + ')'">
+          <div class="hero-img-overlay"></div>
+          @if (img.title || img.altText) {
+            <div class="hero-img-text">
+              @if (img.title) { <div class="hero-img-title">{{ img.title }}</div> }
+              @if (img.altText) { <div class="hero-img-sub">{{ img.altText }}</div> }
+            </div>
+          }
         </div>
       }
+    </div>
 
-    </section>
-  }
+</section><!-- /hero-section -->
 
-</div><!-- /sticky-stack -->
+<!-- ─── FEATURED PRODUCTS ─── -->
+<section class="products-section">
+
+  <div class="products-header">
+    <div class="products-header-left">
+      <div class="products-eyebrow">Featured Products</div>
+      <h2 class="products-title">Best Sellers</h2>
+    </div>
+    <a routerLink="/shop" class="products-view-all">
+      View All
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <line x1="2" y1="7" x2="12" y2="7" stroke="#2D3B60" stroke-width="1.8" stroke-linecap="round"/>
+        <polyline points="8,3 12,7 8,11" stroke="#2D3B60" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+
+  <div class="products-grid">
+
+    @if (productsLoading()) {
+      @for (i of [1,2,3,4]; track i) {
+        <div class="prod-card prod-card--skeleton">
+          <div class="prod-thumb prod-thumb--skeleton shimmer"></div>
+          <div class="prod-body">
+            <div class="prod-skeleton-line shimmer" style="width:70%; height:14px; margin-bottom:8px;"></div>
+            <div class="prod-skeleton-line shimmer" style="width:90%; height:10px; margin-bottom:16px;"></div>
+            <div class="prod-skeleton-line shimmer" style="width:50%; height:18px;"></div>
+          </div>
+        </div>
+      }
+    } @else {
+      @for (product of featuredProducts(); track product.id) {
+        <div class="prod-card">
+          <a [routerLink]="['/products', product.id]" class="prod-thumb-link">
+            <div class="prod-thumb">
+              @if (product.primaryImage) {
+                <img [src]="product.primaryImage" [alt]="product.name" class="prod-thumb-img" />
+              } @else {
+                <div class="prod-thumb-cat">{{ product.sku }}</div>
+              }
+              @if (product.ribbonText) {
+                <span class="prod-badge">{{ product.ribbonText }}</span>
+              } @else if (product.isFeatured) {
+                <span class="prod-badge">FEATURED</span>
+              }
+            </div>
+          </a>
+          <div class="prod-body">
+            <a [routerLink]="['/products', product.id]" class="prod-name-link">
+              <div class="prod-name">{{ product.name }}</div>
+            </a>
+            @if (product.summary) {
+              <div class="prod-desc">{{ product.summary }}</div>
+            }
+            <div class="prod-footer">
+              <div class="prod-price">{{ formatPrice(product.discountPrice ?? product.price) }}</div>
+              <button class="prod-add" (click)="addToCart(product)">Add</button>
+            </div>
+          </div>
+        </div>
+      }
+    }
+
+  </div>
+
+</section>
 
 <!-- ─── ABOUT SECTION ─── -->
 @if (userSiteSetting()?.aboutTitle || userSiteSetting()?.aboutDescription) {
@@ -156,95 +292,125 @@
   </section>
 }
 
-<!-- ─── CATALOGUES — scrolls over the sticky stack ─── -->
-<section class="catalogues-section">
+<!-- ─── WHY DYMO ENERGY ─── -->
+<section class="why-section">
+  <div class="why-dots"></div>
 
-  <!-- Gradient header: title + description + filter pills -->
-  <div class="cat-header">
-    <div class="cat-header-arc"></div>
-    <div class="cat-header-inner">
-      <h2 class="cat-header-title">
-        {{ userSiteSetting()?.cataloguesTitle || 'All Solutions' }}
-      </h2>
-      @if (userSiteSetting()?.cataloguesDescription) {
-        <p class="cat-header-desc">{{ userSiteSetting()!.cataloguesDescription }}</p>
-      }
-
-      <!-- Filter pills: one per catalogue -->
-      @if (!cataloguesLoading()) {
-        <div class="cat-filter-row">
-          @for (cat of filteredCatalogues(); track cat.id) {
-            <button
-              class="cat-filter-btn"
-              [class.active]="activeCatalogue()?.id === cat.id"
-              [style.--accent]="accentColor()"
-              (click)="selectCatalogue(cat.id)">
-              {{ cat.name }}
-            </button>
-          }
-        </div>
-      } @else {
-        <div class="cat-filter-row">
-          @for (i of [1,2,3]; track i) {
-            <div class="cat-filter-skeleton shimmer"></div>
-          }
-        </div>
-      }
-    </div>
+  <div class="why-header">
+    <div class="why-eyebrow">Why Dymo Energy</div>
+    <h2 class="why-title">Built for Bangladesh</h2>
   </div>
 
-  <!-- Feature card for the active catalogue -->
-  <div class="cat-card-wrap">
-    @if (cataloguesLoading()) {
-      <div class="cat-feature-skeleton shimmer"></div>
+  <div class="why-grid">
 
-    } @else if (filteredCatalogues().length === 0) {
-      <div class="cat-empty">
-        <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#d4d4d4"
-             stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+    <div class="why-card">
+      <div class="why-icon why-icon--lime">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2D3B60" stroke-width="2.5" stroke-linecap="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
         </svg>
-        <p class="cat-empty-title">No catalogues available</p>
-        <p class="cat-empty-sub">Check back later or contact your administrator.</p>
       </div>
+      <div class="why-card-title">22.6% Efficiency</div>
+      <div class="why-card-desc">Industry-leading monocrystalline panels — maximum power from every square metre.</div>
+    </div>
 
-    } @else if (activeCatalogue(); as cat) {
-      <div class="cat-feature-card">
-
-        <!-- Left: text content -->
-        <div class="cat-feature-left">
-          <p class="cat-feature-eyebrow" [style.color]="accentColor()">{{ cat.name }}</p>
-          <h3 class="cat-feature-title">{{ cat.heroTitle || cat.name }}</h3>
-          @if (cat.description) {
-            <p class="cat-feature-desc">{{ cat.description }}</p>
-          }
-          <a [routerLink]="['/catalogues', cat.id, 'products-list']"
-             class="cat-feature-cta"
-             [style.border-color]="accentColor()"
-             [style.color]="accentColor()">
-            Learn More
-          </a>
-        </div>
-
-        <!-- Right: image -->
-        <div class="cat-feature-right">
-          @if (cat.primaryBackgroundImageUrl || cat.thumbnailImageUrl) {
-            <img [src]="cat.primaryBackgroundImageUrl || cat.thumbnailImageUrl"
-                 [alt]="cat.name" class="cat-feature-img" />
-          } @else {
-            <div class="cat-feature-img-placeholder">
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="none"
-                   stroke="#d4d4d4" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2"/>
-                <circle cx="8.5" cy="8.5" r="1.5"/>
-                <polyline points="21 15 16 10 5 21"/>
-              </svg>
-            </div>
-          }
-        </div>
-
+    <div class="why-card">
+      <div class="why-icon why-icon--blue">
+        <svg width="22" height="24" viewBox="0 0 22 24" fill="none" stroke="#2D3B60" stroke-width="2.5" stroke-linecap="round">
+          <rect x="2" y="1" width="18" height="22" rx="4"/>
+          <polyline points="8,9 11,12 14,9"/>
+          <line x1="11" y1="12" x2="11" y2="17"/>
+        </svg>
       </div>
-    }
+      <div class="why-card-title">Load-Shedding Proof</div>
+      <div class="why-card-desc">Battery storage keeps your home powered during Bangladesh's load-shedding hours.</div>
+    </div>
+
+    <div class="why-card">
+      <div class="why-icon why-icon--green">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      </div>
+      <div class="why-card-title">Live Monitoring</div>
+      <div class="why-card-desc">Real-time generation, savings, and alerts via the Dymo mobile app — anytime, anywhere.</div>
+    </div>
+
+    <div class="why-card">
+      <div class="why-icon why-icon--lime">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2D3B60" stroke-width="2.5" stroke-linecap="round">
+          <path d="M12 2 L22 7 V14 C22 19 17 23 12 24 C7 23 2 19 2 14 V7 Z"/>
+          <polyline points="9,12 11,14 15,10"/>
+        </svg>
+      </div>
+      <div class="why-card-title">25yr Warranty</div>
+      <div class="why-card-desc">Industry-leading 25-year performance warranty. We stand behind every installation.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── REVIEWS ─── -->
+<section class="reviews-section">
+
+  <div class="reviews-header">
+    <div class="reviews-eyebrow">Customer Stories</div>
+    <h2 class="reviews-title">Real Results</h2>
+  </div>
+
+  <div class="reviews-grid">
+
+    <div class="review-card">
+      <div class="review-stars">
+        @for (i of [1,2,3,4,5]; track i) {
+          <svg width="16" height="16" viewBox="0 0 16 16"><polygon points="8,1.5 9.6,6 14.5,6 10.5,9 11.9,14 8,11 4.1,14 5.5,9 1.5,6 6.4,6" fill="#A4DF38"/></svg>
+        }
+      </div>
+      <p class="review-text">"Our electricity bill dropped by 85%. No more load-shedding nightmares. The Dymo team installed everything in one day — absolutely professional."</p>
+      <div class="review-author">
+        <div class="review-avatar review-avatar--lime">AR</div>
+        <div>
+          <div class="review-name">Ahmed Rahman</div>
+          <div class="review-location">Dhaka, Gulshan</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">
+        @for (i of [1,2,3,4,5]; track i) {
+          <svg width="16" height="16" viewBox="0 0 16 16"><polygon points="8,1.5 9.6,6 14.5,6 10.5,9 11.9,14 8,11 4.1,14 5.5,9 1.5,6 6.4,6" fill="#A4DF38"/></svg>
+        }
+      </div>
+      <p class="review-text">"The 2kW kit for our factory has saved us over ৳15,000 every month. ROI in less than 3 years. Dymo's after-sales support is exceptional."</p>
+      <div class="review-author">
+        <div class="review-avatar review-avatar--blue">FK</div>
+        <div>
+          <div class="review-name">Fatima Khan</div>
+          <div class="review-location">Chittagong, Nasirabad</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">
+        @for (i of [1,2,3,4,5]; track i) {
+          <svg width="16" height="16" viewBox="0 0 16 16"><polygon points="8,1.5 9.6,6 14.5,6 10.5,9 11.9,14 8,11 4.1,14 5.5,9 1.5,6 6.4,6" fill="#A4DF38"/></svg>
+        }
+      </div>
+      <p class="review-text">"The Smart Monitor app shows everything live. I can see exactly how much solar I'm generating versus what I'm using. Best tech investment we've made."</p>
+      <div class="review-author">
+        <div class="review-avatar review-avatar--green">MI</div>
+        <div>
+          <div class="review-name">Md. Imran</div>
+          <div class="review-location">Sylhet, Amberkhana</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
 </section>
@@ -300,5 +466,20 @@
   </div>
 </section>
 }
+
+<!-- ─── NEWSLETTER ─── -->
+<section class="newsletter-section">
+  <div class="newsletter-dots"></div>
+  <div class="newsletter-inner">
+    <div class="newsletter-copy">
+      <h2 class="newsletter-title">Get Solar Insights</h2>
+      <p class="newsletter-sub">Tips, savings guides &amp; exclusive offers. Join 18,000+ subscribers.</p>
+    </div>
+    <div class="newsletter-form">
+      <input type="email" class="newsletter-input" placeholder="your@email.com" [(ngModel)]="newsletterEmail" />
+      <button class="newsletter-btn" (click)="subscribeNewsletter()">Subscribe</button>
+    </div>
+  </div>
+</section>
 
 <app-footer [settings]="settings()" />

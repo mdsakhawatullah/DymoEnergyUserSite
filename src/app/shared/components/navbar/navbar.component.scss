@@ -1,175 +1,233 @@
-.navbar {
+// ── Announcement bar ────────────────────────────────────────────────────
+.announcement-bar {
+  background: #A4DF38;
+  color: #2D3B60;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  padding: 8px 16px;
+  letter-spacing: 0.01em;
   position: sticky;
   top: 0;
+  z-index: 1001;
+}
+
+// ── Navbar shell ─────────────────────────────────────────────────────────
+.navbar {
+  background: #ffffff;
+  border-bottom: 2px solid rgba(45, 59, 96, 0.08);
+  box-shadow: 0 2px 16px rgba(45, 59, 96, 0.06);
+  padding: 0 64px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 36px; // below announcement bar
   z-index: 1000;
-  background: #fff;
-  border-bottom: 1px solid #e8e8e8;
 }
 
-/* ── Row 1 ── */
-.row1 {
-  display: flex;
-  align-items: center;
-  height: 64px;
-  padding: 0 40px;
-  position: relative;
-}
-
-.globe-badge {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  color: #888;
-  flex: 1;
-}
-
-/* Brand absolutely centred */
+// ── Brand / Logo ──────────────────────────────────────────────────────────
 .brand {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 11px;
   text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Logo image (when logoUrl is set) */
-.brand-logo {
-  height: 42px;
-  width: auto;
-  max-width: 240px;
-  object-fit: contain;
-  display: block;
-}
-
-/* Fallback: coloured square with initial letter */
-.brand-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 18px;
-  font-weight: 800;
   flex-shrink: 0;
-}
-
-/* Two-tone site name */
-.brand-label {
-  font-size: 20px;
-  font-weight: 800;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.brand-dark  { color: #1a1a1a; }
-.brand-color { /* color set inline via [style.color] */ }
-
-.row1-right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: auto;
-  flex: 1;
-  justify-content: flex-end;
-}
-
-.r1-btn {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: none;
-  border: none;
   cursor: pointer;
-  color: #444;
-  padding: 6px 8px;
-  border-radius: 4px;
-  font-size: 13px;
-  letter-spacing: 0.03em;
-  transition: color 0.15s;
-
-  &:hover { color: #000; }
 }
 
-.cart-btn  { position: relative; }
-.login-btn { gap: 6px; }
+.brand-logo {
+  height: 44px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+}
 
-.cart-badge {
-  position: absolute;
-  top: 2px; right: 2px;
-  min-width: 16px; height: 16px;
-  padding: 0 4px;
-  background: #e03e3e;
-  color: #fff;
-  border-radius: 8px;
-  font-size: 10px;
+.brand-text {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
+  flex-direction: column;
   line-height: 1;
 }
 
-.hamburger { display: none; }
+.brand-name {
+  font-size: 21px;
+  font-weight: 900;
+  color: #2D3B60;
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
 
-/* ── Row 2: nav links ── */
-.row2 {
+.brand-sub {
+  font-size: 8px;
+  font-weight: 700;
+  color: #78CDE0;
+  letter-spacing: 0.28em;
+  line-height: 1;
+  padding-left: 0.2em;
+  margin-top: 3px;
+}
+
+// ── Centre nav links ──────────────────────────────────────────────────────
+.nav-links {
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 44px;
-  gap: 4px;
-  padding: 0 40px;
+  gap: 32px;
 }
 
 .nav-link {
   font-size: 14px;
+  font-weight: 700;
+  color: #6B8FA8;
   text-decoration: none;
-  padding: 0 16px;
-  height: 44px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: color 0.15s;
+  white-space: nowrap;
+
+  &:hover { color: #2D3B60; }
+
+  &.active { color: #2D3B60; }
+}
+
+// ── Right actions ─────────────────────────────────────────────────────────
+.nav-actions {
   display: flex;
   align-items: center;
-  border-bottom: 2px solid transparent;
-  white-space: nowrap;
-  transition: color 0.15s, border-color 0.15s;
+  gap: 18px;
+  flex-shrink: 0;
+}
+
+// Cart pill button
+.cart-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #F2FAFD;
+  border: 1.5px solid rgba(45, 59, 96, 0.12);
+  border-radius: 10px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
 
   &:hover {
-    color: #000 !important;
-    border-bottom-color: #333;
-  }
-
-  &.active {
-    border-bottom-color: var(--primary, #1677ff);
-    color: var(--primary, #1677ff) !important;
+    border-color: rgba(45, 59, 96, 0.28);
+    background: #e8f5fb;
   }
 }
 
-/* ── Mobile drawer ── */
+.cart-label {
+  font-size: 13px;
+  font-weight: 800;
+  color: #2D3B60;
+}
+
+.cart-badge {
+  background      : #A4DF38;
+  border          : 2px solid #2D3B60;
+  border-radius   : 50%;
+  width           : 20px;
+  height          : 20px;
+  display         : flex;
+  align-items     : center;
+  justify-content : center;
+  font-size       : 10px;
+  font-weight     : 900;
+  color           : #2D3B60;
+  flex-shrink     : 0;
+  pointer-events  : none;
+  line-height     : 1;
+}
+
+// "Get a Quote" CTA button
+.cta-btn {
+  background: #A4DF38;
+  color: #2D3B60;
+  border: 2px solid #2D3B60;
+  border-radius: 10px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  display: inline-block;
+
+  &:hover {
+    background: #b8eb4d;
+    transform: translateY(-1px);
+  }
+}
+
+// Hamburger — hidden on desktop
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+
+  &:hover { background: #f4f6f9; }
+}
+
+// ── Mobile drawer ─────────────────────────────────────────────────────────
 .mobile-nav {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 1px solid rgba(45, 59, 96, 0.08);
+  box-shadow: 0 8px 24px rgba(45, 59, 96, 0.10);
   display: flex;
   flex-direction: column;
-  border-top: 1px solid #f0f0f0;
-  background: #fff;
+  z-index: 999;
 }
 
 .mobile-link {
-  padding: 14px 20px;
+  padding: 16px 24px;
   font-size: 15px;
+  font-weight: 700;
   text-decoration: none;
-  color: #333;
-  border-bottom: 1px solid #f5f5f5;
+  color: #6B8FA8;
+  border-bottom: 1px solid rgba(45, 59, 96, 0.06);
+  letter-spacing: 0.03em;
+  transition: color 0.15s, background 0.15s;
 
+  &:hover    { color: #2D3B60; background: #f8fbfd; }
   &:last-child { border-bottom: none; }
-  &.active { color: #1677ff; }
+  &.active   { color: #2D3B60; }
 }
 
-/* ── Responsive ── */
+.mobile-cta {
+  margin: 12px 16px;
+  padding: 12px 24px;
+  background: #A4DF38;
+  color: #2D3B60;
+  border: 2px solid #2D3B60;
+  border-radius: 10px;
+  text-align: center;
+  border-bottom: 2px solid #2D3B60 !important;
+}
+
+// ── Responsive ────────────────────────────────────────────────────────────
+@media (max-width: 1024px) {
+  .navbar   { padding: 0 32px; }
+  .nav-links { gap: 20px; }
+}
+
 @media (max-width: 768px) {
-  .row1      { padding: 0 16px; height: 56px; }
-  .row2      { display: none; }
-  .hamburger { display: flex; }
+  .navbar     { padding: 0 20px; position: relative; }
+  .nav-links  { display: none; }
+  .cta-btn    { display: none; }
+  .hamburger  { display: flex; }
+}
+
+@media (max-width: 480px) {
+  .announcement-bar { font-size: 11px; }
+  .navbar { top: 32px; }
 }

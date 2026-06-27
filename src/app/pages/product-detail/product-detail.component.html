@@ -1,0 +1,190 @@
+<app-navbar
+  [siteName]="settings()?.siteName || 'Org Name'"
+  [logoUrl]="settings()?.logoUrl"
+  [navbarTextColor]="settings()?.navbarTextColor"
+  [primaryColor]="settings()?.primaryColor"
+  [navItems]="navItems"
+/>
+
+<div class="detail-page">
+
+  <!-- ── Breadcrumb ──────────────────────────────────────────────────────── -->
+  <nav class="breadcrumb">
+    <a routerLink="/" class="bc-link">Home</a>
+    <span class="bc-sep">›</span>
+    <a routerLink="/shop" class="bc-link">Shop</a>
+    @if (product()) {
+      <span class="bc-sep">›</span>
+      <span class="bc-current">{{ product()!.name }}</span>
+    }
+  </nav>
+
+  <!-- ── Loading ─────────────────────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="state-center">
+      <div class="big-spinner"></div>
+      <div class="state-text">Loading product…</div>
+    </div>
+
+  <!-- ── Error ───────────────────────────────────────────────────────────── -->
+  } @else if (error()) {
+    <div class="state-center">
+      <div class="state-title">{{ error() }}</div>
+      <a routerLink="/shop" class="back-link">← Back to Shop</a>
+    </div>
+
+  <!-- ── Product ─────────────────────────────────────────────────────────── -->
+  } @else if (product(); as p) {
+
+    <div class="product-grid">
+
+      <!-- ── Image panel ── -->
+      <div class="image-panel">
+        <div class="image-wrap">
+          @if (p.ribbonText) {
+            <div class="img-badge">{{ p.ribbonText }}</div>
+          } @else if (p.isFeatured) {
+            <div class="img-badge">POPULAR</div>
+          }
+          @if (p.primaryImage) {
+            <img [src]="p.primaryImage" [alt]="p.name" class="product-img" />
+          } @else {
+            <div class="img-placeholder">
+              <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+                <rect x="8" y="8" width="56" height="56" rx="12" stroke="#9BBCCC" stroke-width="2"/>
+                <circle cx="26" cy="26" r="6" stroke="#9BBCCC" stroke-width="2"/>
+                <path d="M8 48 L22 34 L36 44 L50 28 L64 48" stroke="#9BBCCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div class="img-placeholder-label">No image available</div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- ── Info panel ── -->
+      <div class="info-panel">
+
+        <!-- Eyebrow -->
+        @if (catalogue()) {
+          <div class="prod-eyebrow">{{ catalogue()!.name }}</div>
+        }
+        @if (p.sku) {
+          <div class="prod-sku">SKU: {{ p.sku }}</div>
+        }
+
+        <h1 class="prod-name">{{ p.name }}</h1>
+
+        @if (p.summary) {
+          <p class="prod-summary">{{ p.summary }}</p>
+        }
+
+        <!-- Price block -->
+        <div class="price-block">
+          <div class="price-main">{{ formatPrice(effectivePrice()) }}</div>
+          @if (hasDiscount()) {
+            <div class="price-original">{{ formatPrice(p.price) }}</div>
+            <div class="price-tag">Sale</div>
+          }
+        </div>
+
+        <!-- Stock -->
+        <div class="stock-row">
+          @if (p.stockQuantity > 0) {
+            <div class="stock-badge stock-badge--in">
+              <span class="stock-dot"></span>In Stock ({{ p.stockQuantity }} units)
+            </div>
+          } @else {
+            <div class="stock-badge stock-badge--out">
+              <span class="stock-dot"></span>Out of Stock
+            </div>
+          }
+        </div>
+
+        <!-- Quantity + Add to cart -->
+        <div class="purchase-row">
+          <div class="qty-control">
+            <button class="qty-btn" (click)="decrement()" [disabled]="qty() <= 1">−</button>
+            <span class="qty-value">{{ qty() }}</span>
+            <button class="qty-btn" (click)="increment()">+</button>
+          </div>
+          <button class="add-btn"
+                  [class.add-btn--added]="addedToCart()"
+                  [disabled]="p.stockQuantity === 0"
+                  (click)="addToCart()">
+            @if (addedToCart()) {
+              ✓ Added to Cart
+            } @else {
+              + Add to Cart
+            }
+          </button>
+        </div>
+
+        <!-- Meta chips -->
+        <div class="meta-chips">
+          @if (p.weight) {
+            <div class="meta-chip">
+              <span class="meta-chip-label">Weight</span>
+              <span class="meta-chip-val">{{ p.weight }}</span>
+            </div>
+          }
+          @if (p.vendorName) {
+            <div class="meta-chip">
+              <span class="meta-chip-label">Brand</span>
+              <span class="meta-chip-val">{{ p.vendorName }}</span>
+            </div>
+          }
+          @if (p.vendorCode) {
+            <div class="meta-chip">
+              <span class="meta-chip-label">Model</span>
+              <span class="meta-chip-val">{{ p.vendorCode }}</span>
+            </div>
+          }
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Description card ─────────────────────────────────────────────── -->
+    @if (p.description) {
+      <div class="desc-card">
+        <div class="desc-card-title">Product Description</div>
+        <div class="desc-body" [innerHTML]="p.description"></div>
+      </div>
+    }
+
+    <!-- ── Related products ─────────────────────────────────────────────── -->
+    @if (related().length > 0) {
+      <div class="related-section">
+        <div class="related-header">
+          <div class="related-eyebrow">More Like This</div>
+          <h2 class="related-title">Related Products</h2>
+        </div>
+        <div class="related-grid">
+          @for (rp of related(); track rp.id) {
+            <a [routerLink]="['/products', rp.id]" class="rel-card">
+              <div class="rel-thumb">
+                @if (rp.primaryImage) {
+                  <img [src]="rp.primaryImage" [alt]="rp.name" class="rel-img" />
+                } @else {
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9BBCCC" stroke-width="1.4">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                }
+              </div>
+              <div class="rel-body">
+                <div class="rel-name">{{ rp.name }}</div>
+                <div class="rel-price">{{ formatPrice(rp.discountPrice ?? rp.price) }}</div>
+              </div>
+            </a>
+          }
+        </div>
+      </div>
+    }
+
+  }
+
+</div>
+
+<app-footer [settings]="settings()" />

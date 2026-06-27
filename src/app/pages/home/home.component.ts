@@ -1,11 +1,15 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { AdminSiteSettingService } from '../../core/services/admin-site-setting.service';
 import { UserSiteSettingService } from '../../core/services/user-site-setting.service';
 import { CatalogueService } from '../../core/services/catalogue.service';
+import { ProductService } from '../../core/services/product.service';
+import { CartService } from '../../core/services/cart.service';
 import { AdminSiteSetting } from '../../core/models/admin-site-setting.model';
 import { UserSiteSetting, UserSiteSettingImage } from '../../core/models/user-site-setting.model';
 import { Catalogue } from '../../core/models/catalogue.model';
+import { Product } from '../../core/models/product.model';
 import { NavbarComponent, DEFAULT_NAV_ITEMS } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 
@@ -20,7 +24,7 @@ interface Review {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, NavbarComponent, FooterComponent],
+  imports: [RouterLink, FormsModule, NavbarComponent, FooterComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
@@ -32,52 +36,35 @@ export class HomeComponent implements OnInit, AfterViewInit {
   settings          = signal<AdminSiteSetting | null>(null);
   userSiteSetting   = signal<UserSiteSetting | null>(null);
   catalogues        = signal<Catalogue[]>([]);
-  searchQuery       = signal('');
+  allProducts       = signal<Product[]>([]);
   loading           = signal(true);
-  cataloguesLoading = signal(true);
+  productsLoading   = signal(true);
+  newsletterEmail   = '';
 
   navItems = DEFAULT_NAV_ITEMS;
 
   // ── Global theme colours ─────────────────────────────────────────────────
-  primaryColor = computed(() => this.settings()?.primaryColor  || '#1a3a6b');
+  primaryColor = computed(() => this.settings()?.primaryColor  || '#2D3B60');
   accentColor  = computed(() =>
     this.settings()?.buttonColor    ||
     this.settings()?.secondaryColor ||
-    '#f5a623'
+    '#A4DF38'
   );
 
-  // ── Active images for sticky card stack (sorted by DisplayOrder) ─────────
+  // ── Active images for the hero strip (sorted by DisplayOrder) ────────────
   siteImages = computed<UserSiteSettingImage[]>(() =>
     (this.userSiteSetting()?.images ?? [])
       .filter(img => img.isActive && img.imageUrl)
       .sort((a, b) => a.displayOrder - b.displayOrder)
   );
 
-  // ── Filtered catalogue list ──────────────────────────────────────────────
-  filteredCatalogues = computed(() => {
-    const q = this.searchQuery().toLowerCase().trim();
-    if (!q) return this.catalogues();
-    return this.catalogues().filter(
-      c =>
-        c.name?.toLowerCase().includes(q) ||
-        c.description?.toLowerCase().includes(q) ||
-        c.heroTitle?.toLowerCase().includes(q)
-    );
+  // ── Featured products: isFeatured first, else first 4 active ─────────────
+  featuredProducts = computed<Product[]>(() => {
+    const all = this.allProducts();
+    const featured = all.filter(p => p.isFeatured);
+    const source = featured.length ? featured : all;
+    return source.slice(0, 4);
   });
-
-  // ── Active catalogue (selected via filter buttons) ───────────────────────
-  selectedCatalogueId = signal<number | null>(null);
-
-  activeCatalogue = computed(() => {
-    const cats = this.filteredCatalogues();
-    if (!cats.length) return null;
-    const id = this.selectedCatalogueId();
-    return cats.find(c => c.id === id) ?? cats[0];
-  });
-
-  selectCatalogue(id: number): void {
-    this.selectedCatalogueId.set(id);
-  }
 
   // ── Static review data ───────────────────────────────────────────────────
   reviews: Review[] = [
@@ -105,9 +92,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ];
 
   constructor(
-    private siteService:         AdminSiteSettingService,
-    private userSettingService:  UserSiteSettingService,
-    private catalogueService:    CatalogueService,
+    private siteService:        AdminSiteSettingService,
+    private userSettingService: UserSiteSettingService,
+    private catalogueService:   CatalogueService,
+    private productService:     ProductService,
+    public  cartService:        CartService,
   ) {}
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -128,10 +117,43 @@ export class HomeComponent implements OnInit, AfterViewInit {
       .getList({ isPublished: true, maxResultCount: 50 })
       .subscribe(result => {
         this.catalogues.set(result.items);
-        this.cataloguesLoading.set(false);
+      });
+
+    this.productService
+      .getList({ isAvailable: true, maxResultCount: 50 })
+      .subscribe(result => {
+        this.allProducts.set(result.items);
+        this.productsLoading.set(false);
       });
   }
 
+  // ─────────────────────────────────────────────────────────────────────────
+  //  Products
+  // ─────────────────────────────────────────────────────────────────────────
+  addToCart(product: Product): void {
+    this.cartService.addItem(product, 1);
+  }
+
+  subscribeNewsletter(): void {
+    if (!this.newsletterEmail.trim()) return;
+    this.newsletterEmail = '';
+  }
+
+  formatPrice(price: number): string {
+    if (!price) return '৳0';
+    return '৳' + price.toLocaleString('en-IN');
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  //  Catalogue helpers (kept for siteImages)
+  // ─────────────────────────────────────────────────────────────────────────
+  getCardAccent(cat: Catalogue): string {
+    return cat.accentColor || this.accentColor();
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  //  Lifecycle: video
+  // ─────────────────────────────────────────────────────────────────────────
   ngAfterViewInit(): void {
     const v = this.heroVideoRef?.nativeElement;
     if (v) {
@@ -141,34 +163,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  //  Card helpers
-  // ─────────────────────────────────────────────────────────────────────────
-  getCardThumb(cat: Catalogue): string | null {
-    return cat.thumbnailImageUrl || cat.primaryBackgroundImageUrl || null;
-  }
-
-  isBgImage(cat: Catalogue): boolean {
-    return !cat.thumbnailImageUrl && !!cat.primaryBackgroundImageUrl;
-  }
-
-  getCardAccent(cat: Catalogue): string {
-    return cat.accentColor || this.accentColor();
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  //  Search
-  // ─────────────────────────────────────────────────────────────────────────
-  onSearch(event: Event): void {
-    this.searchQuery.set((event.target as HTMLInputElement).value);
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
   //  Theme
   // ─────────────────────────────────────────────────────────────────────────
   private applyTheme(s: AdminSiteSetting): void {
     const root = document.documentElement;
-    if (s.primaryColor)    root.style.setProperty('--primary', s.primaryColor);
-    if (s.backgroundColor) root.style.setProperty('--bg', s.backgroundColor);
+    if (s.primaryColor) root.style.setProperty('--primary', s.primaryColor);
     // Font is handled globally by App via UserSiteSettings — do not override --font here
   }
 }

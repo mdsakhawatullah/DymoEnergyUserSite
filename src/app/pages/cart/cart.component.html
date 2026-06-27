@@ -1,0 +1,122 @@
+<app-navbar
+  [siteName]="settings()?.siteName || 'Org Name'"
+  [logoUrl]="settings()?.logoUrl"
+  [navbarTextColor]="settings()?.navbarTextColor"
+  [primaryColor]="settings()?.primaryColor"
+  [navItems]="navItems"
+/>
+
+<div class="cart-page">
+  <div class="cart-layout">
+
+    <!-- ── LEFT: items ─────────────────────────────────────────────── -->
+    <div class="cart-left">
+
+      <div class="cart-heading">
+        <div class="cart-eyebrow">Your Order</div>
+        <h1 class="cart-title">
+          Shopping Cart
+          <span class="cart-count">({{ cartService.totalCount() }} items)</span>
+        </h1>
+      </div>
+
+      <!-- Empty state -->
+      @if (cartService.items().length === 0) {
+        <div class="cart-empty">
+          <div class="cart-empty-icon">
+            <svg width="36" height="32" viewBox="0 0 36 32" fill="none">
+              <path d="M1 1h5L10 21h16l4-15.5H8" stroke="#9BBCCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="13.5" cy="28" r="2.5" fill="#9BBCCC"/>
+              <circle cx="25" cy="28" r="2.5" fill="#9BBCCC"/>
+            </svg>
+          </div>
+          <div class="cart-empty-title">Your cart is empty</div>
+          <div class="cart-empty-sub">Add some solar products to get started</div>
+          <a routerLink="/catalogues" class="cart-empty-btn">Browse Products</a>
+        </div>
+
+      } @else {
+
+        <!-- Items list -->
+        <div class="cart-items">
+          @for (item of cartService.items(); track item.productId) {
+            <div class="cart-item">
+
+              <div class="item-img-wrap">
+                @if (item.imageUrl) {
+                  <img [src]="item.imageUrl" [alt]="item.productName" class="item-img" />
+                } @else {
+                  <div class="item-img-placeholder">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9BBCCC" stroke-width="1.4">
+                      <rect x="3" y="3" width="18" height="18" rx="2"/>
+                      <circle cx="8.5" cy="8.5" r="1.5"/>
+                      <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                  </div>
+                }
+              </div>
+
+              <div class="item-info">
+                <div class="item-name">{{ item.productName }}</div>
+                @if (item.sku) {
+                  <div class="item-sku">SKU: {{ item.sku }}</div>
+                }
+              </div>
+
+              <div class="item-right">
+                <div class="item-price">{{ formatPrice(item.lineTotal) }}</div>
+                <div class="item-qty-row">
+                  <button class="qty-btn" (click)="decrement(item.productId, item.quantity)">−</button>
+                  <input
+                    type="number" min="1"
+                    class="qty-input"
+                    [value]="item.quantity"
+                    (change)="changeQty(item.productId, $any($event.target).value)"
+                  />
+                  <button class="qty-btn" (click)="increment(item.productId, item.quantity)">+</button>
+                </div>
+                <button class="item-remove" (click)="removeItem(item.productId)">Remove</button>
+              </div>
+
+            </div>
+          }
+        </div>
+
+      }
+    </div>
+
+    <!-- ── RIGHT: summary (only when items exist) ───────────────────── -->
+    @if (cartService.items().length > 0) {
+      <div class="cart-right">
+        <div class="summary-card">
+          <div class="summary-title">Order Summary</div>
+
+          <div class="summary-rows">
+            @for (item of cartService.items(); track item.productId) {
+              <div class="summary-row">
+                <span class="summary-row-name">{{ item.productName }} × {{ item.quantity }}</span>
+                <span class="summary-row-price">{{ formatPrice(item.lineTotal) }}</span>
+              </div>
+            }
+          </div>
+
+          <div class="summary-divider"></div>
+
+          <div class="summary-total-row">
+            <span class="summary-total-label">Total</span>
+            <span class="summary-total-price">{{ formatPrice(cartService.subtotal()) }}</span>
+          </div>
+
+          <button class="checkout-btn" (click)="proceedToCheckout()">
+            Proceed to Checkout →
+          </button>
+
+          <a routerLink="/catalogues" class="continue-link">← Continue Shopping</a>
+        </div>
+      </div>
+    }
+
+  </div>
+</div>
+
+<app-footer [settings]="settings()" />

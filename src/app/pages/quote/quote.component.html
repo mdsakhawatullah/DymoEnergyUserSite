@@ -1,0 +1,172 @@
+<app-navbar
+  [siteName]="settings()?.siteName || 'Org Name'"
+  [logoUrl]="settings()?.logoUrl"
+  [navbarTextColor]="settings()?.navbarTextColor"
+  [primaryColor]="settings()?.primaryColor"
+  [navItems]="navItems"
+/>
+
+<div class="quote-page">
+  <div class="quote-grid">
+
+    <!-- ── LEFT: Form ──────────────────────────────────────────────── -->
+    <div class="quote-left">
+
+      <div class="eyebrow">Get In Touch</div>
+      <h1 class="quote-title">Let's talk solar.</h1>
+      <p class="quote-sub">
+        Free consultation. No pressure. Our solar engineers will assess your needs and design the right system.
+      </p>
+
+      <!-- Form card -->
+      <div class="form-card">
+
+        @if (submitted()) {
+          <div class="success-state">
+            <div class="success-icon">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none"
+                   stroke="#2D3B60" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <h2 class="success-title">Message Sent!</h2>
+            <p class="success-desc">Thank you for reaching out. Our team will contact you within 24 hours.</p>
+            <button class="success-back" (click)="submitted.set(false)">Send Another Message</button>
+          </div>
+
+        } @else {
+
+          <!-- Name + Phone -->
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label">Name</label>
+              <input type="text" class="field-input" placeholder="Your full name"
+                     [(ngModel)]="form.name" name="name" />
+            </div>
+            <div class="field">
+              <label class="field-label">Phone</label>
+              <input type="tel" class="field-input" placeholder="+88 017XX-XXXXXX"
+                     [(ngModel)]="form.phone" name="phone" />
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="field-block">
+            <label class="field-label">Email</label>
+            <input type="email" class="field-input" placeholder="your@email.com"
+                   [(ngModel)]="form.email" name="email" />
+          </div>
+
+          <!-- Interest -->
+          <div class="field-block">
+            <label class="field-label">I'm interested in</label>
+            <select class="field-input field-select"
+                    [(ngModel)]="form.interest" name="interest">
+              <option>Residential solar system</option>
+              <option>Commercial / industrial solar</option>
+              <option>Battery storage only</option>
+              <option>Solar water heater</option>
+              <option>Wind energy</option>
+              <option>Product enquiry</option>
+            </select>
+          </div>
+
+          <!-- Message -->
+          <div class="field-block">
+            <label class="field-label">Message</label>
+            <textarea class="field-input field-textarea"
+                      placeholder="Tell us about your property, current electricity bill, and what you'd like to achieve..."
+                      [(ngModel)]="form.message" name="message"></textarea>
+          </div>
+
+          <!-- Submit -->
+          <button class="send-btn"
+                  [class.send-btn--loading]="submitting()"
+                  [disabled]="submitting()"
+                  (click)="sendMessage()">
+            @if (submitting()) {
+              <span class="spinner"></span> Sending…
+            } @else {
+              Send Message →
+            }
+          </button>
+
+        }
+      </div>
+    </div>
+
+    <!-- ── RIGHT: Info cards ──────────────────────────────────────── -->
+    <div class="quote-right">
+
+      <!-- Head Office -->
+      <div class="info-card info-card--dark">
+        <div class="info-card-label">Head Office</div>
+        <div class="info-card-body">
+          House 45, Road 11<br />
+          Banani, Dhaka 1213<br />
+          Bangladesh
+        </div>
+      </div>
+
+      <!-- Contact details -->
+      <div class="info-card info-card--white">
+        <div class="contact-list">
+
+          <div class="contact-row">
+            <div class="contact-icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M3 2h3l1.5 3.5-1.8 1.1a9 9 0 004.7 4.7l1.1-1.8L15 11v3a1 1 0 01-1 1C7 15 1 9 1 3a1 1 0 011-1z"
+                      stroke="#78CDE0" stroke-width="1.4"/>
+              </svg>
+            </div>
+            <div>
+              <div class="contact-key">Phone</div>
+              <div class="contact-val">+88 017XX-XXXXXX</div>
+            </div>
+          </div>
+
+          <div class="contact-row">
+            <div class="contact-icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <rect x="1" y="3" width="14" height="10" rx="2" stroke="#78CDE0" stroke-width="1.4"/>
+                <polyline points="1,3 8,9 15,3" stroke="#78CDE0" stroke-width="1.4" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <div class="contact-key">Email</div>
+              <div class="contact-val">hello&#64;dymoenergy.com</div>
+            </div>
+          </div>
+
+          <div class="contact-row">
+            <div class="contact-icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="6" r="3" stroke="#78CDE0" stroke-width="1.4"/>
+                <path d="M2 13c0-3.3 2.7-6 6-6s6 2.7 6 6"
+                      stroke="#78CDE0" stroke-width="1.4" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <div class="contact-key">Hours</div>
+              <div class="contact-val">Sat–Thu: 9AM–7PM<br />Fri: Closed</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Free site assessment CTA -->
+      <div class="promo-card">
+        <div class="promo-title">Free Site Assessment</div>
+        <div class="promo-desc">
+          Our engineer visits your home or business — completely free, no obligation.
+        </div>
+        <button class="promo-btn" (click)="sendMessage()">Book Now →</button>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<app-footer [settings]="settings()" />

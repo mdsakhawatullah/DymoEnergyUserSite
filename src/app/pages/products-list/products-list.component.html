@@ -7,9 +7,7 @@
 />
 
 <!-- ─── PAGE HEADER ─── -->
-<div class="page-header"
-     [style.background-color]="primaryColor()"
-     [ngStyle]="headerBgStyle()">
+<div class="page-header" [ngStyle]="headerBgStyle()">
   <div class="page-header-inner">
     <a routerLink="/" class="back-link">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -127,6 +125,9 @@
 
             <!-- Image area -->
             <div class="prod-card-img-wrap">
+              @if (product.ribbonText) {
+                <span class="prod-ribbon">{{ product.ribbonText }}</span>
+              }
               @if (product.primaryImage) {
                 <img
                   [src]="product.primaryImage"

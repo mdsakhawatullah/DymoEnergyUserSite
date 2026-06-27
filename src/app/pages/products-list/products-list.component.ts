@@ -31,11 +31,11 @@ export class ProductsListComponent implements OnInit {
   quantities: Record<number, number> = {};
   catalogueId = 0;
 
-  primaryColor = computed(() => this.settings()?.primaryColor  || '#1a3a6b');
+  primaryColor = computed(() => this.settings()?.primaryColor  || '#2D3B60');
   accentColor  = computed(() =>
     this.settings()?.buttonColor    ||
     this.settings()?.secondaryColor ||
-    '#f5a623'
+    '#A4DF38'
   );
 
   /** Background style for the page header — uses catalogue's primary image when available */
@@ -112,8 +112,8 @@ export class ProductsListComponent implements OnInit {
   }
 
   formatPrice(price: number): string {
-    if (!price) return '$0.00';
-    return price.toLocaleString('en-AU', { style: 'currency', currency: 'AUD' });
+    if (!price) return '৳0';
+    return '৳' + price.toLocaleString('en-IN');
   }
 
   private applyTheme(s: AdminSiteSetting): void {
