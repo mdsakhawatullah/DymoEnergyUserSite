@@ -10,14 +10,14 @@
 
   <!-- ── Header ─────────────────────────────────────────────────────────── -->
   <div class="shop-header">
-    <div class="shop-eyebrow">Our Range</div>
-    <h1 class="shop-title">Shop All Products</h1>
+    <div class="shop-eyebrow">{{ 'SHOP.EYEBROW' | translate }}</div>
+    <h1 class="shop-title">{{ 'SHOP.TITLE' | translate }}</h1>
     <p class="shop-sub">
-      {{ filteredProducts().length }} product{{ filteredProducts().length !== 1 ? 's' : '' }}
+      {{ filteredProducts().length }} {{ filteredProducts().length !== 1 ? ('SHOP.PRODUCTS' | translate) : ('SHOP.PRODUCT' | translate) }}
       @if (selectedCatalogueId() !== null) {
-        in <strong>{{ selectedCatalogueName() }}</strong>
+        {{ 'SHOP.SUB_IN' | translate }} <strong>{{ selectedCatalogueName() }}</strong>
       } @else {
-        across solar, wind, storage &amp; more
+        {{ 'SHOP.SUB_ALL' | translate }}
       }
     </p>
   </div>
@@ -28,7 +28,7 @@
       class="filter-chip"
       [class.filter-chip--active]="selectedCatalogueId() === null"
       (click)="selectCatalogue(null)"
-    >All Products</div>
+    >{{ 'SHOP.ALL_PRODUCTS' | translate }}</div>
     @for (cat of catalogues(); track cat.id) {
       <div
         class="filter-chip"
@@ -62,8 +62,8 @@
           <polyline points="21 15 16 10 5 21"/>
         </svg>
       </div>
-      <div class="empty-title">No products found</div>
-      <div class="empty-sub">Try selecting a different category above.</div>
+      <div class="empty-title">{{ 'SHOP.NO_PRODUCTS' | translate }}</div>
+      <div class="empty-sub">{{ 'SHOP.NO_PRODUCTS_SUB' | translate }}</div>
     </div>
 
   <!-- ── Product grid ───────────────────────────────────────────────────── -->
@@ -78,7 +78,7 @@
               @if (product.ribbonText) {
                 <div class="prod-badge">{{ product.ribbonText }}</div>
               } @else if (product.isFeatured) {
-                <div class="prod-badge">POPULAR</div>
+                <div class="prod-badge">{{ 'SHOP.POPULAR' | translate }}</div>
               }
               @if (product.primaryImage) {
                 <img [src]="product.primaryImage" [alt]="product.name" class="prod-thumb-img" />
@@ -112,7 +112,7 @@
                   <div class="prod-price-original">{{ formatPrice(product.price) }}</div>
                 }
               </div>
-              <button class="prod-add" (click)="addToCart(product)">+ Cart</button>
+              <button class="prod-add" (click)="addToCart(product)">{{ 'SHOP.ADD_CART' | translate }}</button>
             </div>
           </div>
 

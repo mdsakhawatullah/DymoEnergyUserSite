@@ -13,10 +13,10 @@
     <div class="cart-left">
 
       <div class="cart-heading">
-        <div class="cart-eyebrow">Your Order</div>
+        <div class="cart-eyebrow">{{ 'CART.EYEBROW' | translate }}</div>
         <h1 class="cart-title">
-          Shopping Cart
-          <span class="cart-count">({{ cartService.totalCount() }} items)</span>
+          {{ 'CART.TITLE' | translate }}
+          <span class="cart-count">({{ cartService.totalCount() }} {{ 'CART.ITEMS' | translate }})</span>
         </h1>
       </div>
 
@@ -30,9 +30,9 @@
               <circle cx="25" cy="28" r="2.5" fill="#9BBCCC"/>
             </svg>
           </div>
-          <div class="cart-empty-title">Your cart is empty</div>
-          <div class="cart-empty-sub">Add some solar products to get started</div>
-          <a routerLink="/catalogues" class="cart-empty-btn">Browse Products</a>
+          <div class="cart-empty-title">{{ 'CART.EMPTY_TITLE' | translate }}</div>
+          <div class="cart-empty-sub">{{ 'CART.EMPTY_SUB' | translate }}</div>
+          <a routerLink="/catalogues" class="cart-empty-btn">{{ 'CART.BROWSE' | translate }}</a>
         </div>
 
       } @else {
@@ -59,7 +59,7 @@
               <div class="item-info">
                 <div class="item-name">{{ item.productName }}</div>
                 @if (item.sku) {
-                  <div class="item-sku">SKU: {{ item.sku }}</div>
+                  <div class="item-sku">{{ 'CART.SKU' | translate }}: {{ item.sku }}</div>
                 }
               </div>
 
@@ -75,7 +75,7 @@
                   />
                   <button class="qty-btn" (click)="increment(item.productId, item.quantity)">+</button>
                 </div>
-                <button class="item-remove" (click)="removeItem(item.productId)">Remove</button>
+                <button class="item-remove" (click)="removeItem(item.productId)">{{ 'CART.REMOVE' | translate }}</button>
               </div>
 
             </div>
@@ -89,7 +89,7 @@
     @if (cartService.items().length > 0) {
       <div class="cart-right">
         <div class="summary-card">
-          <div class="summary-title">Order Summary</div>
+          <div class="summary-title">{{ 'CART.ORDER_SUMMARY' | translate }}</div>
 
           <div class="summary-rows">
             @for (item of cartService.items(); track item.productId) {
@@ -103,15 +103,15 @@
           <div class="summary-divider"></div>
 
           <div class="summary-total-row">
-            <span class="summary-total-label">Total</span>
+            <span class="summary-total-label">{{ 'CART.TOTAL' | translate }}</span>
             <span class="summary-total-price">{{ formatPrice(cartService.subtotal()) }}</span>
           </div>
 
           <button class="checkout-btn" (click)="proceedToCheckout()">
-            Proceed to Checkout →
+            {{ 'CART.CHECKOUT' | translate }}
           </button>
 
-          <a routerLink="/catalogues" class="continue-link">← Continue Shopping</a>
+          <a routerLink="/catalogues" class="continue-link">{{ 'CART.CONTINUE' | translate }}</a>
         </div>
       </div>
     }

@@ -14,9 +14,9 @@
            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"/>
       </svg>
-      Back to Catalogues
+      {{ 'PRODUCTS_LIST.BACK' | translate }}
     </a>
-    <h1 class="page-title">{{ catalogue()?.name || 'Products' }}</h1>
+    <h1 class="page-title">{{ catalogue()?.name || ('PRODUCTS_LIST.SECTION_TITLE' | translate) }}</h1>
     @if (catalogue()?.description) {
       <p class="page-subtitle">{{ catalogue()!.description }}</p>
     }
@@ -31,21 +31,19 @@
     <div class="section-header">
       <div class="section-header-left">
         <h2 class="section-title" [style.color]="primaryColor()">
-          Products
+          {{ 'PRODUCTS_LIST.SECTION_TITLE' | translate }}
           @if (!productsLoading()) {
             <span class="section-count">({{ filteredProducts().length }})</span>
           }
         </h2>
-        <p class="section-desc">
-          Browse all products in this catalogue. Adjust quantity and add items to your cart.
-        </p>
+        <p class="section-desc">{{ 'PRODUCTS_LIST.SECTION_DESC' | translate }}</p>
       </div>
       <div class="search-box">
-        <span class="search-label">Search</span>
+        <span class="search-label">{{ 'PRODUCTS_LIST.SEARCH' | translate }}</span>
         <div class="search-input-wrap">
           <input
             type="text"
-            placeholder="Search products..."
+            [placeholder]="'PRODUCTS_LIST.SEARCH_PLACEHOLDER' | translate"
             class="search-input"
             (input)="onSearch($event)"
           />
@@ -77,11 +75,10 @@
         }
       </div>
 
-    <!-- Empty state — ghost skeleton + message overlay -->
+    <!-- Empty state -->
     } @else if (filteredProducts().length === 0) {
       <div class="prod-empty-wrap">
 
-        <!-- Static ghost skeleton cards (no shimmer animation) -->
         <div class="prod-grid prod-grid--ghost" aria-hidden="true">
           @for (i of [1,2,3,4]; track i) {
             <div class="prod-skeleton prod-skeleton--ghost">
@@ -98,7 +95,6 @@
           }
         </div>
 
-        <!-- Centred message panel -->
         <div class="prod-empty-overlay">
           <div class="prod-empty-panel">
             <div class="prod-empty-icon-wrap">
@@ -109,8 +105,8 @@
                 <path d="M16 10a4 4 0 01-8 0"/>
               </svg>
             </div>
-            <p class="prod-empty-title">No product list found</p>
-            <p class="prod-empty-sub">There are no products in this catalogue yet.</p>
+            <p class="prod-empty-title">{{ 'PRODUCTS_LIST.NO_PRODUCTS' | translate }}</p>
+            <p class="prod-empty-sub">{{ 'PRODUCTS_LIST.NO_PRODUCTS_SUB' | translate }}</p>
           </div>
         </div>
 
@@ -145,7 +141,6 @@
                   </svg>
                 </div>
               }
-              <!-- Wishlist button -->
               <button class="prod-wishlist-btn" aria-label="Add to wishlist">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
                      stroke="#bbb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -154,7 +149,6 @@
               </button>
             </div>
 
-            <!-- Thin divider -->
             <div class="prod-card-divider"></div>
 
             <!-- Body -->
@@ -184,10 +178,10 @@
               <div class="prod-stock-row">
                 @if (product.stockQuantity > 0) {
                   <span class="prod-stock-available" [style.color]="accentColor()">
-                    {{ product.stockQuantity }} in stock
+                    {{ product.stockQuantity }} {{ 'PRODUCTS_LIST.IN_STOCK' | translate }}
                   </span>
                 } @else {
-                  <span class="prod-stock-none">No stock information available</span>
+                  <span class="prod-stock-none">{{ 'PRODUCTS_LIST.NO_STOCK' | translate }}</span>
                 }
               </div>
 
@@ -196,14 +190,12 @@
             <!-- Footer -->
             <div class="prod-card-footer">
 
-              <!-- View Details -->
               <a [routerLink]="['/products', product.id]" class="prod-view-btn">
-                View Details
+                {{ 'PRODUCTS_LIST.VIEW_DETAILS' | translate }}
               </a>
 
-              <!-- Quantity + Add to cart -->
               <div class="prod-cart-section">
-                <label class="prod-qty-label">Quantity</label>
+                <label class="prod-qty-label">{{ 'PRODUCTS_LIST.QUANTITY' | translate }}</label>
                 <div class="prod-cart-controls">
                   <input
                     type="number"
@@ -218,7 +210,7 @@
                     [disabled]="product.price === 0"
                     [style.background-color]="product.price > 0 ? primaryColor() : null"
                     (click)="addToCart(product)"
-                  >Add to cart</button>
+                  >{{ 'PRODUCTS_LIST.ADD_TO_CART' | translate }}</button>
                 </div>
               </div>
 

@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
+import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { AdminSiteSetting } from '../../../core/models/admin-site-setting.model';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss',
 })

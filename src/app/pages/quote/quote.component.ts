@@ -1,4 +1,5 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AdminSiteSettingService } from '../../core/services/admin-site-setting.service';
@@ -9,7 +10,7 @@ import { FooterComponent } from '../../shared/components/footer/footer.component
 @Component({
   selector: 'app-quote',
   standalone: true,
-  imports: [RouterLink, FormsModule, NavbarComponent, FooterComponent],
+  imports: [RouterLink, FormsModule, NavbarComponent, FooterComponent, TranslatePipe],
   templateUrl: './quote.component.html',
   styleUrl: './quote.component.scss',
 })

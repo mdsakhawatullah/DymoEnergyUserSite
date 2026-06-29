@@ -8,13 +8,14 @@ import { CartService } from '../../core/services/cart.service';
 import { AdminSiteSetting } from '../../core/models/admin-site-setting.model';
 import { Catalogue } from '../../core/models/catalogue.model';
 import { Product } from '../../core/models/product.model';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { NavbarComponent, DEFAULT_NAV_ITEMS } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 
 @Component({
   selector: 'app-products-list',
   standalone: true,
-  imports: [RouterLink, NgStyle, NavbarComponent, FooterComponent],
+  imports: [RouterLink, NgStyle, NavbarComponent, FooterComponent, TranslatePipe],
   templateUrl: './products-list.component.html',
   styleUrl: './products-list.component.scss',
 })

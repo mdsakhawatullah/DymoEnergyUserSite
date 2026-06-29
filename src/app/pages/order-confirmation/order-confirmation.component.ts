@@ -3,13 +3,14 @@ import { Router, RouterLink } from '@angular/router';
 import { AdminSiteSettingService } from '../../core/services/admin-site-setting.service';
 import { AdminSiteSetting } from '../../core/models/admin-site-setting.model';
 import { OrderDto, OrderStatus } from '../../core/models/order.model';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { NavbarComponent, DEFAULT_NAV_ITEMS } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 
 @Component({
   selector: 'app-order-confirmation',
   standalone: true,
-  imports: [RouterLink, NavbarComponent, FooterComponent],
+  imports: [RouterLink, NavbarComponent, FooterComponent, TranslatePipe],
   templateUrl: './order-confirmation.component.html',
   styleUrl: './order-confirmation.component.scss',
 })

@@ -18,9 +18,9 @@
           <line x1="12" y1="16" x2="12.01" y2="16"/>
         </svg>
       </div>
-      <div class="state-title">Something went wrong</div>
+      <div class="state-title">{{ 'ORDER_CONFIRM.ERROR_TITLE' | translate }}</div>
       <div class="state-text">{{ error() }}</div>
-      <a routerLink="/" class="cta-primary">Back to Home</a>
+      <a routerLink="/" class="cta-primary">{{ 'ORDER_CONFIRM.BACK_HOME' | translate }}</a>
     </div>
 
   <!-- ── Success ─────────────────────────────────────────────────── -->
@@ -34,11 +34,11 @@
           <polyline points="20 6 9 17 4 12"/>
         </svg>
       </div>
-      <h1 class="success-title">Order Confirmed!</h1>
+      <h1 class="success-title">{{ 'ORDER_CONFIRM.ORDER_CONFIRMED' | translate }}</h1>
       <p class="success-sub">
-        Thank you{{ o.customerName ? ', ' + o.customerName : '' }}! Your order has been received and is being processed.
+        {{ 'ORDER_CONFIRM.THANK_YOU' | translate }}{{ o.customerName ? ', ' + o.customerName : '' }}! {{ 'ORDER_CONFIRM.ORDER_RECEIVED' | translate }}
         @if (o.customerEmail) {
-          A confirmation will be sent to <strong>{{ o.customerEmail }}</strong>.
+          {{ 'ORDER_CONFIRM.CONFIRM_SENT' | translate }} <strong>{{ o.customerEmail }}</strong>.
         }
       </p>
     </div>
@@ -46,19 +46,19 @@
     <!-- Order meta chips -->
     <div class="meta-row">
       <div class="meta-chip">
-        <div class="meta-label">Order Number</div>
+        <div class="meta-label">{{ 'ORDER_CONFIRM.ORDER_NUMBER' | translate }}</div>
         <div class="meta-value">{{ o.orderNumber || '—' }}</div>
       </div>
       <div class="meta-chip">
-        <div class="meta-label">Order Date</div>
+        <div class="meta-label">{{ 'ORDER_CONFIRM.ORDER_DATE' | translate }}</div>
         <div class="meta-value">{{ formatDate(o.orderDate) }}</div>
       </div>
       <div class="meta-chip">
-        <div class="meta-label">Status</div>
+        <div class="meta-label">{{ 'ORDER_CONFIRM.STATUS' | translate }}</div>
         <span class="status-badge">{{ statusLabel(o.status) }}</span>
       </div>
       <div class="meta-chip">
-        <div class="meta-label">Order Total</div>
+        <div class="meta-label">{{ 'ORDER_CONFIRM.ORDER_TOTAL' | translate }}</div>
         <div class="meta-value meta-value--accent">{{ formatPrice(o.grandTotal) }}</div>
       </div>
     </div>
@@ -68,35 +68,35 @@
 
       <!-- Customer details -->
       <div class="detail-card">
-        <div class="detail-card-title">Customer Details</div>
+        <div class="detail-card-title">{{ 'ORDER_CONFIRM.CUSTOMER_DETAILS' | translate }}</div>
         <div class="detail-rows">
           @if (o.customerName) {
             <div class="detail-row">
-              <span class="detail-label">Name</span>
+              <span class="detail-label">{{ 'ORDER_CONFIRM.NAME' | translate }}</span>
               <span class="detail-value">{{ o.customerName }}</span>
             </div>
           }
           @if (o.customerEmail) {
             <div class="detail-row">
-              <span class="detail-label">Email</span>
+              <span class="detail-label">{{ 'ORDER_CONFIRM.EMAIL' | translate }}</span>
               <span class="detail-value">{{ o.customerEmail }}</span>
             </div>
           }
           @if (o.customerPhone) {
             <div class="detail-row">
-              <span class="detail-label">Phone</span>
+              <span class="detail-label">{{ 'ORDER_CONFIRM.PHONE' | translate }}</span>
               <span class="detail-value">{{ o.customerPhone }}</span>
             </div>
           }
           @if (o.deliveryAddress) {
             <div class="detail-row">
-              <span class="detail-label">Address</span>
+              <span class="detail-label">{{ 'ORDER_CONFIRM.ADDRESS' | translate }}</span>
               <span class="detail-value">{{ o.deliveryAddress }}</span>
             </div>
           }
           @if (o.notes) {
             <div class="detail-row">
-              <span class="detail-label">Notes</span>
+              <span class="detail-label">{{ 'ORDER_CONFIRM.NOTES' | translate }}</span>
               <span class="detail-value">{{ o.notes }}</span>
             </div>
           }
@@ -105,32 +105,32 @@
 
       <!-- Financial summary -->
       <div class="detail-card">
-        <div class="detail-card-title">Order Summary</div>
+        <div class="detail-card-title">{{ 'ORDER_CONFIRM.ORDER_SUMMARY' | translate }}</div>
         <div class="detail-rows">
           <div class="detail-row">
-            <span class="detail-label">Subtotal</span>
+            <span class="detail-label">{{ 'ORDER_CONFIRM.SUBTOTAL' | translate }}</span>
             <span class="detail-value">{{ formatPrice(o.subtotal) }}</span>
           </div>
           @if (o.shippingCost) {
             <div class="detail-row">
-              <span class="detail-label">Shipping</span>
+              <span class="detail-label">{{ 'ORDER_CONFIRM.SHIPPING' | translate }}</span>
               <span class="detail-value">{{ formatPrice(o.shippingCost) }}</span>
             </div>
           }
           @if (o.discountTotal) {
             <div class="detail-row">
-              <span class="detail-label">Discount</span>
+              <span class="detail-label">{{ 'ORDER_CONFIRM.DISCOUNT' | translate }}</span>
               <span class="detail-value detail-value--green">−{{ formatPrice(o.discountTotal) }}</span>
             </div>
           }
           <div class="detail-divider"></div>
           <div class="detail-row detail-row--total">
-            <span>Grand Total</span>
+            <span>{{ 'ORDER_CONFIRM.GRAND_TOTAL' | translate }}</span>
             <span>{{ formatPrice(o.grandTotal) }}</span>
           </div>
           @if (o.balanceDue > 0) {
             <div class="detail-row">
-              <span class="detail-label">Balance Due</span>
+              <span class="detail-label">{{ 'ORDER_CONFIRM.BALANCE_DUE' | translate }}</span>
               <span class="detail-value detail-value--accent">{{ formatPrice(o.balanceDue) }}</span>
             </div>
           }
@@ -141,8 +141,8 @@
 
     <!-- CTA buttons -->
     <div class="cta-row">
-      <a routerLink="/catalogues" class="cta-primary">Continue Shopping →</a>
-      <a routerLink="/" class="cta-secondary">← Back to Home</a>
+      <a routerLink="/catalogues" class="cta-primary">{{ 'ORDER_CONFIRM.CONTINUE_SHOPPING' | translate }}</a>
+      <a routerLink="/" class="cta-secondary">{{ 'ORDER_CONFIRM.BACK_TO_HOME' | translate }}</a>
     </div>
 
   }

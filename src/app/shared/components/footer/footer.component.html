@@ -35,46 +35,44 @@
               <div class="footer-brand-name">
                 {{ brandWord1 }} <span class="footer-brand-accent">{{ brandWord2 }}</span>
               </div>
-              <div class="footer-brand-tagline">Rethink · Repower · Rebuild</div>
+              <div class="footer-brand-tagline">{{ 'FOOTER.TAGLINE' | translate }}</div>
             </div>
           }
         </div>
-        <p class="footer-desc">
-          Bangladesh's most trusted solar solutions provider. Clean energy for every home since 2018.
-        </p>
+        <p class="footer-desc">{{ 'FOOTER.DESC' | translate }}</p>
       </div>
 
       <!-- Col 2: Products -->
       <div class="footer-col">
-        <div class="footer-col-heading">Products</div>
+        <div class="footer-col-heading">{{ 'FOOTER.PRODUCTS' | translate }}</div>
         <div class="footer-links">
-          <a href="#" class="footer-link">Solar Panels</a>
-          <a href="#" class="footer-link">Inverters</a>
-          <a href="#" class="footer-link">Battery Storage</a>
-          <a href="#" class="footer-link">Complete Kits</a>
-          <a href="#" class="footer-link">Monitoring</a>
+          <a href="#" class="footer-link">{{ 'FOOTER.SOLAR_PANELS' | translate }}</a>
+          <a href="#" class="footer-link">{{ 'FOOTER.INVERTERS' | translate }}</a>
+          <a href="#" class="footer-link">{{ 'FOOTER.BATTERY' | translate }}</a>
+          <a href="#" class="footer-link">{{ 'FOOTER.KITS' | translate }}</a>
+          <a href="#" class="footer-link">{{ 'FOOTER.MONITORING' | translate }}</a>
         </div>
       </div>
 
       <!-- Col 3: Company -->
       <div class="footer-col">
-        <div class="footer-col-heading">Company</div>
+        <div class="footer-col-heading">{{ 'FOOTER.COMPANY' | translate }}</div>
         <div class="footer-links">
-          <a href="#" class="footer-link">About Us</a>
-          <a href="#" class="footer-link">Blog</a>
-          <a href="#" class="footer-link">Careers</a>
-          <a href="#" class="footer-link">Contact</a>
+          <a href="#" class="footer-link">{{ 'FOOTER.ABOUT' | translate }}</a>
+          <a href="#" class="footer-link">{{ 'FOOTER.BLOG' | translate }}</a>
+          <a href="#" class="footer-link">{{ 'FOOTER.CAREERS' | translate }}</a>
+          <a href="#" class="footer-link">{{ 'FOOTER.CONTACT' | translate }}</a>
         </div>
       </div>
 
       <!-- Col 4: Support -->
       <div class="footer-col">
-        <div class="footer-col-heading">Support</div>
+        <div class="footer-col-heading">{{ 'FOOTER.SUPPORT' | translate }}</div>
         <div class="footer-links">
-          <a href="#" class="footer-link">Installation Guide</a>
-          <a href="#" class="footer-link">Warranty Claims</a>
-          <a href="#" class="footer-link">FAQ</a>
-          <a href="#" class="footer-link">Track Order</a>
+          <a href="#" class="footer-link">{{ 'FOOTER.INSTALLATION' | translate }}</a>
+          <a href="#" class="footer-link">{{ 'FOOTER.WARRANTY' | translate }}</a>
+          <a href="#" class="footer-link">{{ 'FOOTER.FAQ' | translate }}</a>
+          <a href="#" class="footer-link">{{ 'FOOTER.TRACK_ORDER' | translate }}</a>
         </div>
       </div>
 
@@ -83,12 +81,12 @@
     <!-- ── Bottom bar ──────────────────────────────────────────────────── -->
     <div class="footer-bottom">
       <span class="footer-copy">
-        &copy; {{ currentYear }} {{ settings?.siteName || 'Dymo Energy' }} Ltd. All rights reserved.
+        &copy; {{ currentYear }} {{ settings?.siteName || 'Dymo Energy' }} {{ 'FOOTER.ALL_RIGHTS' | translate }}
       </span>
       <nav class="footer-legal">
-        <a href="#" class="footer-legal-link">Privacy</a>
-        <a href="#" class="footer-legal-link">Terms</a>
-        <a href="#" class="footer-legal-link">Cookies</a>
+        <a href="#" class="footer-legal-link">{{ 'FOOTER.PRIVACY' | translate }}</a>
+        <a href="#" class="footer-legal-link">{{ 'FOOTER.TERMS' | translate }}</a>
+        <a href="#" class="footer-legal-link">{{ 'FOOTER.COOKIES' | translate }}</a>
       </nav>
     </div>
 

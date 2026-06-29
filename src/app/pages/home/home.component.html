@@ -21,23 +21,20 @@
     <div class="hero-left">
       <div class="hero-eyebrow">
         <div class="hero-eyebrow-line"></div>
-        <span>Solar Products &amp; Energy Solutions</span>
+        <span>{{ 'HOME.HERO_EYEBROW' | translate }}</span>
       </div>
-      <h1 class="hero-h1 hero-h1--white">Rethink.</h1>
-      <h1 class="hero-h1 hero-h1--lime">Repower.</h1>
-      <h1 class="hero-h1 hero-h1--blue">Rebuild.</h1>
-      <p class="hero-sub">
-        Premium solar panels, inverters, and battery storage engineered for Bangladesh.
-        Cut energy costs — power a sustainable future.
-      </p>
+      <h1 class="hero-h1 hero-h1--white">{{ 'HOME.HERO_H1_1' | translate }}</h1>
+      <h1 class="hero-h1 hero-h1--lime">{{ 'HOME.HERO_H1_2' | translate }}</h1>
+      <h1 class="hero-h1 hero-h1--blue">{{ 'HOME.HERO_H1_3' | translate }}</h1>
+      <p class="hero-sub">{{ 'HOME.HERO_SUB' | translate }}</p>
       <div class="hero-ctas">
-        <a routerLink="/catalogues" class="hero-cta hero-cta--primary">Shop Now</a>
+        <a routerLink="/catalogues" class="hero-cta hero-cta--primary">{{ 'HOME.SHOP_NOW' | translate }}</a>
         <a routerLink="/quote" class="hero-cta hero-cta--ghost">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <circle cx="8" cy="8" r="6" stroke="#78CDE0" stroke-width="1.5"/>
             <polygon points="6.5,5.5 11,8 6.5,10.5" fill="#78CDE0"/>
           </svg>
-          Free Consultation
+          {{ 'HOME.FREE_CONSULTATION' | translate }}
         </a>
       </div>
       <div class="hero-rating">
@@ -48,9 +45,7 @@
             </svg>
           }
         </div>
-        <span class="hero-rating-text">
-          <strong>4.9/5</strong> — Trusted by 2,000+ Bangladeshi homes
-        </span>
+        <span class="hero-rating-text" [innerHTML]="'HOME.RATING' | translate"></span>
       </div>
     </div>
 
@@ -135,11 +130,11 @@
 
   <div class="products-header">
     <div class="products-header-left">
-      <div class="products-eyebrow">Featured Products</div>
-      <h2 class="products-title">Best Sellers</h2>
+      <div class="products-eyebrow">{{ 'HOME.FEATURED_EYEBROW' | translate }}</div>
+      <h2 class="products-title">{{ 'HOME.BEST_SELLERS' | translate }}</h2>
     </div>
     <a routerLink="/shop" class="products-view-all">
-      View All
+      {{ 'HOME.VIEW_ALL' | translate }}
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
         <line x1="2" y1="7" x2="12" y2="7" stroke="#2D3B60" stroke-width="1.8" stroke-linecap="round"/>
         <polyline points="8,3 12,7 8,11" stroke="#2D3B60" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -186,7 +181,7 @@
             }
             <div class="prod-footer">
               <div class="prod-price">{{ formatPrice(product.discountPrice ?? product.price) }}</div>
-              <button class="prod-add" (click)="addToCart(product)">Add</button>
+              <button class="prod-add" (click)="addToCart(product)">{{ 'HOME.ADD' | translate }}</button>
             </div>
           </div>
         </div>
@@ -225,7 +220,7 @@
             </svg>
           </div>
           <div class="stat-value">870 <span class="stat-unit">GW</span></div>
-          <div class="stat-label">Power Electronic<br>Converters Installation</div>
+          <div class="stat-label" [innerHTML]="'HOME.STAT1_LABEL' | translate"></div>
         </div>
 
         <div class="stat-item">
@@ -237,7 +232,7 @@
             </svg>
           </div>
           <div class="stat-value">NO.1</div>
-          <div class="stat-label">PV Inverter &amp; ESS &amp; PCS<br>Bankability<sup>*1</sup></div>
+          <div class="stat-label" [innerHTML]="'HOME.STAT2_LABEL' | translate"></div>
         </div>
 
         <div class="stat-item">
@@ -248,7 +243,7 @@
             </svg>
           </div>
           <div class="stat-value">6</div>
-          <div class="stat-label">R&amp;D<br>Centers</div>
+          <div class="stat-label">{{ 'HOME.STAT3_LABEL' | translate }}</div>
         </div>
 
         <div class="stat-item">
@@ -260,7 +255,7 @@
             </svg>
           </div>
           <div class="stat-value">20<sup class="stat-sup">+</sup></div>
-          <div class="stat-label">International<br>Subsidiaries</div>
+          <div class="stat-label">{{ 'HOME.STAT4_LABEL' | translate }}</div>
         </div>
 
         <div class="stat-item">
@@ -272,7 +267,7 @@
             </svg>
           </div>
           <div class="stat-value">AAA</div>
-          <div class="stat-label">MSCI ESG<br>Rating in 2025<sup>*2</sup></div>
+          <div class="stat-label">{{ 'HOME.STAT5_LABEL' | translate }}</div>
         </div>
 
       </div><!-- /about-stats -->
@@ -285,7 +280,7 @@
 
       <!-- CTA -->
       <a routerLink="/about" class="about-cta" [style.border-color]="accentColor()" [style.color]="accentColor()">
-        Discover Who We Are
+        {{ 'HOME.ABOUT_CTA' | translate }}
       </a>
 
     </div>
@@ -297,8 +292,8 @@
   <div class="why-dots"></div>
 
   <div class="why-header">
-    <div class="why-eyebrow">Why Dymo Energy</div>
-    <h2 class="why-title">Built for Bangladesh</h2>
+    <div class="why-eyebrow">{{ 'HOME.WHY_EYEBROW' | translate }}</div>
+    <h2 class="why-title">{{ 'HOME.WHY_TITLE' | translate }}</h2>
   </div>
 
   <div class="why-grid">
@@ -313,8 +308,8 @@
           <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
         </svg>
       </div>
-      <div class="why-card-title">22.6% Efficiency</div>
-      <div class="why-card-desc">Industry-leading monocrystalline panels — maximum power from every square metre.</div>
+      <div class="why-card-title">{{ 'HOME.WHY_CARD1_TITLE' | translate }}</div>
+      <div class="why-card-desc">{{ 'HOME.WHY_CARD1_DESC' | translate }}</div>
     </div>
 
     <div class="why-card">
@@ -325,8 +320,8 @@
           <line x1="11" y1="12" x2="11" y2="17"/>
         </svg>
       </div>
-      <div class="why-card-title">Load-Shedding Proof</div>
-      <div class="why-card-desc">Battery storage keeps your home powered during Bangladesh's load-shedding hours.</div>
+      <div class="why-card-title">{{ 'HOME.WHY_CARD2_TITLE' | translate }}</div>
+      <div class="why-card-desc">{{ 'HOME.WHY_CARD2_DESC' | translate }}</div>
     </div>
 
     <div class="why-card">
@@ -335,8 +330,8 @@
           <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
         </svg>
       </div>
-      <div class="why-card-title">Live Monitoring</div>
-      <div class="why-card-desc">Real-time generation, savings, and alerts via the Dymo mobile app — anytime, anywhere.</div>
+      <div class="why-card-title">{{ 'HOME.WHY_CARD3_TITLE' | translate }}</div>
+      <div class="why-card-desc">{{ 'HOME.WHY_CARD3_DESC' | translate }}</div>
     </div>
 
     <div class="why-card">
@@ -346,8 +341,8 @@
           <polyline points="9,12 11,14 15,10"/>
         </svg>
       </div>
-      <div class="why-card-title">25yr Warranty</div>
-      <div class="why-card-desc">Industry-leading 25-year performance warranty. We stand behind every installation.</div>
+      <div class="why-card-title">{{ 'HOME.WHY_CARD4_TITLE' | translate }}</div>
+      <div class="why-card-desc">{{ 'HOME.WHY_CARD4_DESC' | translate }}</div>
     </div>
 
   </div>
@@ -357,8 +352,8 @@
 <section class="reviews-section">
 
   <div class="reviews-header">
-    <div class="reviews-eyebrow">Customer Stories</div>
-    <h2 class="reviews-title">Real Results</h2>
+    <div class="reviews-eyebrow">{{ 'HOME.REVIEWS_EYEBROW' | translate }}</div>
+    <h2 class="reviews-title">{{ 'HOME.REVIEWS_TITLE' | translate }}</h2>
   </div>
 
   <div class="reviews-grid">
@@ -369,12 +364,12 @@
           <svg width="16" height="16" viewBox="0 0 16 16"><polygon points="8,1.5 9.6,6 14.5,6 10.5,9 11.9,14 8,11 4.1,14 5.5,9 1.5,6 6.4,6" fill="#A4DF38"/></svg>
         }
       </div>
-      <p class="review-text">"Our electricity bill dropped by 85%. No more load-shedding nightmares. The Dymo team installed everything in one day — absolutely professional."</p>
+      <p class="review-text">{{ 'HOME.REVIEW1_TEXT' | translate }}</p>
       <div class="review-author">
         <div class="review-avatar review-avatar--lime">AR</div>
         <div>
-          <div class="review-name">Ahmed Rahman</div>
-          <div class="review-location">Dhaka, Gulshan</div>
+          <div class="review-name">{{ 'HOME.REVIEW1_NAME' | translate }}</div>
+          <div class="review-location">{{ 'HOME.REVIEW1_LOC' | translate }}</div>
         </div>
       </div>
     </div>
@@ -385,12 +380,12 @@
           <svg width="16" height="16" viewBox="0 0 16 16"><polygon points="8,1.5 9.6,6 14.5,6 10.5,9 11.9,14 8,11 4.1,14 5.5,9 1.5,6 6.4,6" fill="#A4DF38"/></svg>
         }
       </div>
-      <p class="review-text">"The 2kW kit for our factory has saved us over ৳15,000 every month. ROI in less than 3 years. Dymo's after-sales support is exceptional."</p>
+      <p class="review-text">{{ 'HOME.REVIEW2_TEXT' | translate }}</p>
       <div class="review-author">
         <div class="review-avatar review-avatar--blue">FK</div>
         <div>
-          <div class="review-name">Fatima Khan</div>
-          <div class="review-location">Chittagong, Nasirabad</div>
+          <div class="review-name">{{ 'HOME.REVIEW2_NAME' | translate }}</div>
+          <div class="review-location">{{ 'HOME.REVIEW2_LOC' | translate }}</div>
         </div>
       </div>
     </div>
@@ -401,12 +396,12 @@
           <svg width="16" height="16" viewBox="0 0 16 16"><polygon points="8,1.5 9.6,6 14.5,6 10.5,9 11.9,14 8,11 4.1,14 5.5,9 1.5,6 6.4,6" fill="#A4DF38"/></svg>
         }
       </div>
-      <p class="review-text">"The Smart Monitor app shows everything live. I can see exactly how much solar I'm generating versus what I'm using. Best tech investment we've made."</p>
+      <p class="review-text">{{ 'HOME.REVIEW3_TEXT' | translate }}</p>
       <div class="review-author">
         <div class="review-avatar review-avatar--green">MI</div>
         <div>
-          <div class="review-name">Md. Imran</div>
-          <div class="review-location">Sylhet, Amberkhana</div>
+          <div class="review-name">{{ 'HOME.REVIEW3_NAME' | translate }}</div>
+          <div class="review-location">{{ 'HOME.REVIEW3_LOC' | translate }}</div>
         </div>
       </div>
     </div>
@@ -425,7 +420,7 @@
 ) {
 <section class="social-section">
   <div class="social-inner">
-    <h2 class="social-title">Follow Us</h2>
+    <h2 class="social-title">{{ 'HOME.SOCIAL_TITLE' | translate }}</h2>
     <div class="social-icons">
       @if (userSiteSetting()?.socialLinkedinUrl) {
         <a class="social-icon-link" [href]="userSiteSetting()!.socialLinkedinUrl" target="_blank" rel="noopener" aria-label="LinkedIn">
@@ -472,12 +467,12 @@
   <div class="newsletter-dots"></div>
   <div class="newsletter-inner">
     <div class="newsletter-copy">
-      <h2 class="newsletter-title">Get Solar Insights</h2>
-      <p class="newsletter-sub">Tips, savings guides &amp; exclusive offers. Join 18,000+ subscribers.</p>
+      <h2 class="newsletter-title">{{ 'HOME.NEWSLETTER_TITLE' | translate }}</h2>
+      <p class="newsletter-sub">{{ 'HOME.NEWSLETTER_SUB' | translate }}</p>
     </div>
     <div class="newsletter-form">
-      <input type="email" class="newsletter-input" placeholder="your@email.com" [(ngModel)]="newsletterEmail" />
-      <button class="newsletter-btn" (click)="subscribeNewsletter()">Subscribe</button>
+      <input type="email" class="newsletter-input" [placeholder]="'HOME.NEWSLETTER_PLACEHOLDER' | translate" [(ngModel)]="newsletterEmail" />
+      <button class="newsletter-btn" (click)="subscribeNewsletter()">{{ 'HOME.SUBSCRIBE' | translate }}</button>
     </div>
   </div>
 </section>

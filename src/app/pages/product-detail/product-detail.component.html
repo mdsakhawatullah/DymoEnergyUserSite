@@ -10,9 +10,9 @@
 
   <!-- ── Breadcrumb ──────────────────────────────────────────────────────── -->
   <nav class="breadcrumb">
-    <a routerLink="/" class="bc-link">Home</a>
+    <a routerLink="/" class="bc-link">{{ 'PRODUCT_DETAIL.HOME' | translate }}</a>
     <span class="bc-sep">›</span>
-    <a routerLink="/shop" class="bc-link">Shop</a>
+    <a routerLink="/shop" class="bc-link">{{ 'PRODUCT_DETAIL.SHOP' | translate }}</a>
     @if (product()) {
       <span class="bc-sep">›</span>
       <span class="bc-current">{{ product()!.name }}</span>
@@ -23,14 +23,14 @@
   @if (loading()) {
     <div class="state-center">
       <div class="big-spinner"></div>
-      <div class="state-text">Loading product…</div>
+      <div class="state-text">{{ 'PRODUCT_DETAIL.LOADING' | translate }}</div>
     </div>
 
   <!-- ── Error ───────────────────────────────────────────────────────────── -->
   } @else if (error()) {
     <div class="state-center">
       <div class="state-title">{{ error() }}</div>
-      <a routerLink="/shop" class="back-link">← Back to Shop</a>
+      <a routerLink="/shop" class="back-link">{{ 'PRODUCT_DETAIL.BACK_SHOP' | translate }}</a>
     </div>
 
   <!-- ── Product ─────────────────────────────────────────────────────────── -->
@@ -44,7 +44,7 @@
           @if (p.ribbonText) {
             <div class="img-badge">{{ p.ribbonText }}</div>
           } @else if (p.isFeatured) {
-            <div class="img-badge">POPULAR</div>
+            <div class="img-badge">{{ 'PRODUCT_DETAIL.POPULAR' | translate }}</div>
           }
           @if (p.primaryImage) {
             <img [src]="p.primaryImage" [alt]="p.name" class="product-img" />
@@ -55,7 +55,7 @@
                 <circle cx="26" cy="26" r="6" stroke="#9BBCCC" stroke-width="2"/>
                 <path d="M8 48 L22 34 L36 44 L50 28 L64 48" stroke="#9BBCCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <div class="img-placeholder-label">No image available</div>
+              <div class="img-placeholder-label">{{ 'PRODUCT_DETAIL.NO_IMAGE' | translate }}</div>
             </div>
           }
         </div>
@@ -64,12 +64,11 @@
       <!-- ── Info panel ── -->
       <div class="info-panel">
 
-        <!-- Eyebrow -->
         @if (catalogue()) {
           <div class="prod-eyebrow">{{ catalogue()!.name }}</div>
         }
         @if (p.sku) {
-          <div class="prod-sku">SKU: {{ p.sku }}</div>
+          <div class="prod-sku">{{ 'PRODUCT_DETAIL.SKU' | translate }}: {{ p.sku }}</div>
         }
 
         <h1 class="prod-name">{{ p.name }}</h1>
@@ -83,7 +82,7 @@
           <div class="price-main">{{ formatPrice(effectivePrice()) }}</div>
           @if (hasDiscount()) {
             <div class="price-original">{{ formatPrice(p.price) }}</div>
-            <div class="price-tag">Sale</div>
+            <div class="price-tag">{{ 'PRODUCT_DETAIL.SALE' | translate }}</div>
           }
         </div>
 
@@ -91,11 +90,11 @@
         <div class="stock-row">
           @if (p.stockQuantity > 0) {
             <div class="stock-badge stock-badge--in">
-              <span class="stock-dot"></span>In Stock ({{ p.stockQuantity }} units)
+              <span class="stock-dot"></span>{{ 'PRODUCT_DETAIL.IN_STOCK' | translate }} ({{ p.stockQuantity }} {{ 'PRODUCT_DETAIL.UNITS' | translate }})
             </div>
           } @else {
             <div class="stock-badge stock-badge--out">
-              <span class="stock-dot"></span>Out of Stock
+              <span class="stock-dot"></span>{{ 'PRODUCT_DETAIL.OUT_OF_STOCK' | translate }}
             </div>
           }
         </div>
@@ -112,9 +111,9 @@
                   [disabled]="p.stockQuantity === 0"
                   (click)="addToCart()">
             @if (addedToCart()) {
-              ✓ Added to Cart
+              {{ 'PRODUCT_DETAIL.ADDED_TO_CART' | translate }}
             } @else {
-              + Add to Cart
+              {{ 'PRODUCT_DETAIL.ADD_TO_CART' | translate }}
             }
           </button>
         </div>
@@ -123,19 +122,19 @@
         <div class="meta-chips">
           @if (p.weight) {
             <div class="meta-chip">
-              <span class="meta-chip-label">Weight</span>
+              <span class="meta-chip-label">{{ 'PRODUCT_DETAIL.WEIGHT' | translate }}</span>
               <span class="meta-chip-val">{{ p.weight }}</span>
             </div>
           }
           @if (p.vendorName) {
             <div class="meta-chip">
-              <span class="meta-chip-label">Brand</span>
+              <span class="meta-chip-label">{{ 'PRODUCT_DETAIL.BRAND' | translate }}</span>
               <span class="meta-chip-val">{{ p.vendorName }}</span>
             </div>
           }
           @if (p.vendorCode) {
             <div class="meta-chip">
-              <span class="meta-chip-label">Model</span>
+              <span class="meta-chip-label">{{ 'PRODUCT_DETAIL.MODEL' | translate }}</span>
               <span class="meta-chip-val">{{ p.vendorCode }}</span>
             </div>
           }
@@ -147,7 +146,7 @@
     <!-- ── Description card ─────────────────────────────────────────────── -->
     @if (p.description) {
       <div class="desc-card">
-        <div class="desc-card-title">Product Description</div>
+        <div class="desc-card-title">{{ 'PRODUCT_DETAIL.DESCRIPTION' | translate }}</div>
         <div class="desc-body" [innerHTML]="p.description"></div>
       </div>
     }
@@ -156,8 +155,8 @@
     @if (related().length > 0) {
       <div class="related-section">
         <div class="related-header">
-          <div class="related-eyebrow">More Like This</div>
-          <h2 class="related-title">Related Products</h2>
+          <div class="related-eyebrow">{{ 'PRODUCT_DETAIL.MORE_LIKE_THIS' | translate }}</div>
+          <h2 class="related-title">{{ 'PRODUCT_DETAIL.RELATED_PRODUCTS' | translate }}</h2>
         </div>
         <div class="related-grid">
           @for (rp of related(); track rp.id) {

@@ -10,13 +10,14 @@ import {
   CreateOrderDto, CreateOrderItemDto,
   OrderStatus, OrderStage, OrderPriority, OrderShipmentType, OrderCreateMethod,
 } from '../../core/models/order.model';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { NavbarComponent, DEFAULT_NAV_ITEMS } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [RouterLink, FormsModule, NgTemplateOutlet, NavbarComponent, FooterComponent],
+  imports: [RouterLink, FormsModule, NgTemplateOutlet, NavbarComponent, FooterComponent, TranslatePipe],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss',
 })

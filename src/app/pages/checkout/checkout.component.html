@@ -10,7 +10,7 @@
 
   <!-- ── Heading ──────────────────────────────────────────────────── -->
   <div class="checkout-heading">
-    <h1 class="checkout-title">Checkout</h1>
+    <h1 class="checkout-title">{{ 'CHECKOUT.TITLE' | translate }}</h1>
   </div>
 
   <!-- ── Stepper ──────────────────────────────────────────────────── -->
@@ -19,19 +19,19 @@
       <div class="step-circle" [class.step-circle--active]="step() >= 1" [class.step-circle--done]="step() > 1">
         @if (step() > 1) { ✓ } @else { 1 }
       </div>
-      <span class="step-label" [class.step-label--active]="step() >= 1">Shipping</span>
+      <span class="step-label" [class.step-label--active]="step() >= 1">{{ 'CHECKOUT.SHIPPING' | translate }}</span>
     </div>
     <div class="step-line"></div>
     <div class="step">
       <div class="step-circle" [class.step-circle--active]="step() >= 2" [class.step-circle--done]="step() > 2">
         @if (step() > 2) { ✓ } @else { 2 }
       </div>
-      <span class="step-label" [class.step-label--active]="step() >= 2">Review</span>
+      <span class="step-label" [class.step-label--active]="step() >= 2">{{ 'CHECKOUT.REVIEW' | translate }}</span>
     </div>
     <div class="step-line"></div>
     <div class="step">
       <div class="step-circle" [class.step-circle--active]="step() >= 3">3</div>
-      <span class="step-label" [class.step-label--active]="step() >= 3">Payment</span>
+      <span class="step-label" [class.step-label--active]="step() >= 3">{{ 'CHECKOUT.PAYMENT' | translate }}</span>
     </div>
   </div>
 
@@ -45,9 +45,9 @@
           <circle cx="25" cy="28" r="2.5" fill="#9BBCCC"/>
         </svg>
       </div>
-      <div class="empty-title">Your cart is empty</div>
-      <div class="empty-sub">Add some solar products to get started</div>
-      <a routerLink="/catalogues" class="empty-btn">Browse Products</a>
+      <div class="empty-title">{{ 'CHECKOUT.EMPTY_TITLE' | translate }}</div>
+      <div class="empty-sub">{{ 'CHECKOUT.EMPTY_SUB' | translate }}</div>
+      <a routerLink="/catalogues" class="empty-btn">{{ 'CHECKOUT.BROWSE' | translate }}</a>
     </div>
 
   } @else {
@@ -56,47 +56,47 @@
       <!-- ════════════════ STEP 1: SHIPPING ════════════════ -->
       @if (step() === 1) {
         <div class="form-card">
-          <div class="form-card-title">Shipping Information</div>
+          <div class="form-card-title">{{ 'CHECKOUT.SHIPPING_INFO' | translate }}</div>
 
           <div class="field-row">
             <div class="field">
-              <label class="field-label">First Name</label>
+              <label class="field-label">{{ 'CHECKOUT.FIRST_NAME' | translate }}</label>
               <input type="text" class="field-input" placeholder="Ahmed"
                      [(ngModel)]="form.firstName" name="firstName" />
             </div>
             <div class="field">
-              <label class="field-label">Last Name</label>
+              <label class="field-label">{{ 'CHECKOUT.LAST_NAME' | translate }}</label>
               <input type="text" class="field-input" placeholder="Rahman"
                      [(ngModel)]="form.lastName" name="lastName" />
             </div>
           </div>
 
           <div class="field-block">
-            <label class="field-label">Email Address</label>
+            <label class="field-label">{{ 'CHECKOUT.EMAIL' | translate }}</label>
             <input type="email" class="field-input" placeholder="ahmed@email.com"
                    [(ngModel)]="form.customerEmail" name="customerEmail" />
           </div>
 
           <div class="field-block">
-            <label class="field-label">Phone Number</label>
+            <label class="field-label">{{ 'CHECKOUT.PHONE' | translate }}</label>
             <input type="tel" class="field-input" placeholder="+88 017XX-XXXXXX"
                    [(ngModel)]="form.customerPhone" name="customerPhone" />
           </div>
 
           <div class="field-block">
-            <label class="field-label">Street Address</label>
+            <label class="field-label">{{ 'CHECKOUT.STREET' | translate }}</label>
             <input type="text" class="field-input" placeholder="House 12, Road 3, Block A"
                    [(ngModel)]="form.streetAddress" name="streetAddress" />
           </div>
 
           <div class="field-row" style="margin-bottom: 24px;">
             <div class="field">
-              <label class="field-label">City / Thana</label>
+              <label class="field-label">{{ 'CHECKOUT.CITY' | translate }}</label>
               <input type="text" class="field-input" placeholder="Dhaka"
                      [(ngModel)]="form.city" name="city" />
             </div>
             <div class="field">
-              <label class="field-label">Division</label>
+              <label class="field-label">{{ 'CHECKOUT.DIVISION' | translate }}</label>
               <select class="field-input field-select" [(ngModel)]="form.division" name="division">
                 <option>Dhaka</option>
                 <option>Chittagong</option>
@@ -111,7 +111,7 @@
           </div>
 
           <button class="primary-btn" [disabled]="!form.firstName.trim()" (click)="goToReview()">
-            Continue to Review →
+            {{ 'CHECKOUT.CONTINUE_REVIEW' | translate }}
           </button>
         </div>
 
@@ -125,24 +125,24 @@
           <!-- Shipping summary -->
           <div class="form-card" style="margin-bottom: 20px;">
             <div class="review-card-header">
-              <div class="form-card-title" style="margin-bottom: 0;">Shipping Details</div>
-              <button class="edit-btn" (click)="back()">Edit</button>
+              <div class="form-card-title" style="margin-bottom: 0;">{{ 'CHECKOUT.SHIPPING_DETAILS' | translate }}</div>
+              <button class="edit-btn" (click)="back()">{{ 'CHECKOUT.EDIT' | translate }}</button>
             </div>
             <div class="review-info-grid">
               <div class="review-info-item">
-                <div class="review-info-label">Name</div>
+                <div class="review-info-label">{{ 'CHECKOUT.NAME' | translate }}</div>
                 <div class="review-info-value">{{ fullName || '—' }}</div>
               </div>
               <div class="review-info-item">
-                <div class="review-info-label">Email</div>
+                <div class="review-info-label">{{ 'CHECKOUT.EMAIL' | translate }}</div>
                 <div class="review-info-value">{{ form.customerEmail || '—' }}</div>
               </div>
               <div class="review-info-item">
-                <div class="review-info-label">Phone</div>
+                <div class="review-info-label">{{ 'CHECKOUT.PHONE' | translate }}</div>
                 <div class="review-info-value">{{ form.customerPhone || '—' }}</div>
               </div>
               <div class="review-info-item">
-                <div class="review-info-label">Address</div>
+                <div class="review-info-label">{{ 'CHECKOUT.ADDRESS' | translate }}</div>
                 <div class="review-info-value">{{ deliveryAddress || '—' }}</div>
               </div>
             </div>
@@ -150,7 +150,7 @@
 
           <!-- Items review -->
           <div class="form-card">
-            <div class="form-card-title">Order Items</div>
+            <div class="form-card-title">{{ 'CHECKOUT.ORDER_ITEMS' | translate }}</div>
             <div class="review-items">
               @for (item of cartService.items(); track item.productId) {
                 <div class="review-item">
@@ -167,7 +167,7 @@
                   </div>
                   <div class="review-item-info">
                     <div class="review-item-name">{{ item.productName }}</div>
-                    @if (item.sku) { <div class="review-item-sku">SKU: {{ item.sku }}</div> }
+                    @if (item.sku) { <div class="review-item-sku">{{ 'CHECKOUT.SKU' | translate }}: {{ item.sku }}</div> }
                   </div>
                   <div class="review-item-right">
                     <div class="review-item-qty">× {{ item.quantity }}</div>
@@ -179,24 +179,24 @@
 
             <div class="review-totals">
               <div class="review-total-row">
-                <span>Subtotal</span>
+                <span>{{ 'CHECKOUT.SUBTOTAL' | translate }}</span>
                 <span>{{ formatPrice(cartService.subtotal()) }}</span>
               </div>
               <div class="review-total-row">
-                <span>Shipping</span>
+                <span>{{ 'CHECKOUT.SHIPPING_COST' | translate }}</span>
                 <span class="text-green">{{ formatPrice(shippingCost) }}</span>
               </div>
               <div class="review-divider"></div>
               <div class="review-total-row review-total-row--bold">
-                <span>Total</span>
+                <span>{{ 'CHECKOUT.TOTAL' | translate }}</span>
                 <span>{{ formatPrice(cartService.subtotal() + shippingCost) }}</span>
               </div>
             </div>
 
             <div class="btn-row">
-              <button class="back-btn" (click)="back()">← Back</button>
+              <button class="back-btn" (click)="back()">{{ 'CHECKOUT.BACK' | translate }}</button>
               <button class="primary-btn" style="flex:1" (click)="goToPayment()">
-                Proceed to Payment →
+                {{ 'CHECKOUT.PROCEED_PAYMENT' | translate }}
               </button>
             </div>
           </div>
@@ -208,7 +208,7 @@
       <!-- ════════════════ STEP 3: PAYMENT ════════════════ -->
       @if (step() === 3) {
         <div class="form-card">
-          <div class="form-card-title">Payment Method</div>
+          <div class="form-card-title">{{ 'CHECKOUT.PAYMENT_METHOD' | translate }}</div>
 
           <div class="payment-options">
 
@@ -221,8 +221,8 @@
                 </svg>
               </div>
               <div class="payment-info">
-                <div class="payment-name">Cash on Delivery</div>
-                <div class="payment-desc">Pay with cash when your order arrives</div>
+                <div class="payment-name">{{ 'CHECKOUT.COD' | translate }}</div>
+                <div class="payment-desc">{{ 'CHECKOUT.COD_DESC' | translate }}</div>
               </div>
             </label>
 
@@ -235,8 +235,8 @@
                 </svg>
               </div>
               <div class="payment-info">
-                <div class="payment-name">Bank Transfer</div>
-                <div class="payment-desc">Transfer directly to our bank account</div>
+                <div class="payment-name">{{ 'CHECKOUT.BANK' | translate }}</div>
+                <div class="payment-desc">{{ 'CHECKOUT.BANK_DESC' | translate }}</div>
               </div>
             </label>
 
@@ -246,8 +246,8 @@
                 <span style="font-weight:900; font-size:13px; color:#E2136E;">bK</span>
               </div>
               <div class="payment-info">
-                <div class="payment-name">bKash</div>
-                <div class="payment-desc">Pay via bKash mobile banking</div>
+                <div class="payment-name">{{ 'CHECKOUT.BKASH' | translate }}</div>
+                <div class="payment-desc">{{ 'CHECKOUT.BKASH_DESC' | translate }}</div>
               </div>
             </label>
 
@@ -257,17 +257,17 @@
                 <span style="font-weight:900; font-size:12px; color:#F15A24;">Ng</span>
               </div>
               <div class="payment-info">
-                <div class="payment-name">Nagad</div>
-                <div class="payment-desc">Pay via Nagad mobile banking</div>
+                <div class="payment-name">{{ 'CHECKOUT.NAGAD' | translate }}</div>
+                <div class="payment-desc">{{ 'CHECKOUT.NAGAD_DESC' | translate }}</div>
               </div>
             </label>
 
           </div>
 
           <div class="field-block" style="margin-top: 20px;">
-            <label class="field-label">Order Notes (optional)</label>
+            <label class="field-label">{{ 'CHECKOUT.ORDER_NOTES' | translate }}</label>
             <textarea class="field-input field-textarea" rows="3"
-                      placeholder="Special instructions or delivery notes…"
+                      [placeholder]="'CHECKOUT.NOTES_PLACEHOLDER' | translate"
                       [(ngModel)]="form.notes" name="notes"></textarea>
           </div>
 
@@ -276,20 +276,20 @@
           }
 
           <div class="btn-row" style="margin-top: 24px;">
-            <button class="back-btn" (click)="back()">← Back</button>
+            <button class="back-btn" (click)="back()">{{ 'CHECKOUT.BACK' | translate }}</button>
             <button class="primary-btn" style="flex:1"
                     [disabled]="submitting()"
                     [class.primary-btn--loading]="submitting()"
                     (click)="placeOrder()">
               @if (submitting()) {
-                <span class="spinner"></span> Placing Order…
+                <span class="spinner"></span> {{ 'CHECKOUT.PLACING_ORDER' | translate }}
               } @else {
-                Place Order →
+                {{ 'CHECKOUT.PLACE_ORDER' | translate }}
               }
             </button>
           </div>
 
-          <p class="order-note">By placing your order you agree to our terms and conditions.</p>
+          <p class="order-note">{{ 'CHECKOUT.TERMS' | translate }}</p>
         </div>
 
         <ng-container *ngTemplateOutlet="summaryCard" />
@@ -303,7 +303,7 @@
 <!-- ── Reusable summary card template ───────────────────────────── -->
 <ng-template #summaryCard>
   <div class="summary-card">
-    <div class="summary-title">Order Summary</div>
+    <div class="summary-title">{{ 'CHECKOUT.ORDER_SUMMARY' | translate }}</div>
 
     <div class="summary-items">
       @for (item of cartService.items(); track item.productId) {
@@ -318,16 +318,16 @@
 
     <div class="summary-rows">
       <div class="summary-row">
-        <span class="summary-row-label">Subtotal</span>
+        <span class="summary-row-label">{{ 'CHECKOUT.SUBTOTAL' | translate }}</span>
         <span class="summary-row-value">{{ formatPrice(cartService.subtotal()) }}</span>
       </div>
       <div class="summary-row">
-        <span class="summary-row-label">Shipping</span>
+        <span class="summary-row-label">{{ 'CHECKOUT.SHIPPING_COST' | translate }}</span>
         <span class="summary-row-value summary-row-value--green">{{ formatPrice(shippingCost) }}</span>
       </div>
       <div class="summary-divider"></div>
       <div class="summary-row summary-row--total">
-        <span>Total</span>
+        <span>{{ 'CHECKOUT.TOTAL' | translate }}</span>
         <span class="summary-total-price">{{ formatPrice(cartService.subtotal() + shippingCost) }}</span>
       </div>
     </div>

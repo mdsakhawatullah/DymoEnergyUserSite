@@ -1,4 +1,5 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { RouterLink } from '@angular/router';
 import { AdminSiteSettingService } from '../../core/services/admin-site-setting.service';
 import { CatalogueService } from '../../core/services/catalogue.service';
@@ -13,7 +14,7 @@ import { FooterComponent } from '../../shared/components/footer/footer.component
 @Component({
   selector: 'app-shop',
   standalone: true,
-  imports: [RouterLink, NavbarComponent, FooterComponent],
+  imports: [RouterLink, NavbarComponent, FooterComponent, TranslatePipe],
   templateUrl: './shop.component.html',
   styleUrl: './shop.component.scss',
 })

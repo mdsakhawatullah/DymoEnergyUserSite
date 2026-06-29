@@ -12,11 +12,9 @@
     <!-- ── LEFT: Form ──────────────────────────────────────────────── -->
     <div class="quote-left">
 
-      <div class="eyebrow">Get In Touch</div>
-      <h1 class="quote-title">Let's talk solar.</h1>
-      <p class="quote-sub">
-        Free consultation. No pressure. Our solar engineers will assess your needs and design the right system.
-      </p>
+      <div class="eyebrow">{{ 'QUOTE.EYEBROW' | translate }}</div>
+      <h1 class="quote-title">{{ 'QUOTE.TITLE' | translate }}</h1>
+      <p class="quote-sub">{{ 'QUOTE.SUB' | translate }}</p>
 
       <!-- Form card -->
       <div class="form-card">
@@ -29,9 +27,9 @@
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
             </div>
-            <h2 class="success-title">Message Sent!</h2>
-            <p class="success-desc">Thank you for reaching out. Our team will contact you within 24 hours.</p>
-            <button class="success-back" (click)="submitted.set(false)">Send Another Message</button>
+            <h2 class="success-title">{{ 'QUOTE.SUCCESS_TITLE' | translate }}</h2>
+            <p class="success-desc">{{ 'QUOTE.SUCCESS_DESC' | translate }}</p>
+            <button class="success-back" (click)="submitted.set(false)">{{ 'QUOTE.SEND_ANOTHER' | translate }}</button>
           </div>
 
         } @else {
@@ -39,12 +37,12 @@
           <!-- Name + Phone -->
           <div class="field-row">
             <div class="field">
-              <label class="field-label">Name</label>
-              <input type="text" class="field-input" placeholder="Your full name"
+              <label class="field-label">{{ 'QUOTE.NAME' | translate }}</label>
+              <input type="text" class="field-input" [placeholder]="'QUOTE.NAME_PLACEHOLDER' | translate"
                      [(ngModel)]="form.name" name="name" />
             </div>
             <div class="field">
-              <label class="field-label">Phone</label>
+              <label class="field-label">{{ 'QUOTE.PHONE' | translate }}</label>
               <input type="tel" class="field-input" placeholder="+88 017XX-XXXXXX"
                      [(ngModel)]="form.phone" name="phone" />
             </div>
@@ -52,30 +50,30 @@
 
           <!-- Email -->
           <div class="field-block">
-            <label class="field-label">Email</label>
+            <label class="field-label">{{ 'QUOTE.EMAIL' | translate }}</label>
             <input type="email" class="field-input" placeholder="your@email.com"
                    [(ngModel)]="form.email" name="email" />
           </div>
 
           <!-- Interest -->
           <div class="field-block">
-            <label class="field-label">I'm interested in</label>
+            <label class="field-label">{{ 'QUOTE.INTEREST' | translate }}</label>
             <select class="field-input field-select"
                     [(ngModel)]="form.interest" name="interest">
-              <option>Residential solar system</option>
-              <option>Commercial / industrial solar</option>
-              <option>Battery storage only</option>
-              <option>Solar water heater</option>
-              <option>Wind energy</option>
-              <option>Product enquiry</option>
+              <option>{{ 'QUOTE.INTEREST_OPT1' | translate }}</option>
+              <option>{{ 'QUOTE.INTEREST_OPT2' | translate }}</option>
+              <option>{{ 'QUOTE.INTEREST_OPT3' | translate }}</option>
+              <option>{{ 'QUOTE.INTEREST_OPT4' | translate }}</option>
+              <option>{{ 'QUOTE.INTEREST_OPT5' | translate }}</option>
+              <option>{{ 'QUOTE.INTEREST_OPT6' | translate }}</option>
             </select>
           </div>
 
           <!-- Message -->
           <div class="field-block">
-            <label class="field-label">Message</label>
+            <label class="field-label">{{ 'QUOTE.MESSAGE' | translate }}</label>
             <textarea class="field-input field-textarea"
-                      placeholder="Tell us about your property, current electricity bill, and what you'd like to achieve..."
+                      [placeholder]="'QUOTE.MESSAGE_PLACEHOLDER' | translate"
                       [(ngModel)]="form.message" name="message"></textarea>
           </div>
 
@@ -85,9 +83,9 @@
                   [disabled]="submitting()"
                   (click)="sendMessage()">
             @if (submitting()) {
-              <span class="spinner"></span> Sending…
+              <span class="spinner"></span> {{ 'QUOTE.SENDING' | translate }}
             } @else {
-              Send Message →
+              {{ 'QUOTE.SEND' | translate }}
             }
           </button>
 
@@ -100,7 +98,7 @@
 
       <!-- Head Office -->
       <div class="info-card info-card--dark">
-        <div class="info-card-label">Head Office</div>
+        <div class="info-card-label">{{ 'QUOTE.HEAD_OFFICE' | translate }}</div>
         <div class="info-card-body">
           House 45, Road 11<br />
           Banani, Dhaka 1213<br />
@@ -120,7 +118,7 @@
               </svg>
             </div>
             <div>
-              <div class="contact-key">Phone</div>
+              <div class="contact-key">{{ 'QUOTE.PHONE_KEY' | translate }}</div>
               <div class="contact-val">+88 017XX-XXXXXX</div>
             </div>
           </div>
@@ -133,7 +131,7 @@
               </svg>
             </div>
             <div>
-              <div class="contact-key">Email</div>
+              <div class="contact-key">{{ 'QUOTE.EMAIL_KEY' | translate }}</div>
               <div class="contact-val">hello&#64;dymoenergy.com</div>
             </div>
           </div>
@@ -147,8 +145,8 @@
               </svg>
             </div>
             <div>
-              <div class="contact-key">Hours</div>
-              <div class="contact-val">Sat–Thu: 9AM–7PM<br />Fri: Closed</div>
+              <div class="contact-key">{{ 'QUOTE.HOURS_KEY' | translate }}</div>
+              <div class="contact-val" [innerHTML]="'QUOTE.HOURS_VAL' | translate"></div>
             </div>
           </div>
 
@@ -157,11 +155,9 @@
 
       <!-- Free site assessment CTA -->
       <div class="promo-card">
-        <div class="promo-title">Free Site Assessment</div>
-        <div class="promo-desc">
-          Our engineer visits your home or business — completely free, no obligation.
-        </div>
-        <button class="promo-btn" (click)="sendMessage()">Book Now →</button>
+        <div class="promo-title">{{ 'QUOTE.FREE_ASSESSMENT' | translate }}</div>
+        <div class="promo-desc">{{ 'QUOTE.FREE_ASSESSMENT_DESC' | translate }}</div>
+        <button class="promo-btn" (click)="sendMessage()">{{ 'QUOTE.BOOK_NOW' | translate }}</button>
       </div>
 
     </div>
