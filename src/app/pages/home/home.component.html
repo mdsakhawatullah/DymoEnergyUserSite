@@ -181,7 +181,20 @@
             }
             <div class="prod-footer">
               <div class="prod-price">{{ formatPrice(product.discountPrice ?? product.price) }}</div>
-              <button class="prod-add" (click)="addToCart(product)">{{ 'HOME.ADD' | translate }}</button>
+              @if (cartQty(product.id) === 0) {
+                <button class="prod-add" (click)="addToCart(product)">{{ 'HOME.ADD' | translate }}</button>
+              } @else {
+                <div class="prod-qty-controls">
+                  <button class="prod-qty-btn prod-qty-btn--remove" (click)="removeFromCart(product.id)" title="Remove">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                      <line x1="2" y1="2" x2="10" y2="10"/><line x1="10" y1="2" x2="2" y2="10"/>
+                    </svg>
+                  </button>
+                  <button class="prod-qty-btn" (click)="decreaseQty(product)">−</button>
+                  <span class="prod-qty-val">{{ cartQty(product.id) }}</span>
+                  <button class="prod-qty-btn" (click)="increaseQty(product)">+</button>
+                </div>
+              }
             </div>
           </div>
         </div>
@@ -191,6 +204,38 @@
   </div>
 
 </section>
+
+<!-- ─── TOP CATEGORIES ─── -->
+@if (catalogues().length) {
+  <section class="categories-section">
+    <div class="categories-header">
+      <h2 class="categories-title">Top Categories</h2>
+    </div>
+    <div class="categories-grid">
+      @for (cat of catalogues(); track cat.id) {
+        <a [routerLink]="['/catalogues', cat.slug ?? cat.id]" class="cat-card">
+          <div class="cat-thumb">
+            @if (cat.thumbnailImageUrl || cat.primaryBackgroundImageUrl) {
+              <img
+                [src]="cat.thumbnailImageUrl ?? cat.primaryBackgroundImageUrl"
+                [alt]="cat.name"
+                class="cat-thumb-img"
+              />
+            } @else {
+              <div class="cat-thumb-placeholder">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#b0c4d8" stroke-width="1.5" stroke-linecap="round">
+                  <rect x="3" y="3" width="18" height="18" rx="3"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/>
+                </svg>
+              </div>
+            }
+          </div>
+          <div class="cat-name">{{ cat.name }}</div>
+        </a>
+      }
+    </div>
+  </section>
+}
 
 <!-- ─── ABOUT SECTION ─── -->
 @if (userSiteSetting()?.aboutTitle || userSiteSetting()?.aboutDescription) {

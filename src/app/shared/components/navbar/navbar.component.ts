@@ -12,11 +12,9 @@ export interface NavItem {
 
 export const DEFAULT_NAV_ITEMS: NavItem[] = [
   { label: 'Catalogues', route: '/catalogues' },
-  { label: 'Quotes', route: '/quotes' },
-  { label: 'Orders', route: '/orders' },
-  { label: 'Projects', route: '/projects' },
-  { label: 'Logistics', route: '/logistics' },
-  { label: 'Setup', route: '/setup' },
+  { label: 'Shop', route: '/shop' },
+  { label: 'Solar Calculator', route: '/solar-calculator' },
+  { label: 'Quote', route: '/quote' },
 ];
 
 @Component({

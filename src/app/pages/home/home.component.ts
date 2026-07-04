@@ -135,6 +135,23 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.cartService.addItem(product, 1);
   }
 
+  cartQty(productId: number): number {
+    return this.cartService.items().find(i => i.productId === productId)?.quantity ?? 0;
+  }
+
+  increaseQty(product: Product): void {
+    this.cartService.addItem(product, 1);
+  }
+
+  decreaseQty(product: Product): void {
+    const qty = this.cartQty(product.id);
+    this.cartService.updateQuantity(product.id, qty - 1);
+  }
+
+  removeFromCart(productId: number): void {
+    this.cartService.removeItem(productId);
+  }
+
   subscribeNewsletter(): void {
     if (!this.newsletterEmail.trim()) return;
     this.newsletterEmail = '';

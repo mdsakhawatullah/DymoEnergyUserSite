@@ -1,0 +1,334 @@
+<app-navbar
+  [siteName]="settings()?.siteName || 'Org Name'"
+  [logoUrl]="settings()?.logoUrl"
+  [navbarTextColor]="settings()?.navbarTextColor"
+  [primaryColor]="settings()?.primaryColor"
+  [navItems]="navItems"
+/>
+
+<div class="calc-page">
+
+  <!-- ── Page Header ── -->
+  <div class="calc-header">
+    <div class="calc-eyebrow">{{ 'CALC.PAGE_EYEBROW' | translate }}</div>
+    <h1 class="calc-title">{{ 'CALC.PAGE_TITLE' | translate }}</h1>
+    <p class="calc-sub">{{ 'CALC.PAGE_SUB' | translate }}</p>
+  </div>
+
+  <!-- ── Tab Bar ── -->
+  <div class="calc-tabs">
+    <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'load'" (click)="setTab('load')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+      </svg>
+      {{ 'CALC.TABS.LOAD' | translate }}
+    </button>
+    <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'battery'" (click)="setTab('battery')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3"/>
+      </svg>
+      {{ 'CALC.TABS.BATTERY' | translate }}
+    </button>
+    <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'inverter'" (click)="setTab('inverter')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+      {{ 'CALC.TABS.INVERTER' | translate }}
+    </button>
+    <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'ac'" (click)="setTab('ac')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <rect x="2" y="3" width="20" height="13" rx="2"/><path d="M9 21l3-4 3 4"/><line x1="12" y1="17" x2="12" y2="21"/>
+      </svg>
+      {{ 'CALC.TABS.AC' | translate }}
+    </button>
+    <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'roof'" (click)="setTab('roof')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      </svg>
+      {{ 'CALC.TABS.ROOF' | translate }}
+    </button>
+  </div>
+
+  <!-- ── Calculator Panels ── -->
+  <div class="calc-body">
+
+    <!-- ─── SOLAR LOAD ─── -->
+    @if (activeTab() === 'load') {
+      <div class="calc-panel">
+        <div class="panel-intro">
+          <h2 class="panel-title">{{ 'CALC.LOAD.TITLE' | translate }}</h2>
+          <p class="panel-desc">{{ 'CALC.LOAD.DESC' | translate }}</p>
+        </div>
+
+        <div class="load-table-wrap">
+          <table class="load-table">
+            <thead>
+              <tr>
+                <th>{{ 'CALC.LOAD.APPLIANCE' | translate }}</th>
+                <th>{{ 'CALC.LOAD.WATTS' | translate }}</th>
+                <th>{{ 'CALC.LOAD.HOURS' | translate }}</th>
+                <th>{{ 'CALC.LOAD.QTY' | translate }}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of loadRows(); track $index) {
+                <tr>
+                  <td>
+                    <input class="tbl-input" type="text"
+                      [value]="row.appliance"
+                      [placeholder]="'CALC.LOAD.PLACEHOLDER_APPLIANCE' | translate"
+                      (input)="updateLoadRow($index, 'appliance', $any($event.target).value)" />
+                  </td>
+                  <td>
+                    <input class="tbl-input tbl-input--num" type="number" min="0"
+                      [value]="row.watts"
+                      (input)="updateLoadRow($index, 'watts', $any($event.target).value)" />
+                  </td>
+                  <td>
+                    <input class="tbl-input tbl-input--num" type="number" min="0" max="24"
+                      [value]="row.hours"
+                      (input)="updateLoadRow($index, 'hours', $any($event.target).value)" />
+                  </td>
+                  <td>
+                    <input class="tbl-input tbl-input--num" type="number" min="1"
+                      [value]="row.qty"
+                      (input)="updateLoadRow($index, 'qty', $any($event.target).value)" />
+                  </td>
+                  <td>
+                    <button class="row-remove-btn" (click)="removeLoadRow($index)" [disabled]="loadRows().length === 1">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <line x1="2" y1="2" x2="12" y2="12"/><line x1="12" y1="2" x2="2" y2="12"/>
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <button class="add-row-btn" (click)="addLoadRow()">{{ 'CALC.LOAD.ADD_ROW' | translate }}</button>
+
+        <div class="calc-actions">
+          <button class="btn-calc" (click)="calculateLoad()">{{ 'CALC.LOAD.CALCULATE' | translate }}</button>
+          <button class="btn-reset" (click)="resetLoad()">{{ 'CALC.LOAD.RESET' | translate }}</button>
+        </div>
+
+        @if (loadResult()) {
+          <div class="result-card">
+            <div class="result-row">
+              <span class="result-label">{{ 'CALC.LOAD.TOTAL_LOAD' | translate }}</span>
+              <span class="result-value">{{ loadResult()!.totalKwh }} <span class="result-unit">{{ 'CALC.LOAD.UNIT_KWH' | translate }}</span></span>
+            </div>
+            <div class="result-divider"></div>
+            <div class="result-subtitle">{{ 'CALC.LOAD.RECOMMENDED' | translate }}</div>
+            <div class="result-row">
+              <span class="result-label">{{ 'CALC.LOAD.PANEL_SIZE' | translate }}</span>
+              <span class="result-value result-value--accent">{{ loadResult()!.panelKw }} <span class="result-unit">{{ 'CALC.LOAD.UNIT_KW' | translate }}</span></span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">{{ 'CALC.LOAD.BATTERY_NEEDED' | translate }}</span>
+              <span class="result-value result-value--accent">{{ loadResult()!.batteryKwh }} <span class="result-unit">{{ 'CALC.LOAD.UNIT_KWH_BATT' | translate }}</span></span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ─── BATTERY BACKUP ─── -->
+    @if (activeTab() === 'battery') {
+      <div class="calc-panel">
+        <div class="panel-intro">
+          <h2 class="panel-title">{{ 'CALC.BATTERY.TITLE' | translate }}</h2>
+          <p class="panel-desc">{{ 'CALC.BATTERY.DESC' | translate }}</p>
+        </div>
+
+        <div class="fields-grid">
+          <div class="field-group">
+            <label class="field-label">{{ 'CALC.BATTERY.DAILY_LOAD' | translate }}</label>
+            <input class="field-input" type="number" min="0" [(ngModel)]="battDailyLoad" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">{{ 'CALC.BATTERY.BACKUP_HOURS' | translate }}</label>
+            <input class="field-input" type="number" min="1" max="24" [(ngModel)]="battBackupHours" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">{{ 'CALC.BATTERY.DOD' | translate }}</label>
+            <input class="field-input" type="number" min="1" max="100" [(ngModel)]="battDod" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">{{ 'CALC.BATTERY.BATTERY_VOLTAGE' | translate }}</label>
+            <input class="field-input" type="number" min="12" [(ngModel)]="battVoltage" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">{{ 'CALC.BATTERY.EFFICIENCY' | translate }}</label>
+            <input class="field-input" type="number" min="1" max="100" [(ngModel)]="battEfficiency" />
+          </div>
+        </div>
+
+        <div class="calc-actions">
+          <button class="btn-calc" (click)="calculateBattery()">{{ 'CALC.BATTERY.CALCULATE' | translate }}</button>
+          <button class="btn-reset" (click)="resetBattery()">{{ 'CALC.BATTERY.RESET' | translate }}</button>
+        </div>
+
+        @if (battResult()) {
+          <div class="result-card">
+            <div class="result-row">
+              <span class="result-label">{{ 'CALC.BATTERY.RESULT_CAPACITY' | translate }}</span>
+              <span class="result-value result-value--accent">{{ battResult()!.capacityKwh }} <span class="result-unit">{{ 'CALC.BATTERY.UNIT_KWH' | translate }}</span></span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">{{ 'CALC.BATTERY.RESULT_AH' | translate }}</span>
+              <span class="result-value result-value--accent">{{ battResult()!.ampHours }} <span class="result-unit">{{ 'CALC.BATTERY.UNIT_AH' | translate }}</span></span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ─── INVERTER SIZE ─── -->
+    @if (activeTab() === 'inverter') {
+      <div class="calc-panel">
+        <div class="panel-intro">
+          <h2 class="panel-title">{{ 'CALC.INVERTER.TITLE' | translate }}</h2>
+          <p class="panel-desc">{{ 'CALC.INVERTER.DESC' | translate }}</p>
+        </div>
+
+        <div class="fields-grid">
+          <div class="field-group">
+            <label class="field-label">{{ 'CALC.INVERTER.TOTAL_WATTS' | translate }}</label>
+            <input class="field-input" type="number" min="0" [(ngModel)]="invTotalWatts" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">{{ 'CALC.INVERTER.SURGE_FACTOR' | translate }}</label>
+            <input class="field-input" type="number" min="1" max="3" step="0.05" [(ngModel)]="invSurgeFactor" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">{{ 'CALC.INVERTER.EFFICIENCY' | translate }}</label>
+            <input class="field-input" type="number" min="1" max="100" [(ngModel)]="invEfficiency" />
+          </div>
+        </div>
+
+        <div class="calc-actions">
+          <button class="btn-calc" (click)="calculateInverter()">{{ 'CALC.INVERTER.CALCULATE' | translate }}</button>
+          <button class="btn-reset" (click)="resetInverter()">{{ 'CALC.INVERTER.RESET' | translate }}</button>
+        </div>
+
+        @if (invResult()) {
+          <div class="result-card">
+            <div class="result-subtitle">{{ 'CALC.INVERTER.RESULT_TITLE' | translate }}</div>
+            <div class="result-row">
+              <span class="result-label">kVA</span>
+              <span class="result-value result-value--accent">{{ invResult()!.kva }} <span class="result-unit">{{ 'CALC.INVERTER.UNIT_KVA' | translate }}</span></span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">kW</span>
+              <span class="result-value result-value--accent">{{ invResult()!.kw }} <span class="result-unit">{{ 'CALC.INVERTER.UNIT_KW' | translate }}</span></span>
+            </div>
+            <p class="result-note">{{ 'CALC.INVERTER.NOTE' | translate }}</p>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ─── SOLAR AC ─── -->
+    @if (activeTab() === 'ac') {
+      <div class="calc-panel">
+        <div class="panel-intro">
+          <h2 class="panel-title">{{ 'CALC.AC.TITLE' | translate }}</h2>
+          <p class="panel-desc">{{ 'CALC.AC.DESC' | translate }}</p>
+        </div>
+
+        <div class="fields-grid">
+          <div class="field-group">
+            <label class="field-label">{{ 'CALC.AC.AC_CAPACITY' | translate }} ({{ 'CALC.AC.UNIT_TON' | translate }})</label>
+            <input class="field-input" type="number" min="0.5" step="0.5" [(ngModel)]="acCapacity" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">{{ 'CALC.AC.PANEL_WATT' | translate }}</label>
+            <input class="field-input" type="number" min="100" [(ngModel)]="acPanelWatt" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">{{ 'CALC.AC.SUN_HOURS' | translate }}</label>
+            <input class="field-input" type="number" min="1" max="12" step="0.5" [(ngModel)]="acSunHours" />
+          </div>
+        </div>
+
+        <div class="calc-actions">
+          <button class="btn-calc" (click)="calculateAc()">{{ 'CALC.AC.CALCULATE' | translate }}</button>
+          <button class="btn-reset" (click)="resetAc()">{{ 'CALC.AC.RESET' | translate }}</button>
+        </div>
+
+        @if (acResult()) {
+          <div class="result-card">
+            <div class="result-row">
+              <span class="result-label">{{ 'CALC.AC.RESULT_PANELS' | translate }}</span>
+              <span class="result-value result-value--accent">{{ acResult()!.panels }}</span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">{{ 'CALC.AC.RESULT_TOTAL_KW' | translate }}</span>
+              <span class="result-value result-value--accent">{{ acResult()!.totalKw }} <span class="result-unit">kW</span></span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ─── ROOF AREA ─── -->
+    @if (activeTab() === 'roof') {
+      <div class="calc-panel">
+        <div class="panel-intro">
+          <h2 class="panel-title">{{ 'CALC.ROOF.TITLE' | translate }}</h2>
+          <p class="panel-desc">{{ 'CALC.ROOF.DESC' | translate }}</p>
+        </div>
+
+        <div class="fields-grid">
+          <div class="field-group">
+            <label class="field-label">{{ 'CALC.ROOF.ROOF_LENGTH' | translate }}</label>
+            <input class="field-input" type="number" min="1" [(ngModel)]="roofLength" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">{{ 'CALC.ROOF.ROOF_WIDTH' | translate }}</label>
+            <input class="field-input" type="number" min="1" [(ngModel)]="roofWidth" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">{{ 'CALC.ROOF.USABLE_PCT' | translate }}</label>
+            <input class="field-input" type="number" min="10" max="100" [(ngModel)]="roofUsablePct" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">{{ 'CALC.ROOF.PANEL_LENGTH' | translate }}</label>
+            <input class="field-input" type="number" min="1" step="0.01" [(ngModel)]="roofPanelLength" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">{{ 'CALC.ROOF.PANEL_WIDTH' | translate }}</label>
+            <input class="field-input" type="number" min="1" step="0.01" [(ngModel)]="roofPanelWidth" />
+          </div>
+        </div>
+
+        <div class="calc-actions">
+          <button class="btn-calc" (click)="calculateRoof()">{{ 'CALC.ROOF.CALCULATE' | translate }}</button>
+          <button class="btn-reset" (click)="resetRoof()">{{ 'CALC.ROOF.RESET' | translate }}</button>
+        </div>
+
+        @if (roofResult()) {
+          <div class="result-card">
+            <div class="result-row">
+              <span class="result-label">{{ 'CALC.ROOF.RESULT_AREA' | translate }}</span>
+              <span class="result-value result-value--accent">{{ roofResult()!.usableArea }} <span class="result-unit">{{ 'CALC.ROOF.UNIT_SQFT' | translate }}</span></span>
+            </div>
+            <div class="result-row">
+              <span class="result-label">{{ 'CALC.ROOF.RESULT_PANELS' | translate }}</span>
+              <span class="result-value result-value--accent">{{ roofResult()!.panels }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div><!-- /calc-body -->
+</div>
+
+<app-footer [settings]="settings()" />

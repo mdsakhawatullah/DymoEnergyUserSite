@@ -41,5 +41,10 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/order-confirmation/order-confirmation.component').then(m => m.OrderConfirmationComponent),
   },
+  {
+    path: 'solar-calculator',
+    loadComponent: () =>
+      import('./pages/solar-calculator/solar-calculator.component').then(m => m.SolarCalculatorComponent),
+  },
   { path: '**', redirectTo: '' },
 ];
