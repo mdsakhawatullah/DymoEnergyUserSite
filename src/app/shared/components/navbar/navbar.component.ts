@@ -1,5 +1,4 @@
 import { Component, Input, signal } from '@angular/core';
-import { UpperCasePipe } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { CartService } from '../../../core/services/cart.service';
@@ -20,7 +19,7 @@ export const DEFAULT_NAV_ITEMS: NavItem[] = [
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, TranslatePipe, UpperCasePipe],
+  imports: [RouterLink, RouterLinkActive, TranslatePipe],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
@@ -44,6 +43,10 @@ export class NavbarComponent {
   toggleLangMenu(): void { this.langMenuOpen.update(v => !v); }
   closeLangMenu(): void { this.langMenuOpen.set(false); }
   openCart(): void { this.router.navigate(['/cart']); }
+
+  onSearch(term: string): void {
+    this.router.navigate(['/shop'], term ? { queryParams: { q: term } } : undefined);
+  }
 
   selectLang(option: LangOption): void {
     this.langService.setLang(option.code);

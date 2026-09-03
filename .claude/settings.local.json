@@ -46,7 +46,10 @@
       "mcp__Claude_in_Chrome__navigate",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4600/)",
       "Bash(npm uninstall *)",
-      "Bash(xargs grep -l \"Category\")"
+      "Bash(xargs grep -l \"Category\")",
+      "Bash(npx tsc *)",
+      "Bash(powershell -NoProfile -Command \"Get-CimInstance Win32_Process -Filter \\\\\"Name='dotnet.exe'\\\\\" | Select-Object ProcessId, CommandLine | Format-List\")",
+      "Bash(powershell -NoProfile -Command 'Get-CimInstance Win32_Process | Where-Object { $_.Name -match '\\\\''dotnet|iisexpress|DymoEnergy'\\\\'' } | Select-Object ProcessId, Name, CommandLine | Format-List')"
     ]
   }
 }

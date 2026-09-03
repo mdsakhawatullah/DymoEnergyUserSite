@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, signal, computed } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AdminSiteSettingService } from '../../core/services/admin-site-setting.service';
@@ -29,7 +29,7 @@ interface Review {
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('heroVideo') heroVideoRef!: ElementRef<HTMLVideoElement>;
 
@@ -58,6 +58,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
       .filter(img => img.isActive && img.imageUrl)
       .sort((a, b) => a.displayOrder - b.displayOrder)
   );
+
+  // ── Hero carousel (video slide + site images) ─────────────────────────────
+  heroSlideIndex = signal(0);
+  heroSlideCount = computed(() => 1 + this.siteImages().length);
+  heroDots       = computed(() => Array.from({ length: this.heroSlideCount() }));
+  private heroAutoplayId?: ReturnType<typeof setInterval>;
 
   // ── Featured products: isFeatured first, else first 4 active ─────────────
   featuredProducts = computed<Product[]>(() => {
@@ -170,6 +176,37 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
+  //  Hero carousel
+  // ─────────────────────────────────────────────────────────────────────────
+  nextHeroSlide(): void {
+    this.heroSlideIndex.set((this.heroSlideIndex() + 1) % this.heroSlideCount());
+    this.restartHeroAutoplay();
+  }
+
+  prevHeroSlide(): void {
+    const count = this.heroSlideCount();
+    this.heroSlideIndex.set((this.heroSlideIndex() - 1 + count) % count);
+    this.restartHeroAutoplay();
+  }
+
+  goToHeroSlide(index: number): void {
+    this.heroSlideIndex.set(index);
+    this.restartHeroAutoplay();
+  }
+
+  private restartHeroAutoplay(): void {
+    clearInterval(this.heroAutoplayId);
+    this.startHeroAutoplay();
+  }
+
+  private startHeroAutoplay(): void {
+    if (this.heroSlideCount() <= 1) return;
+    this.heroAutoplayId = setInterval(() => {
+      this.heroSlideIndex.set((this.heroSlideIndex() + 1) % this.heroSlideCount());
+    }, 5000);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
   //  Lifecycle: video
   // ─────────────────────────────────────────────────────────────────────────
   ngAfterViewInit(): void {
@@ -178,6 +215,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
       v.muted = true;
       v.play().catch(() => {});
     }
+    this.startHeroAutoplay();
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.heroAutoplayId);
   }
 
   // ─────────────────────────────────────────────────────────────────────────

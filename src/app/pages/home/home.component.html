@@ -9,108 +9,21 @@
 <!-- ─── HERO SECTION ─── -->
 <section class="hero-section">
 
-  <!-- Decorative backgrounds -->
-  <div class="hero-dots"></div>
-  <div class="hero-glow-tr"></div>
-  <div class="hero-glow-bl"></div>
-
-  <!-- Main hero row: text left + SVG right -->
-  <div class="hero-main">
-
-    <!-- Left: text content -->
-    <div class="hero-left">
-      <div class="hero-eyebrow">
-        <div class="hero-eyebrow-line"></div>
-        <span>{{ 'HOME.HERO_EYEBROW' | translate }}</span>
-      </div>
-      <h1 class="hero-h1 hero-h1--white">{{ 'HOME.HERO_H1_1' | translate }}</h1>
-      <h1 class="hero-h1 hero-h1--lime">{{ 'HOME.HERO_H1_2' | translate }}</h1>
-      <h1 class="hero-h1 hero-h1--blue">{{ 'HOME.HERO_H1_3' | translate }}</h1>
-      <p class="hero-sub">{{ 'HOME.HERO_SUB' | translate }}</p>
-      <div class="hero-ctas">
-        <a routerLink="/catalogues" class="hero-cta hero-cta--primary">{{ 'HOME.SHOP_NOW' | translate }}</a>
-        <a routerLink="/quote" class="hero-cta hero-cta--ghost">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <circle cx="8" cy="8" r="6" stroke="#78CDE0" stroke-width="1.5"/>
-            <polygon points="6.5,5.5 11,8 6.5,10.5" fill="#78CDE0"/>
-          </svg>
-          {{ 'HOME.FREE_CONSULTATION' | translate }}
-        </a>
-      </div>
-      <div class="hero-rating">
-        <div class="hero-stars">
-          @for (s of [1,2,3,4,5]; track s) {
-            <svg width="14" height="14" viewBox="0 0 14 14">
-              <polygon points="7,1 8.5,5 13,5 9.5,8 10.7,13 7,10 3.3,13 4.5,8 1,5 5.5,5" fill="#A4DF38"/>
-            </svg>
-          }
-        </div>
-        <span class="hero-rating-text" [innerHTML]="'HOME.RATING' | translate"></span>
-      </div>
-    </div>
-
-    <!-- Right: wind turbine illustration -->
-    <div class="hero-right">
-      <svg width="420" height="380" viewBox="0 0 100 100" fill="none" style="opacity:0.9">
-        <g transform="translate(76,22)">
-          <line x1="0" y1="-13" x2="0" y2="-18" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round"/>
-          <line x1="0" y1="-13" x2="0" y2="-18" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" transform="rotate(45)"/>
-          <line x1="0" y1="-13" x2="0" y2="-18" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" transform="rotate(90)"/>
-          <line x1="0" y1="-13" x2="0" y2="-18" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" transform="rotate(135)"/>
-          <line x1="0" y1="-13" x2="0" y2="-18" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" transform="rotate(180)"/>
-          <line x1="0" y1="-13" x2="0" y2="-18" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" transform="rotate(225)"/>
-          <line x1="0" y1="-13" x2="0" y2="-18" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" transform="rotate(270)"/>
-          <line x1="0" y1="-13" x2="0" y2="-18" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" transform="rotate(315)"/>
-          <circle cx="0" cy="0" r="11" fill="#A4DF38" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
-          <ellipse cx="-3.5" cy="-3" rx="4" ry="3" fill="rgba(255,255,255,0.4)"/>
-        </g>
-        <line x1="63" y1="83" x2="63" y2="91" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/>
-        <rect x="59" y="89" width="8" height="5" rx="2.5" fill="#A4DF38" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
-        <line x1="79" y1="83" x2="79" y2="91" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/>
-        <rect x="75" y="89" width="8" height="5" rx="2.5" fill="#A4DF38" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
-        <g transform="translate(63,73) rotate(-12)">
-          <rect x="-10" y="-9" width="20" height="18" rx="1.5" fill="#78CDE0" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
-          <line x1="-3.3" y1="-9" x2="-3.3" y2="9" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
-          <line x1="3.3" y1="-9" x2="3.3" y2="9" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
-          <line x1="-10" y1="-4" x2="10" y2="-4" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
-          <line x1="-10" y1="0" x2="10" y2="0" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
-          <line x1="-10" y1="4" x2="10" y2="4" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
-        </g>
-        <g transform="translate(79,75) rotate(-12)">
-          <rect x="-10" y="-9" width="20" height="18" rx="1.5" fill="#78CDE0" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
-          <line x1="-3.3" y1="-9" x2="-3.3" y2="9" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
-          <line x1="3.3" y1="-9" x2="3.3" y2="9" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
-          <line x1="-10" y1="-4" x2="10" y2="-4" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
-          <line x1="-10" y1="0" x2="10" y2="0" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
-          <line x1="-10" y1="4" x2="10" y2="4" stroke="rgba(255,255,255,0.4)" stroke-width="0.75"/>
-        </g>
-        <polygon points="40,52 44,52 47,90 37,90" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linejoin="round"/>
-        <rect x="34" y="88" width="16" height="7" rx="3.5" fill="#A4DF38" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
-        <g transform="translate(42,52)">
-          <path d="M 0,0 C -3,-4 -12,-16 -8,-30 C -5,-36 5,-36 8,-30 C 12,-16 3,-4 0,0 Z" fill="#78CDE0" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linejoin="round"/>
-          <path d="M 0,0 C -3,-4 -12,-16 -8,-30 C -5,-36 5,-36 8,-30 C 12,-16 3,-4 0,0 Z" fill="#78CDE0" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linejoin="round" transform="rotate(120)"/>
-          <path d="M 0,0 C -3,-4 -12,-16 -8,-30 C -5,-36 5,-36 8,-30 C 12,-16 3,-4 0,0 Z" fill="#78CDE0" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linejoin="round" transform="rotate(240)"/>
-          <circle cx="0" cy="0" r="7" fill="#FFFFFF" stroke="rgba(255,255,255,0.3)" stroke-width="2.5"/>
-          <circle cx="0" cy="0" r="3" fill="#2D3B60"/>
-        </g>
-      </svg>
-    </div>
-
-  </div><!-- /hero-main -->
-
-  <!-- Site images strip (side by side below hero) -->
   <div class="hero-images">
 
-    <!-- Video panel (always first) -->
-    <div class="hero-img-panel hero-img-panel--video">
-      <video #heroVideo class="hero-video" loop playsinline muted>
-        <source src="https://official-oversears-file.sungrowpower.com/page-assets/78a8c56d-634f-4ff5-830f-6121131fd0b2.mp4" type="video/mp4" />
-      </video>
-      <div class="hero-img-overlay"></div>
-    </div>
+    <!-- Left: image/video carousel -->
+    <div class="hero-carousel">
 
-    @for (img of siteImages(); track img.id) {
-        <div class="hero-img-panel"
+      <div class="hero-slide" [class.active]="heroSlideIndex() === 0">
+        <video #heroVideo class="hero-video" loop playsinline muted>
+          <source src="https://official-oversears-file.sungrowpower.com/page-assets/78a8c56d-634f-4ff5-830f-6121131fd0b2.mp4" type="video/mp4" />
+        </video>
+        <div class="hero-img-overlay"></div>
+      </div>
+
+      @for (img of siteImages(); track img.id; let i = $index) {
+        <div class="hero-slide"
+             [class.active]="heroSlideIndex() === i + 1"
              [style.background-image]="'url(' + img.imageUrl + ')'">
           <div class="hero-img-overlay"></div>
           @if (img.title || img.altText) {
@@ -121,7 +34,56 @@
           }
         </div>
       }
+
+      @if (heroSlideCount() > 1) {
+        <button class="hero-arrow hero-arrow--prev" type="button" (click)="prevHeroSlide()" aria-label="Previous slide">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><polyline points="11,3 5,9 11,15" stroke="#2D3B60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="hero-arrow hero-arrow--next" type="button" (click)="nextHeroSlide()" aria-label="Next slide">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><polyline points="7,3 13,9 7,15" stroke="#2D3B60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="hero-dots">
+          @for (d of heroDots(); track $index) {
+            <button class="hero-dot" type="button" [class.active]="heroSlideIndex() === $index" (click)="goToHeroSlide($index)" [attr.aria-label]="'Go to slide ' + ($index + 1)"></button>
+          }
+        </div>
+      }
+
     </div>
+
+    <!-- Right: info column -->
+    <div class="hero-info">
+
+      <div class="hero-info-card hero-info-card--greet">
+        <div class="hero-greet-avatar">
+          <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
+            <circle cx="11" cy="7" r="4" stroke="#2D3B60" stroke-width="1.6"/>
+            <path d="M3 19c1.4-3.8 4.6-6 8-6s6.6 2.2 8 6" stroke="#2D3B60" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="hero-greet-text">
+          <span>{{ 'HOME.HERO_GREETING_TITLE' | translate }}</span>
+          <span>{{ 'HOME.HERO_GREETING_SUB' | translate }}</span>
+        </div>
+        <div class="hero-greet-ctas">
+          <button type="button" class="hero-greet-btn hero-greet-btn--primary">{{ 'HOME.HERO_JOIN_NOW' | translate }}</button>
+          <button type="button" class="hero-greet-btn hero-greet-btn--ghost">{{ 'HOME.HERO_LOG_IN' | translate }}</button>
+        </div>
+      </div>
+
+      <a routerLink="/shop" class="hero-info-card hero-info-card--blue">
+        <span>{{ 'HOME.HERO_OFFER_TITLE' | translate }}</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><line x1="2" y1="8" x2="13" y2="8" stroke="#2D3B60" stroke-width="1.8" stroke-linecap="round"/><polyline points="9,4 13,8 9,12" stroke="#2D3B60" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+
+      <a routerLink="/quote" class="hero-info-card hero-info-card--green">
+        <span>{{ 'HOME.HERO_QUOTE_TITLE' | translate }}</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><line x1="2" y1="8" x2="13" y2="8" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><polyline points="9,4 13,8 9,12" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+
+    </div>
+
+  </div>
 
 </section><!-- /hero-section -->
 
