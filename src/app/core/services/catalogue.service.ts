@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, of } from 'rxjs';
-import { Catalogue, PagedResult } from '../models/catalogue.model';
+import { Catalogue, HomeCatalogueShowcase, PagedResult } from '../models/catalogue.model';
 import { environment } from '../../../environments/environment';
 
 export interface CatalogueFilter {
@@ -29,5 +29,11 @@ export class CatalogueService {
     return this.http
       .get<PagedResult<Catalogue>>(`${environment.apiUrl}/api/app/catalogue/data`, { params })
       .pipe(catchError(() => of({ totalCount: 0, items: [] })));
+  }
+
+  getHomeShowcase(): Observable<HomeCatalogueShowcase[]> {
+    return this.http
+      .get<HomeCatalogueShowcase[]>(`${environment.apiUrl}/api/app/catalogue/home-showcase`)
+      .pipe(catchError(() => of([])));
   }
 }

@@ -73,6 +73,26 @@ export interface Catalogue {
   images: CatalogueImage[];
 }
 
+// ─── Home-page showcase (GET /api/app/catalogue/home-showcase) ───────────────
+export interface HomeShowcaseProduct {
+  id: number;
+  name?: string;
+  price: number;
+  discountPrice?: number;
+  primaryImage?: string;
+}
+
+export interface HomeCatalogueShowcase {
+  id: number;
+  name?: string;
+  slug?: string;
+  thumbnailImageUrl?: string;
+  accentColor?: string;
+  totalProductCount: number;
+  hasMore: boolean;
+  products: HomeShowcaseProduct[];
+}
+
 export interface PagedResult<T> {
   totalCount: number;
   items: T[];

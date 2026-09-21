@@ -10,7 +10,6 @@ export interface NavItem {
 }
 
 export const DEFAULT_NAV_ITEMS: NavItem[] = [
-  { label: 'Catalogues', route: '/catalogues' },
   { label: 'Shop', route: '/shop' },
   { label: 'Solar Calculator', route: '/solar-calculator' },
   { label: 'Quote', route: '/quote' },

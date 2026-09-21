@@ -87,115 +87,43 @@
 
 </section><!-- /hero-section -->
 
-<!-- ─── FEATURED PRODUCTS ─── -->
-<section class="products-section">
+<!-- ─── CATALOGUE SHOWCASE ─── -->
+@if (showcases().length) {
+  <section class="showcase-section">
+    @for (cat of showcases(); track cat.id) {
+      <div class="showcase">
 
-  <div class="products-header">
-    <div class="products-header-left">
-      <div class="products-eyebrow">{{ 'HOME.FEATURED_EYEBROW' | translate }}</div>
-      <h2 class="products-title">{{ 'HOME.BEST_SELLERS' | translate }}</h2>
-    </div>
-    <a routerLink="/shop" class="products-view-all">
-      {{ 'HOME.VIEW_ALL' | translate }}
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <line x1="2" y1="7" x2="12" y2="7" stroke="#2D3B60" stroke-width="1.8" stroke-linecap="round"/>
-        <polyline points="8,3 12,7 8,11" stroke="#2D3B60" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </a>
-  </div>
-
-  <div class="products-grid">
-
-    @if (productsLoading()) {
-      @for (i of [1,2,3,4]; track i) {
-        <div class="prod-card prod-card--skeleton">
-          <div class="prod-thumb prod-thumb--skeleton shimmer"></div>
-          <div class="prod-body">
-            <div class="prod-skeleton-line shimmer" style="width:70%; height:14px; margin-bottom:8px;"></div>
-            <div class="prod-skeleton-line shimmer" style="width:90%; height:10px; margin-bottom:16px;"></div>
-            <div class="prod-skeleton-line shimmer" style="width:50%; height:18px;"></div>
-          </div>
-        </div>
-      }
-    } @else {
-      @for (product of featuredProducts(); track product.id) {
-        <div class="prod-card">
-          <a [routerLink]="['/products', product.id]" class="prod-thumb-link">
-            <div class="prod-thumb">
-              @if (product.primaryImage) {
-                <img [src]="product.primaryImage" [alt]="product.name" class="prod-thumb-img" />
-              } @else {
-                <div class="prod-thumb-cat">{{ product.sku }}</div>
-              }
-              @if (product.ribbonText) {
-                <span class="prod-badge">{{ product.ribbonText }}</span>
-              } @else if (product.isFeatured) {
-                <span class="prod-badge">FEATURED</span>
-              }
-            </div>
-          </a>
-          <div class="prod-body">
-            <a [routerLink]="['/products', product.id]" class="prod-name-link">
-              <div class="prod-name">{{ product.name }}</div>
+        <!-- Left: catalogue thumbnail as background -->
+        <div class="showcase-hero"
+             [style.background-image]="cat.thumbnailImageUrl ? 'url(\'' + cat.thumbnailImageUrl + '\')' : null"
+             [style.background-color]="cat.accentColor || '#eaf1f8'">
+          <div class="showcase-hero-overlay"></div>
+          <h2 class="showcase-hero-title">{{ cat.name }}</h2>
+          @if (cat.hasMore) {
+            <a [routerLink]="['/catalogues', cat.id, 'products-list']" class="showcase-more">
+              {{ 'HOME.SHOW_MORE' | translate }}
             </a>
-            @if (product.summary) {
-              <div class="prod-desc">{{ product.summary }}</div>
-            }
-            <div class="prod-footer">
-              <div class="prod-price">{{ formatPrice(product.discountPrice ?? product.price) }}</div>
-              @if (cartQty(product.id) === 0) {
-                <button class="prod-add" (click)="addToCart(product)">{{ 'HOME.ADD' | translate }}</button>
-              } @else {
-                <div class="prod-qty-controls">
-                  <button class="prod-qty-btn prod-qty-btn--remove" (click)="removeFromCart(product.id)" title="Remove">
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-                      <line x1="2" y1="2" x2="10" y2="10"/><line x1="10" y1="2" x2="2" y2="10"/>
-                    </svg>
-                  </button>
-                  <button class="prod-qty-btn" (click)="decreaseQty(product)">−</button>
-                  <span class="prod-qty-val">{{ cartQty(product.id) }}</span>
-                  <button class="prod-qty-btn" (click)="increaseQty(product)">+</button>
-                </div>
-              }
-            </div>
-          </div>
+          }
         </div>
-      }
-    }
 
-  </div>
-
-</section>
-
-<!-- ─── TOP CATEGORIES ─── -->
-@if (catalogues().length) {
-  <section class="categories-section">
-    <div class="categories-header">
-      <h2 class="categories-title">Top Categories</h2>
-    </div>
-    <div class="categories-grid">
-      @for (cat of catalogues(); track cat.id) {
-        <a [routerLink]="['/catalogues', cat.slug ?? cat.id]" class="cat-card">
-          <div class="cat-thumb">
-            @if (cat.thumbnailImageUrl || cat.primaryBackgroundImageUrl) {
-              <img
-                [src]="cat.thumbnailImageUrl ?? cat.primaryBackgroundImageUrl"
-                [alt]="cat.name"
-                class="cat-thumb-img"
-              />
-            } @else {
-              <div class="cat-thumb-placeholder">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#b0c4d8" stroke-width="1.5" stroke-linecap="round">
-                  <rect x="3" y="3" width="18" height="18" rx="3"/>
-                  <circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/>
-                </svg>
+        <!-- Right: up to 8 products -->
+        <div class="showcase-grid">
+          @for (product of cat.products; track product.id) {
+            <a [routerLink]="['/products', product.id]" class="showcase-item">
+              <div class="showcase-item-text">
+                <div class="showcase-item-name">{{ product.name }}</div>
+                <div class="showcase-item-from">{{ 'HOME.SPOTLIGHT_FROM' | translate }}</div>
+                <div class="showcase-item-price">{{ formatPrice(product.discountPrice ?? product.price) }}</div>
               </div>
-            }
-          </div>
-          <div class="cat-name">{{ cat.name }}</div>
-        </a>
-      }
-    </div>
+              @if (product.primaryImage) {
+                <img [src]="product.primaryImage" [alt]="product.name" class="showcase-item-img" loading="lazy" />
+              }
+            </a>
+          }
+        </div>
+
+      </div>
+    }
   </section>
 }
 
@@ -293,129 +221,6 @@
     </div>
   </section>
 }
-
-<!-- ─── WHY DYMO ENERGY ─── -->
-<section class="why-section">
-  <div class="why-dots"></div>
-
-  <div class="why-header">
-    <div class="why-eyebrow">{{ 'HOME.WHY_EYEBROW' | translate }}</div>
-    <h2 class="why-title">{{ 'HOME.WHY_TITLE' | translate }}</h2>
-  </div>
-
-  <div class="why-grid">
-
-    <div class="why-card">
-      <div class="why-icon why-icon--lime">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2D3B60" stroke-width="2.5" stroke-linecap="round">
-          <circle cx="12" cy="12" r="5"/>
-          <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-        </svg>
-      </div>
-      <div class="why-card-title">{{ 'HOME.WHY_CARD1_TITLE' | translate }}</div>
-      <div class="why-card-desc">{{ 'HOME.WHY_CARD1_DESC' | translate }}</div>
-    </div>
-
-    <div class="why-card">
-      <div class="why-icon why-icon--blue">
-        <svg width="22" height="24" viewBox="0 0 22 24" fill="none" stroke="#2D3B60" stroke-width="2.5" stroke-linecap="round">
-          <rect x="2" y="1" width="18" height="22" rx="4"/>
-          <polyline points="8,9 11,12 14,9"/>
-          <line x1="11" y1="12" x2="11" y2="17"/>
-        </svg>
-      </div>
-      <div class="why-card-title">{{ 'HOME.WHY_CARD2_TITLE' | translate }}</div>
-      <div class="why-card-desc">{{ 'HOME.WHY_CARD2_DESC' | translate }}</div>
-    </div>
-
-    <div class="why-card">
-      <div class="why-icon why-icon--green">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
-          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-        </svg>
-      </div>
-      <div class="why-card-title">{{ 'HOME.WHY_CARD3_TITLE' | translate }}</div>
-      <div class="why-card-desc">{{ 'HOME.WHY_CARD3_DESC' | translate }}</div>
-    </div>
-
-    <div class="why-card">
-      <div class="why-icon why-icon--lime">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2D3B60" stroke-width="2.5" stroke-linecap="round">
-          <path d="M12 2 L22 7 V14 C22 19 17 23 12 24 C7 23 2 19 2 14 V7 Z"/>
-          <polyline points="9,12 11,14 15,10"/>
-        </svg>
-      </div>
-      <div class="why-card-title">{{ 'HOME.WHY_CARD4_TITLE' | translate }}</div>
-      <div class="why-card-desc">{{ 'HOME.WHY_CARD4_DESC' | translate }}</div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ─── REVIEWS ─── -->
-<section class="reviews-section">
-
-  <div class="reviews-header">
-    <div class="reviews-eyebrow">{{ 'HOME.REVIEWS_EYEBROW' | translate }}</div>
-    <h2 class="reviews-title">{{ 'HOME.REVIEWS_TITLE' | translate }}</h2>
-  </div>
-
-  <div class="reviews-grid">
-
-    <div class="review-card">
-      <div class="review-stars">
-        @for (i of [1,2,3,4,5]; track i) {
-          <svg width="16" height="16" viewBox="0 0 16 16"><polygon points="8,1.5 9.6,6 14.5,6 10.5,9 11.9,14 8,11 4.1,14 5.5,9 1.5,6 6.4,6" fill="#A4DF38"/></svg>
-        }
-      </div>
-      <p class="review-text">{{ 'HOME.REVIEW1_TEXT' | translate }}</p>
-      <div class="review-author">
-        <div class="review-avatar review-avatar--lime">AR</div>
-        <div>
-          <div class="review-name">{{ 'HOME.REVIEW1_NAME' | translate }}</div>
-          <div class="review-location">{{ 'HOME.REVIEW1_LOC' | translate }}</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="review-card">
-      <div class="review-stars">
-        @for (i of [1,2,3,4,5]; track i) {
-          <svg width="16" height="16" viewBox="0 0 16 16"><polygon points="8,1.5 9.6,6 14.5,6 10.5,9 11.9,14 8,11 4.1,14 5.5,9 1.5,6 6.4,6" fill="#A4DF38"/></svg>
-        }
-      </div>
-      <p class="review-text">{{ 'HOME.REVIEW2_TEXT' | translate }}</p>
-      <div class="review-author">
-        <div class="review-avatar review-avatar--blue">FK</div>
-        <div>
-          <div class="review-name">{{ 'HOME.REVIEW2_NAME' | translate }}</div>
-          <div class="review-location">{{ 'HOME.REVIEW2_LOC' | translate }}</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="review-card">
-      <div class="review-stars">
-        @for (i of [1,2,3,4,5]; track i) {
-          <svg width="16" height="16" viewBox="0 0 16 16"><polygon points="8,1.5 9.6,6 14.5,6 10.5,9 11.9,14 8,11 4.1,14 5.5,9 1.5,6 6.4,6" fill="#A4DF38"/></svg>
-        }
-      </div>
-      <p class="review-text">{{ 'HOME.REVIEW3_TEXT' | translate }}</p>
-      <div class="review-author">
-        <div class="review-avatar review-avatar--green">MI</div>
-        <div>
-          <div class="review-name">{{ 'HOME.REVIEW3_NAME' | translate }}</div>
-          <div class="review-location">{{ 'HOME.REVIEW3_LOC' | translate }}</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-</section>
 
 <!-- ─── SOCIAL MEDIA ─── -->
 @if (
