@@ -1,6 +1,6 @@
 // ─── Image Type Enum ─────────────────────────────────────────────────────────
-// Must match DymoEnergy.Catalogues.CatalogueImageType on the backend
-export enum CatalogueImageType {
+// Must match DymoEnergy.Categories.CategoryImageType on the backend
+export enum CategoryImageType {
   PrimaryBackground  = 1,
   SecondaryBackground = 2,
   Banner             = 3,
@@ -11,7 +11,7 @@ export enum CatalogueImageType {
 }
 
 // ─── Layout Type Enum ────────────────────────────────────────────────────────
-export enum CatalogueLayoutType {
+export enum CategoryLayoutType {
   FullWidthHero   = 1,
   SplitHero       = 2,
   MinimalistHero  = 3,
@@ -19,7 +19,7 @@ export enum CatalogueLayoutType {
   SliderHero      = 5,
 }
 
-export const CatalogueLayoutTypeLabel: Record<number, string> = {
+export const CategoryLayoutTypeLabel: Record<number, string> = {
   1: 'Full Width',
   2: 'Split Hero',
   3: 'Minimalist',
@@ -28,18 +28,18 @@ export const CatalogueLayoutTypeLabel: Record<number, string> = {
 };
 
 // ─── Interfaces ──────────────────────────────────────────────────────────────
-export interface CatalogueImage {
+export interface CategoryImage {
   id: number;
-  catalogueId: number;
+  categoryId: number;
   imageUrl?: string;
-  imageType: CatalogueImageType;
+  imageType: CategoryImageType;
   title?: string;
   altText?: string;
   displayOrder: number;
   isActive: boolean;
 }
 
-export interface Catalogue {
+export interface Category {
   id: number;
   portalId?: number;
   name?: string;
@@ -53,14 +53,14 @@ export interface Catalogue {
   // ── Image URLs (direct fields — present in list response) ─────────────────
   thumbnailImageUrl?: string;          // ImageType=5 equivalent
   primaryBackgroundImageUrl?: string;  // ImageType=1 equivalent
-  // ── Per-catalogue theming ────────────────────────────────────────────────
+  // ── Per-category theming ────────────────────────────────────────────────
   overlayColor?: string;
   overlayOpacity: number;              // 0–1 float
   primaryTextColor?: string;
   accentColor?: string;
   sectionBackgroundColor?: string;
   // ── Meta ─────────────────────────────────────────────────────────────────
-  layoutType: CatalogueLayoutType;
+  layoutType: CategoryLayoutType;
   isPublished: boolean;
   isFeatured: boolean;
   displayOrder: number;
@@ -70,10 +70,10 @@ export interface Catalogue {
   creationTime?: string;
   lastModificationTime?: string;
   // ── Images (only present when fetched by id/slug — NOT in list) ──────────
-  images: CatalogueImage[];
+  images: CategoryImage[];
 }
 
-// ─── Home-page showcase (GET /api/app/catalogue/home-showcase) ───────────────
+// ─── Home-page showcase (GET /api/app/category/home-showcase) ───────────────
 export interface HomeShowcaseProduct {
   id: number;
   name?: string;
@@ -82,7 +82,7 @@ export interface HomeShowcaseProduct {
   primaryImage?: string;
 }
 
-export interface HomeCatalogueShowcase {
+export interface HomeCategoryShowcase {
   id: number;
   name?: string;
   slug?: string;

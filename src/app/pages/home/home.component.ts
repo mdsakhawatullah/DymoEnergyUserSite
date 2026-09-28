@@ -3,10 +3,10 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AdminSiteSettingService } from '../../core/services/admin-site-setting.service';
 import { UserSiteSettingService } from '../../core/services/user-site-setting.service';
-import { CatalogueService } from '../../core/services/catalogue.service';
+import { CategoryService } from '../../core/services/category.service';
 import { AdminSiteSetting } from '../../core/models/admin-site-setting.model';
 import { UserSiteSetting, UserSiteSettingImage } from '../../core/models/user-site-setting.model';
-import { HomeCatalogueShowcase } from '../../core/models/catalogue.model';
+import { HomeCategoryShowcase } from '../../core/models/category.model';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { NavbarComponent, DEFAULT_NAV_ITEMS } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
@@ -25,8 +25,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // ── Signals ─────────────────────────────────────────────────────────────
   settings          = signal<AdminSiteSetting | null>(null);
   userSiteSetting   = signal<UserSiteSetting | null>(null);
-  showcases         = signal<HomeCatalogueShowcase[]>([]);
+  showcases         = signal<HomeCategoryShowcase[]>([]);
   loading           = signal(true);
+  showcasesLoading  = signal(true);
+  aboutLoading      = signal(true);
   newsletterEmail   = '';
 
   navItems = DEFAULT_NAV_ITEMS;
@@ -55,7 +57,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private siteService:        AdminSiteSettingService,
     private userSettingService: UserSiteSettingService,
-    private catalogueService:   CatalogueService,
+    private categoryService:   CategoryService,
   ) {}
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -70,10 +72,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.userSettingService.getActive().subscribe(us => {
       this.userSiteSetting.set(us);
+      this.aboutLoading.set(false);
     });
 
-    this.catalogueService.getHomeShowcase().subscribe(items => {
+    this.categoryService.getHomeShowcase().subscribe(items => {
       this.showcases.set(items);
+      this.showcasesLoading.set(false);
     });
   }
 

@@ -3,6 +3,7 @@ import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AdminSiteSettingService } from '../../core/services/admin-site-setting.service';
+import { QuoteRequestService } from '../../core/services/quote-request.service';
 import { AdminSiteSetting } from '../../core/models/admin-site-setting.model';
 import { NavbarComponent, DEFAULT_NAV_ITEMS } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
@@ -20,6 +21,7 @@ export class QuoteComponent implements OnInit {
   navItems = DEFAULT_NAV_ITEMS;
   submitted = signal(false);
   submitting = signal(false);
+  sendError  = signal(false);
 
   primaryColor = computed(() => this.settings()?.primaryColor || '#2D3B60');
   accentColor  = computed(() =>
@@ -36,7 +38,10 @@ export class QuoteComponent implements OnInit {
     message: '',
   };
 
-  constructor(private siteService: AdminSiteSettingService) {}
+  constructor(
+    private siteService: AdminSiteSettingService,
+    private quoteRequestService: QuoteRequestService,
+  ) {}
 
   ngOnInit(): void {
     this.siteService.getActive().subscribe(s => {
@@ -48,11 +53,25 @@ export class QuoteComponent implements OnInit {
   sendMessage(): void {
     if (!this.form.name.trim()) return;
     this.submitting.set(true);
-    setTimeout(() => {
-      this.submitting.set(false);
-      this.submitted.set(true);
-      this.form = { name: '', phone: '', email: '', interest: 'Residential solar system', message: '' };
-    }, 800);
+    this.sendError.set(false);
+
+    this.quoteRequestService.create({
+      name:     this.form.name.trim(),
+      phone:    this.form.phone.trim()   || undefined,
+      email:    this.form.email.trim()   || undefined,
+      interest: this.form.interest,
+      message:  this.form.message.trim() || undefined,
+    }).subscribe({
+      next: () => {
+        this.submitting.set(false);
+        this.submitted.set(true);
+        this.form = { name: '', phone: '', email: '', interest: 'Residential solar system', message: '' };
+      },
+      error: () => {
+        this.submitting.set(false);
+        this.sendError.set(true);
+      },
+    });
   }
 
   private applyTheme(s: AdminSiteSetting): void {

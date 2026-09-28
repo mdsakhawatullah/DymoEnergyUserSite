@@ -1,10 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, of } from 'rxjs';
-import { Catalogue, HomeCatalogueShowcase, PagedResult } from '../models/catalogue.model';
+import { Category, HomeCategoryShowcase, PagedResult } from '../models/category.model';
 import { environment } from '../../../environments/environment';
 
-export interface CatalogueFilter {
+export interface CategoryFilter {
   filter?: string;
   isPublished?: boolean;
   isFeatured?: boolean;
@@ -14,10 +14,10 @@ export interface CatalogueFilter {
 }
 
 @Injectable({ providedIn: 'root' })
-export class CatalogueService {
+export class CategoryService {
   private http = inject(HttpClient);
 
-  getList(filter: CatalogueFilter = {}): Observable<PagedResult<Catalogue>> {
+  getList(filter: CategoryFilter = {}): Observable<PagedResult<Category>> {
     let params = new HttpParams();
     if (filter.filter) params = params.set('filter', filter.filter);
     if (filter.isPublished != null) params = params.set('isPublished', String(filter.isPublished));
@@ -27,13 +27,13 @@ export class CatalogueService {
     params = params.set('maxResultCount', String(filter.maxResultCount ?? 50));
 
     return this.http
-      .get<PagedResult<Catalogue>>(`${environment.apiUrl}/api/app/catalogue/data`, { params })
+      .get<PagedResult<Category>>(`${environment.apiUrl}/api/app/category/data`, { params })
       .pipe(catchError(() => of({ totalCount: 0, items: [] })));
   }
 
-  getHomeShowcase(): Observable<HomeCatalogueShowcase[]> {
+  getHomeShowcase(): Observable<HomeCategoryShowcase[]> {
     return this.http
-      .get<HomeCatalogueShowcase[]>(`${environment.apiUrl}/api/app/catalogue/home-showcase`)
+      .get<HomeCategoryShowcase[]>(`${environment.apiUrl}/api/app/category/home-showcase`)
       .pipe(catchError(() => of([])));
   }
 }

@@ -87,20 +87,35 @@
 
 </section><!-- /hero-section -->
 
-<!-- ─── CATALOGUE SHOWCASE ─── -->
-@if (showcases().length) {
+<!-- ─── CATEGORY SHOWCASE ─── -->
+@if (showcasesLoading()) {
+  <section class="showcase-section" aria-busy="true">
+    <div class="showcase">
+      <div class="showcase-hero shimmer"></div>
+      <div class="showcase-grid">
+        @for (i of [1,2,3,4,5,6,7,8]; track i) {
+          <div class="showcase-item">
+            <div class="sk-line sk-line--name shimmer"></div>
+            <div class="sk-line sk-line--meta shimmer"></div>
+            <div class="sk-line sk-line--meta sk-line--short shimmer"></div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+} @else if (showcases().length) {
   <section class="showcase-section">
     @for (cat of showcases(); track cat.id) {
       <div class="showcase">
 
-        <!-- Left: catalogue thumbnail as background -->
+        <!-- Left: category thumbnail as background -->
         <div class="showcase-hero"
              [style.background-image]="cat.thumbnailImageUrl ? 'url(\'' + cat.thumbnailImageUrl + '\')' : null"
              [style.background-color]="cat.accentColor || '#eaf1f8'">
           <div class="showcase-hero-overlay"></div>
           <h2 class="showcase-hero-title">{{ cat.name }}</h2>
           @if (cat.hasMore) {
-            <a [routerLink]="['/catalogues', cat.id, 'products-list']" class="showcase-more">
+            <a [routerLink]="['/categories', cat.id, 'products-list']" class="showcase-more">
               {{ 'HOME.SHOW_MORE' | translate }}
             </a>
           }
@@ -128,7 +143,28 @@
 }
 
 <!-- ─── ABOUT SECTION ─── -->
-@if (userSiteSetting()?.aboutTitle || userSiteSetting()?.aboutDescription) {
+@if (aboutLoading()) {
+  <section class="about-section" aria-busy="true">
+    <div class="about-inner about-inner--skeleton">
+      <div class="sk-about-title shimmer"></div>
+      <div class="about-divider shimmer"></div>
+      <div class="sk-about-desc">
+        <div class="sk-line shimmer"></div>
+        <div class="sk-line shimmer"></div>
+        <div class="sk-line sk-line--short shimmer"></div>
+      </div>
+      <div class="about-stats">
+        @for (i of [1,2,3,4,5]; track i) {
+          <div class="stat-item">
+            <div class="sk-stat-icon shimmer"></div>
+            <div class="sk-stat-value shimmer"></div>
+            <div class="sk-line sk-line--meta shimmer"></div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+} @else if (userSiteSetting()?.aboutTitle || userSiteSetting()?.aboutDescription) {
   <section class="about-section">
     <div class="about-inner">
 

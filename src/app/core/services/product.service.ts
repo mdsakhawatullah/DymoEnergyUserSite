@@ -2,11 +2,11 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, of } from 'rxjs';
 import { Product } from '../models/product.model';
-import { PagedResult } from '../models/catalogue.model';
+import { PagedResult } from '../models/category.model';
 import { environment } from '../../../environments/environment';
 
 export interface ProductFilter {
-  catalogueId?: number;
+  categoryId?: number;
   filter?: string;
   isAvailable?: boolean;
   skipCount?: number;
@@ -25,7 +25,7 @@ export class ProductService {
 
   getList(filter: ProductFilter = {}): Observable<PagedResult<Product>> {
     let params = new HttpParams();
-    if (filter.catalogueId != null) params = params.set('catalogueId', String(filter.catalogueId));
+    if (filter.categoryId != null) params = params.set('categoryId', String(filter.categoryId));
     if (filter.filter)              params = params.set('filter', filter.filter);
     if (filter.isAvailable != null) params = params.set('isAvailable', String(filter.isAvailable));
     params = params.set('skipCount',        String(filter.skipCount       ?? 0));

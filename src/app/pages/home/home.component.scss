@@ -328,7 +328,54 @@
     background : #EFF7F2;
   }
 }
-// ─── Catalogue showcase ───────────────────────────────────────────
+
+// ── Skeleton / shimmer ────────────────────────────────────────────
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.shimmer {
+  background      : linear-gradient(90deg, #e8edf3 25%, #d9e1ea 50%, #e8edf3 75%);
+  background-size : 200% 100%;
+  animation       : shimmer 1.5s infinite;
+}
+
+.sk-line {
+  display       : block;
+  height        : 14px;
+  border-radius : 6px;
+  width         : 100%;
+}
+.sk-line--name  { height: 18px; width: 70%; margin-bottom: 14px; }
+.sk-line--meta  { height: 12px; width: 45%; margin-bottom: 8px; }
+.sk-line--short { width: 30%; }
+
+.sk-about-title {
+  width         : 420px;
+  max-width     : 100%;
+  height        : 42px;
+  border-radius : 8px;
+  margin-bottom : 40px;
+}
+
+.sk-about-desc {
+  width         : 100%;
+  max-width     : 680px;
+  margin-bottom : 72px;
+  display       : flex;
+  flex-direction: column;
+  gap           : 14px;
+
+  .sk-line { height: 18px; }
+  .sk-line--short { width: 60%; align-self: center; }
+}
+
+.sk-stat-icon  { width: 40px; height: 40px; border-radius: 10px; margin-bottom: 16px; }
+.sk-stat-value { width: 70%; max-width: 100px; height: 44px; border-radius: 8px; margin-bottom: 12px; }
+.about-inner--skeleton { width: 100%; }
+
+// ─── Category showcase ───────────────────────────────────────────
 .showcase-section {
   padding        : 4px 64px 40px;
   background     : #f4f6f8;
@@ -347,7 +394,7 @@
   overflow              : hidden;
 }
 
-// Left: catalogue thumbnail as background, title top, "Show More" in the middle
+// Left: category thumbnail as background, title top, "Show More" in the middle
 .showcase-hero {
   position        : relative;
   display         : flex;

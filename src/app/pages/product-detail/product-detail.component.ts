@@ -2,11 +2,11 @@ import { Component, OnInit, signal, computed } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AdminSiteSettingService } from '../../core/services/admin-site-setting.service';
 import { ProductService } from '../../core/services/product.service';
-import { CatalogueService } from '../../core/services/catalogue.service';
+import { CategoryService } from '../../core/services/category.service';
 import { CartService } from '../../core/services/cart.service';
 import { AdminSiteSetting } from '../../core/models/admin-site-setting.model';
 import { Product } from '../../core/models/product.model';
-import { Catalogue } from '../../core/models/catalogue.model';
+import { Category } from '../../core/models/category.model';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { NavbarComponent, DEFAULT_NAV_ITEMS } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
@@ -22,7 +22,7 @@ export class ProductDetailComponent implements OnInit {
 
   settings   = signal<AdminSiteSetting | null>(null);
   product    = signal<Product | null>(null);
-  catalogue  = signal<Catalogue | null>(null);
+  category  = signal<Category | null>(null);
   related    = signal<Product[]>([]);
   loading    = signal(true);
   error      = signal('');
@@ -46,7 +46,7 @@ export class ProductDetailComponent implements OnInit {
     private route:            ActivatedRoute,
     private siteService:      AdminSiteSettingService,
     private productService:   ProductService,
-    private catalogueService: CatalogueService,
+    private categoryService: CategoryService,
     public  cartService:      CartService,
   ) {}
 
@@ -67,13 +67,13 @@ export class ProductDetailComponent implements OnInit {
       this.product.set(product);
       this.loading.set(false);
 
-      this.productService.getList({ catalogueId: product.catalogueId, isAvailable: true, maxResultCount: 5 }).subscribe(res => {
+      this.productService.getList({ categoryId: product.categoryId, isAvailable: true, maxResultCount: 5 }).subscribe(res => {
         this.related.set(res.items.filter(p => p.id !== id).slice(0, 4));
       });
 
-      this.catalogueService.getList({ isPublished: true, maxResultCount: 100 }).subscribe(res => {
-        const cat = res.items.find(c => c.id === product.catalogueId) ?? null;
-        this.catalogue.set(cat);
+      this.categoryService.getList({ isPublished: true, maxResultCount: 100 }).subscribe(res => {
+        const cat = res.items.find(c => c.id === product.categoryId) ?? null;
+        this.category.set(cat);
       });
     });
   }

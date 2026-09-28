@@ -29,8 +29,8 @@ export interface UserSiteSetting {
   fontSizeBase?: string;
   aboutTitle?: string;
   aboutDescription?: string;
-  cataloguesTitle?: string;
-  cataloguesDescription?: string;
+  categoriesTitle?: string;
+  categoriesDescription?: string;
   socialLinkedinUrl?: string;
   socialInstagramUrl?: string;
   socialFacebookUrl?: string;

@@ -8,7 +8,7 @@ export enum ProductStatus {
 
 export interface Product {
   id:            number;
-  catalogueId:   number;
+  categoryId:   number;
   portalId?:     number;
   name?:         string;
   slug?:         string;

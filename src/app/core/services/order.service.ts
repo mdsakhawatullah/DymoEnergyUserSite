@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CreateOrderDto, OrderDto } from '../models/order.model';
-import { PagedResult } from '../models/catalogue.model';
+import { PagedResult } from '../models/category.model';
 import { environment } from '../../../environments/environment';
 
 export interface OrderFilter {

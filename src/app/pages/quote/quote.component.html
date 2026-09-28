@@ -77,6 +77,10 @@
                       [(ngModel)]="form.message" name="message"></textarea>
           </div>
 
+          @if (sendError()) {
+            <p class="send-error">{{ 'QUOTE.SEND_ERROR' | translate }}</p>
+          }
+
           <!-- Submit -->
           <button class="send-btn"
                   [class.send-btn--loading]="submitting()"

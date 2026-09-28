@@ -184,6 +184,7 @@ export const zh = {
     MESSAGE_PLACEHOLDER: '请告诉我们您的房产情况、当前电费以及您希望实现的目标...',
     SEND: '发送消息 →',
     SENDING: '发送中…',
+    SEND_ERROR: '出错了，请检查您的信息后重试。',
     SUCCESS_TITLE: '消息已发送！',
     SUCCESS_DESC: '感谢您的联系。我们的团队将在24小时内与您联系。',
     SEND_ANOTHER: '再发一条消息',

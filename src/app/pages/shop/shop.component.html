@@ -14,26 +14,26 @@
     <h1 class="shop-title">{{ 'SHOP.TITLE' | translate }}</h1>
     <p class="shop-sub">
       {{ filteredProducts().length }} {{ filteredProducts().length !== 1 ? ('SHOP.PRODUCTS' | translate) : ('SHOP.PRODUCT' | translate) }}
-      @if (selectedCatalogueId() !== null) {
-        {{ 'SHOP.SUB_IN' | translate }} <strong>{{ selectedCatalogueName() }}</strong>
+      @if (selectedCategoryId() !== null) {
+        {{ 'SHOP.SUB_IN' | translate }} <strong>{{ selectedCategoryName() }}</strong>
       } @else {
         {{ 'SHOP.SUB_ALL' | translate }}
       }
     </p>
   </div>
 
-  <!-- ── Catalogue filter chips ─────────────────────────────────────────── -->
+  <!-- ── Category filter chips ─────────────────────────────────────────── -->
   <div class="filter-row">
     <div
       class="filter-chip"
-      [class.filter-chip--active]="selectedCatalogueId() === null"
-      (click)="selectCatalogue(null)"
+      [class.filter-chip--active]="selectedCategoryId() === null"
+      (click)="selectCategory(null)"
     >{{ 'SHOP.ALL_PRODUCTS' | translate }}</div>
-    @for (cat of catalogues(); track cat.id) {
+    @for (cat of categories(); track cat.id) {
       <div
         class="filter-chip"
-        [class.filter-chip--active]="selectedCatalogueId() === cat.id"
-        (click)="selectCatalogue(cat.id)"
+        [class.filter-chip--active]="selectedCategoryId() === cat.id"
+        (click)="selectCategory(cat.id)"
       >{{ cat.name }}</div>
     }
   </div>
@@ -84,7 +84,7 @@
                 <img [src]="product.primaryImage" [alt]="product.name" class="prod-thumb-img" />
               } @else {
                 <div class="prod-thumb-placeholder">
-                  <div class="prod-thumb-cat">{{ catalogueName(product.catalogueId) }}</div>
+                  <div class="prod-thumb-cat">{{ categoryName(product.categoryId) }}</div>
                   @if (product.sku) {
                     <div class="prod-thumb-sku">{{ product.sku }}</div>
                   }

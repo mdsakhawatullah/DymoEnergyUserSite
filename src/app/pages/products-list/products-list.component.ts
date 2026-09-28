@@ -2,11 +2,11 @@ import { Component, OnInit, signal, computed } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgStyle } from '@angular/common';
 import { AdminSiteSettingService } from '../../core/services/admin-site-setting.service';
-import { CatalogueService } from '../../core/services/catalogue.service';
+import { CategoryService } from '../../core/services/category.service';
 import { ProductService } from '../../core/services/product.service';
 import { CartService } from '../../core/services/cart.service';
 import { AdminSiteSetting } from '../../core/models/admin-site-setting.model';
-import { Catalogue } from '../../core/models/catalogue.model';
+import { Category } from '../../core/models/category.model';
 import { Product } from '../../core/models/product.model';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { NavbarComponent, DEFAULT_NAV_ITEMS } from '../../shared/components/navbar/navbar.component';
@@ -22,7 +22,7 @@ import { FooterComponent } from '../../shared/components/footer/footer.component
 export class ProductsListComponent implements OnInit {
 
   settings         = signal<AdminSiteSetting | null>(null);
-  catalogue        = signal<Catalogue | null>(null);
+  category        = signal<Category | null>(null);
   products         = signal<Product[]>([]);
   searchQuery      = signal('');
   loading          = signal(true);
@@ -30,7 +30,7 @@ export class ProductsListComponent implements OnInit {
 
   navItems   = DEFAULT_NAV_ITEMS;
   quantities: Record<number, number> = {};
-  catalogueId = 0;
+  categoryId = 0;
 
   primaryColor = computed(() => this.settings()?.primaryColor  || '#2D3B60');
   accentColor  = computed(() =>
@@ -39,9 +39,9 @@ export class ProductsListComponent implements OnInit {
     '#A4DF38'
   );
 
-  /** Background style for the page header — uses catalogue's primary image when available */
+  /** Background style for the page header — uses category's primary image when available */
   headerBgStyle = computed(() => {
-    const img = this.catalogue()?.primaryBackgroundImageUrl;
+    const img = this.category()?.primaryBackgroundImageUrl;
     if (!img) return {};
     return {
       'background-image':    `url(${img})`,
@@ -64,13 +64,13 @@ export class ProductsListComponent implements OnInit {
   constructor(
     private route:            ActivatedRoute,
     private siteService:      AdminSiteSettingService,
-    private catalogueService: CatalogueService,
+    private categoryService: CategoryService,
     private productService:   ProductService,
     public  cartService:      CartService,
   ) {}
 
   ngOnInit(): void {
-    this.catalogueId = Number(this.route.snapshot.paramMap.get('id'));
+    this.categoryId = Number(this.route.snapshot.paramMap.get('id'));
 
     this.siteService.getActive().subscribe(s => {
       this.settings.set(s);
@@ -78,15 +78,15 @@ export class ProductsListComponent implements OnInit {
       if (s) this.applyTheme(s);
     });
 
-    this.catalogueService
+    this.categoryService
       .getList({ isPublished: true, maxResultCount: 100 })
       .subscribe(result => {
-        const found = result.items.find(c => c.id === this.catalogueId);
-        if (found) this.catalogue.set(found);
+        const found = result.items.find(c => c.id === this.categoryId);
+        if (found) this.category.set(found);
       });
 
     this.productService
-      .getList({ catalogueId: this.catalogueId, maxResultCount: 100 })
+      .getList({ categoryId: this.categoryId, maxResultCount: 100 })
       .subscribe(result => {
         this.products.set(result.items);
         result.items.forEach(p => (this.quantities[p.id] = 1));

@@ -64,8 +64,8 @@
       <!-- ── Info panel ── -->
       <div class="info-panel">
 
-        @if (catalogue()) {
-          <div class="prod-eyebrow">{{ catalogue()!.name }}</div>
+        @if (category()) {
+          <div class="prod-eyebrow">{{ category()!.name }}</div>
         }
         @if (p.sku) {
           <div class="prod-sku">{{ 'PRODUCT_DETAIL.SKU' | translate }}: {{ p.sku }}</div>
