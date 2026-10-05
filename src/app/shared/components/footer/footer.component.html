@@ -1,93 +1,75 @@
 <footer class="site-footer">
   <div class="footer-inner">
 
-    <!-- ── 4-column grid ─────────────────────────────────────────────── -->
     <div class="footer-grid">
 
-      <!-- Col 1: Brand -->
+      <!-- Brand -->
       <div class="footer-brand-col">
-        <div class="footer-brand-row">
+        <a routerLink="/" class="footer-brand-row">
           @if (settings?.logoUrl) {
             <img [src]="settings!.logoUrl" [alt]="settings?.siteName" class="footer-logo" />
           } @else {
-            <!-- Simplified wind turbine mark -->
-            <svg width="36" height="36" viewBox="0 0 100 100" fill="none">
-              <g transform="translate(76,22)">
-                <circle cx="0" cy="0" r="11" fill="#A4DF38"/>
-              </g>
-              <g transform="translate(63,73) rotate(-12)">
-                <rect x="-10" y="-9" width="20" height="18" rx="1.5" fill="#78CDE0"/>
-              </g>
-              <g transform="translate(79,75) rotate(-12)">
-                <rect x="-10" y="-9" width="20" height="18" rx="1.5" fill="#78CDE0"/>
-              </g>
-              <polygon points="40,52 44,52 47,90 37,90" fill="rgba(255,255,255,0.12)"/>
-              <rect x="34" y="88" width="16" height="7" rx="3.5" fill="#A4DF38"/>
-              <g transform="translate(42,52)">
-                <path d="M 0,0 C -3,-4 -12,-16 -8,-30 C -5,-36 5,-36 8,-30 C 12,-16 3,-4 0,0 Z" fill="#78CDE0"/>
-                <path d="M 0,0 C -3,-4 -12,-16 -8,-30 C -5,-36 5,-36 8,-30 C 12,-16 3,-4 0,0 Z" fill="#78CDE0" transform="rotate(120)"/>
-                <path d="M 0,0 C -3,-4 -12,-16 -8,-30 C -5,-36 5,-36 8,-30 C 12,-16 3,-4 0,0 Z" fill="#78CDE0" transform="rotate(240)"/>
-                <circle cx="0" cy="0" r="7" fill="#FFFFFF"/>
-                <circle cx="0" cy="0" r="3" fill="#2D3B60"/>
-              </g>
-            </svg>
-            <div class="footer-brand-text">
-              <div class="footer-brand-name">
-                {{ brandWord1 }} <span class="footer-brand-accent">{{ brandWord2 }}</span>
-              </div>
-              <div class="footer-brand-tagline">{{ 'FOOTER.TAGLINE' | translate }}</div>
-            </div>
+            <svg width="36" height="36" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0E6B3F"/><path d="M8.5 7h7a9 9 0 0 1 0 18h-7z" fill="#FFFFFF"/><circle cx="16" cy="16" r="3.4" fill="#F29D12"/><path d="M21 16h1.2M16 21v1.2M11 16H9.8M16 11V9.8M19.4 19.4l.8.8M12.6 19.4l-.8.8M12.6 12.6l-.8-.8M19.4 12.6l.8-.8" stroke="#F29D12" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>
+            <span class="footer-brand-name"><span class="b1">{{ brandWord1 }}</span><span class="b2">{{ brandWord2 }}</span></span>
+          }
+        </a>
+        <p class="footer-desc">Solar panels, inverters, batteries and complete home systems — supplied, installed and serviced across Bangladesh.</p>
+      </div>
+
+      <!-- Link columns -->
+      @for (col of cols; track col.title) {
+        <div class="footer-col">
+          <span class="footer-col-heading">{{ col.title }}</span>
+          @for (l of col.links; track l.label) {
+            <a [routerLink]="l.route" class="footer-link">{{ l.label }}</a>
           }
         </div>
-        <p class="footer-desc">{{ 'FOOTER.DESC' | translate }}</p>
-      </div>
+      }
 
-      <!-- Col 2: Products -->
+      <!-- Contact -->
       <div class="footer-col">
-        <div class="footer-col-heading">{{ 'FOOTER.PRODUCTS' | translate }}</div>
-        <div class="footer-links">
-          <a href="#" class="footer-link">{{ 'FOOTER.SOLAR_PANELS' | translate }}</a>
-          <a href="#" class="footer-link">{{ 'FOOTER.INVERTERS' | translate }}</a>
-          <a href="#" class="footer-link">{{ 'FOOTER.BATTERY' | translate }}</a>
-          <a href="#" class="footer-link">{{ 'FOOTER.KITS' | translate }}</a>
-          <a href="#" class="footer-link">{{ 'FOOTER.MONITORING' | translate }}</a>
-        </div>
-      </div>
-
-      <!-- Col 3: Company -->
-      <div class="footer-col">
-        <div class="footer-col-heading">{{ 'FOOTER.COMPANY' | translate }}</div>
-        <div class="footer-links">
-          <a href="#" class="footer-link">{{ 'FOOTER.ABOUT' | translate }}</a>
-          <a href="#" class="footer-link">{{ 'FOOTER.BLOG' | translate }}</a>
-          <a href="#" class="footer-link">{{ 'FOOTER.CAREERS' | translate }}</a>
-          <a href="#" class="footer-link">{{ 'FOOTER.CONTACT' | translate }}</a>
-        </div>
-      </div>
-
-      <!-- Col 4: Support -->
-      <div class="footer-col">
-        <div class="footer-col-heading">{{ 'FOOTER.SUPPORT' | translate }}</div>
-        <div class="footer-links">
-          <a href="#" class="footer-link">{{ 'FOOTER.INSTALLATION' | translate }}</a>
-          <a href="#" class="footer-link">{{ 'FOOTER.WARRANTY' | translate }}</a>
-          <a href="#" class="footer-link">{{ 'FOOTER.FAQ' | translate }}</a>
-          <a href="#" class="footer-link">{{ 'FOOTER.TRACK_ORDER' | translate }}</a>
-        </div>
+        <span class="footer-col-heading">Contact</span>
+        @if (address) {
+          <span class="footer-text">{{ address }}</span>
+        }
+        @if (settings?.phone) { <a [href]="'tel:' + settings!.phone" class="footer-link">{{ settings!.phone }}</a> }
+        @if (settings?.email) { <a [href]="'mailto:' + settings!.email" class="footer-link">{{ settings!.email }}</a> }
+        <span class="footer-text">Sat–Thu · 9 am – 7 pm</span>
       </div>
 
     </div>
 
-    <!-- ── Bottom bar ──────────────────────────────────────────────────── -->
     <div class="footer-bottom">
       <span class="footer-copy">
-        &copy; {{ currentYear }} {{ settings?.siteName || 'Dymo Energy' }} {{ 'FOOTER.ALL_RIGHTS' | translate }}
+        &copy; {{ currentYear }} {{ settings?.siteName || 'Dymo Energy' }}. All rights reserved. ·
+        <a href="#" class="footer-legal-link">Privacy</a> ·
+        <a href="#" class="footer-legal-link">Terms</a> ·
+        <a href="#" class="footer-legal-link">Refund &amp; warranty policy</a>
       </span>
-      <nav class="footer-legal">
-        <a href="#" class="footer-legal-link">{{ 'FOOTER.PRIVACY' | translate }}</a>
-        <a href="#" class="footer-legal-link">{{ 'FOOTER.TERMS' | translate }}</a>
-        <a href="#" class="footer-legal-link">{{ 'FOOTER.COOKIES' | translate }}</a>
-      </nav>
+      <span class="footer-pay">
+        We accept
+        @for (p of payments; track p) {
+          <span class="pay-chip" [attr.aria-label]="p" role="img">
+            @switch (p) {
+              @case ('bKash') {
+                <svg width="62" height="20" viewBox="0 0 62 20"><path d="M3 2l9 3-3 6 5 2-9 6 2-7-5-2z" fill="#E2136E"/><text x="19" y="15" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#E2136E">bKash</text></svg>
+              }
+              @case ('Nagad') {
+                <svg width="62" height="20" viewBox="0 0 62 20"><circle cx="9" cy="10" r="7" fill="#F6921E"/><path d="M5.5 14V6l7 8V6" stroke="#fff" stroke-width="1.8" fill="none" stroke-linejoin="round"/><text x="19" y="15" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#ED1C24">Nagad</text></svg>
+              }
+              @case ('VISA') {
+                <svg width="48" height="16" viewBox="0 0 48 16"><text x="24" y="14" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="900" font-style="italic" letter-spacing="-0.5" fill="#1A1F71">VISA</text></svg>
+              }
+              @case ('Mastercard') {
+                <svg width="38" height="24" viewBox="0 0 38 24"><circle cx="13" cy="12" r="9" fill="#EB001B"/><circle cx="25" cy="12" r="9" fill="#F79E1B"/><path d="M19 4.3a9 9 0 0 1 0 15.4 9 9 0 0 1 0-15.4z" fill="#FF5F00"/></svg>
+              }
+              @default {
+                <svg width="104" height="20" viewBox="0 0 104 20"><rect x="1" y="4" width="20" height="12" rx="2" fill="#E6F2EA" stroke="#0E6B3F" stroke-width="1.4"/><circle cx="11" cy="10" r="2.6" fill="#0E6B3F"/><text x="27" y="14.5" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#16293F">Cash on delivery</text></svg>
+              }
+            }
+          </span>
+        }
+      </span>
     </div>
 
   </div>

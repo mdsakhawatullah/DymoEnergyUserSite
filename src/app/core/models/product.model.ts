@@ -6,6 +6,15 @@ export enum ProductStatus {
   Discontinued = 5,
 }
 
+export interface ProductImage {
+  id:            number;
+  imageUrl?:     string;
+  title?:        string;
+  altText?:      string;
+  displayOrder:  number;
+  isActive:      boolean;
+}
+
 export interface Product {
   id:            number;
   categoryId:   number;
@@ -14,6 +23,9 @@ export interface Product {
   slug?:         string;
   summary?:      string;       // short description shown on cards
   description?:  string;
+  specifications?: string;     // one "Label: Value" per line
+  download?:     string;       // PDF URL
+  images?:       ProductImage[];
   sku?:          string;
   price:         number;       // regular price  (was unitPrice)
   discountPrice?: number;      // optional sale price

@@ -1,229 +1,182 @@
 <app-navbar
   [siteName]="settings()?.siteName || 'Org Name'"
   [logoUrl]="settings()?.logoUrl"
+  [phone]="settings()?.phone"
   [navbarTextColor]="settings()?.navbarTextColor"
   [primaryColor]="settings()?.primaryColor"
   [navItems]="navItems"
 />
 
 <!-- ─── PAGE HEADER ─── -->
-<div class="page-header" [ngStyle]="headerBgStyle()">
-  <div class="page-header-inner">
-    <a routerLink="/" class="back-link">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6"/>
-      </svg>
-      {{ 'PRODUCTS_LIST.BACK' | translate }}
+<section class="shop-head">
+  <nav class="crumb" aria-label="Breadcrumb">
+    <a routerLink="/">Home</a><span>/</span><a routerLink="/shop">Shop</a><span>/</span>
+    <span class="crumb-now">{{ category()?.name || 'Products' }}</span>
+  </nav>
+
+  <div class="shop-head-row">
+    <div class="shop-head-text">
+      <h1 class="d shop-title">{{ category()?.name || 'Products' }}</h1>
+      @if (category()?.description) { <p class="shop-sub">{{ category()!.description }}</p> }
+    </div>
+    <a routerLink="/solar-calculator" class="calc-link">
+      <span class="calc-link-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></svg></span>
+      <span class="calc-link-text"><strong>Not sure how many panels?</strong><span>Use the solar calculator →</span></span>
     </a>
-    <h1 class="page-title">{{ category()?.name || ('PRODUCTS_LIST.SECTION_TITLE' | translate) }}</h1>
-    @if (category()?.description) {
-      <p class="page-subtitle">{{ category()!.description }}</p>
+  </div>
+
+  <div class="cat-pills">
+    <a routerLink="/shop" class="cat-pill">All products</a>
+    @for (c of categories(); track c.id) {
+      <a [routerLink]="['/categories', c.id, 'products-list']" class="cat-pill" [class.cat-pill--on]="c.id === categoryId">{{ c.name }}</a>
     }
   </div>
-</div>
+</section>
 
-<!-- ─── PRODUCTS SECTION ─── -->
-<section class="products-section">
-  <div class="section-container">
+<!-- ─── FILTERS + GRID ─── -->
+<section class="shop-body">
 
-    <!-- Section header -->
-    <div class="section-header">
-      <div class="section-header-left">
-        <h2 class="section-title" [style.color]="primaryColor()">
-          {{ 'PRODUCTS_LIST.SECTION_TITLE' | translate }}
-          @if (!productsLoading()) {
-            <span class="section-count">({{ filteredProducts().length }})</span>
-          }
-        </h2>
-        <p class="section-desc">{{ 'PRODUCTS_LIST.SECTION_DESC' | translate }}</p>
+  <aside class="filters" aria-label="Filters">
+    <div class="filters-head">
+      <span>Filters</span>
+      <button type="button" class="link-btn" (click)="clearFilters()">Clear all</button>
+    </div>
+
+    <div class="card f-card">
+      <span class="f-title">Price (BDT)</span>
+      <div class="range" [style.--lo.%]="loPct()" [style.--hi.%]="hiPct()">
+        <span class="range-track"></span>
+        <span class="range-fill"></span>
+        <input type="range" class="range-in" aria-label="Minimum price" [min]="bounds().min" [max]="bounds().max" [step]="bounds().step" [value]="lo()" (input)="onLo($event)" />
+        <input type="range" class="range-in" aria-label="Maximum price" [min]="bounds().min" [max]="bounds().max" [step]="bounds().step" [value]="hi()" (input)="onHi($event)" />
       </div>
-      <div class="search-box">
-        <span class="search-label">{{ 'PRODUCTS_LIST.SEARCH' | translate }}</span>
-        <div class="search-input-wrap">
-          <input
-            type="text"
-            [placeholder]="'PRODUCTS_LIST.SEARCH_PLACEHOLDER' | translate"
-            class="search-input"
-            (input)="onSearch($event)"
-          />
-          <button class="search-btn" [style.background-color]="primaryColor()" aria-label="Search">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
-              <circle cx="11" cy="11" r="8"/>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-          </button>
-        </div>
+      <div class="price-row">
+        <input class="in" type="text" inputmode="numeric" aria-label="Minimum price" [value]="fmt(lo())" (change)="onMin($event)" />
+        <span>–</span>
+        <input class="in" type="text" inputmode="numeric" aria-label="Maximum price" [value]="fmt(hi())" (change)="onMax($event)" />
       </div>
     </div>
 
-    <!-- Loading skeletons -->
+    <div class="card f-card f-card--row">
+      <span class="f-title">In stock only</span>
+      <button type="button" role="switch" class="switch" [class.on]="inStockOnly()" [attr.aria-checked]="inStockOnly()" aria-label="In stock only" (click)="toggleStock()"><span></span></button>
+    </div>
+
+    <div class="promo">
+      <strong>Buying for a whole system?</strong>
+      <span>Packages include panels, inverter, battery and installation — usually cheaper than buying parts.</span>
+      <a routerLink="/quote" class="btn btn-sun btn-sm">Ask for a quote</a>
+    </div>
+  </aside>
+
+  <div class="results">
+
+    <div class="toolbar">
+      <span class="toolbar-count">
+        @if (!productsLoading()) { <strong>{{ filteredProducts().length }}</strong> products }
+      </span>
+      @if (inStockOnly()) {
+        <span class="chip">In stock<button type="button" aria-label="Remove filter" (click)="toggleStock()">×</button></span>
+      }
+      @if (minPrice() !== null || maxPrice() !== null) {
+        <span class="chip">
+          {{ minPrice() !== null ? formatPrice(minPrice()!) : '৳0' }} – {{ maxPrice() !== null ? formatPrice(maxPrice()!) : 'any' }}
+          <button type="button" aria-label="Remove filter" (click)="minPrice.set(null); maxPrice.set(null)">×</button>
+        </span>
+      }
+      <span class="grow"></span>
+      <label class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5" stroke-linecap="round"/></svg>
+        <input type="search" placeholder="Search in this category" aria-label="Search products" (input)="onSearch($event)" />
+      </label>
+      <label class="sort">Sort by
+        <select class="in" (change)="onSort($event)">
+          <option value="featured">Featured</option>
+          <option value="price-asc">Price: low to high</option>
+          <option value="price-desc">Price: high to low</option>
+          <option value="name">Name</option>
+        </select>
+      </label>
+    </div>
+
     @if (productsLoading()) {
-      <div class="prod-grid">
-        @for (i of [1,2,3,4]; track i) {
-          <div class="prod-skeleton">
-            <div class="prod-skeleton-img shimmer"></div>
-            <div class="prod-skeleton-body">
-              <div class="prod-skeleton-line w80 shimmer"></div>
-              <div class="prod-skeleton-line w60 shimmer"></div>
-              <div class="prod-skeleton-line w40 shimmer"></div>
-              <div class="prod-skeleton-line w50 shimmer"></div>
-              <div class="prod-skeleton-btn shimmer"></div>
-              <div class="prod-skeleton-btn shimmer"></div>
-            </div>
-          </div>
+      <div class="grid">
+        @for (i of skeletons; track i) {
+          <div class="pcard pcard--sk"><div class="sk-media shimmer"></div><div class="sk-body"><div class="sk-line w80 shimmer"></div><div class="sk-line w50 shimmer"></div><div class="sk-line w40 shimmer"></div></div></div>
         }
       </div>
-
-    <!-- Empty state -->
     } @else if (filteredProducts().length === 0) {
-      <div class="prod-empty-wrap">
-
-        <div class="prod-grid prod-grid--ghost" aria-hidden="true">
-          @for (i of [1,2,3,4]; track i) {
-            <div class="prod-skeleton prod-skeleton--ghost">
-              <div class="prod-skeleton-img"></div>
-              <div class="prod-skeleton-body">
-                <div class="prod-skeleton-line w80"></div>
-                <div class="prod-skeleton-line w60"></div>
-                <div class="prod-skeleton-line w40"></div>
-                <div class="prod-skeleton-line w50"></div>
-                <div class="prod-skeleton-btn"></div>
-                <div class="prod-skeleton-btn"></div>
-              </div>
-            </div>
-          }
-        </div>
-
-        <div class="prod-empty-overlay">
-          <div class="prod-empty-panel">
-            <div class="prod-empty-icon-wrap">
-              <svg width="42" height="42" viewBox="0 0 24 24" fill="none"
-                   stroke="#c8c8c8" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-                <line x1="3" y1="6" x2="21" y2="6"/>
-                <path d="M16 10a4 4 0 01-8 0"/>
-              </svg>
-            </div>
-            <p class="prod-empty-title">{{ 'PRODUCTS_LIST.NO_PRODUCTS' | translate }}</p>
-            <p class="prod-empty-sub">{{ 'PRODUCTS_LIST.NO_PRODUCTS_SUB' | translate }}</p>
-          </div>
-        </div>
-
+      <div class="empty">
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#9AA7B5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <strong>No products found</strong>
+        <span>{{ hasFilters() || searchQuery() ? 'Try clearing a filter or changing the search.' : 'Products in this category will show up here.' }}</span>
+        @if (hasFilters()) { <button type="button" class="btn btn-s btn-sm" (click)="clearFilters()">Clear filters</button> }
       </div>
-
-    <!-- Product cards -->
     } @else {
-      <div class="prod-grid">
-        @for (product of filteredProducts(); track product.id) {
-
-          <article class="prod-card">
-
-            <!-- Image area -->
-            <div class="prod-card-img-wrap">
-              @if (product.ribbonText) {
-                <span class="prod-ribbon">{{ product.ribbonText }}</span>
-              }
+      <div class="grid">
+        @for (product of pageItems(); track product.id) {
+          <article class="pcard">
+            <a [routerLink]="['/products', product.id]" class="pcard-media">
               @if (product.primaryImage) {
-                <img
-                  [src]="product.primaryImage"
-                  [alt]="product.name"
-                  class="prod-card-img"
-                  loading="lazy"
-                />
+                <img [src]="product.primaryImage" [alt]="product.name" loading="lazy" />
               } @else {
-                <div class="prod-card-img-placeholder">
-                  <svg width="52" height="52" viewBox="0 0 24 24" fill="none"
-                       stroke="#d4d4d4" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2"/>
-                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                    <polyline points="21 15 16 10 5 21"/>
-                  </svg>
-                </div>
+                <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#C3CDD8" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
               }
-              <button class="prod-wishlist-btn" aria-label="Add to wishlist">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                     stroke="#bbb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
-                </svg>
-              </button>
-            </div>
+              @if (product.ribbonText) { <span class="pcard-badge">{{ product.ribbonText }}</span> }
+              @else if (product.stockQuantity <= 0) { <span class="pcard-badge pcard-badge--out">Out of stock</span> }
+            </a>
+            <button type="button" class="pcard-wish" aria-label="Save to wishlist">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 20s-7-4.4-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.6-9 9-9 9z"/></svg>
+            </button>
 
-            <div class="prod-card-divider"></div>
-
-            <!-- Body -->
-            <div class="prod-card-body">
-
-              <h3 class="prod-card-title">{{ product.name }}</h3>
-
+            <div class="pcard-body">
+              @if (category()?.name) { <span class="pcard-cat">{{ category()!.name }}</span> }
+              <a [routerLink]="['/products', product.id]" class="pcard-name">{{ product.name }}</a>
               @if (product.summary || product.sku) {
-                <p class="prod-card-sub">{{ product.summary || product.sku }}</p>
+                <div class="pcard-specs">
+                  @if (product.sku) { <span>{{ product.sku }}</span> }
+                  @if (product.summary) { <span class="pcard-summary">{{ product.summary }}</span> }
+                </div>
               }
-
-              <!-- Price row -->
-              <div class="prod-price-row">
-                @if (product.discountPrice) {
-                  <span class="prod-price" [style.color]="accentColor()">
-                    {{ formatPrice(product.discountPrice) }}
+              <span class="pcard-stock" [class.pcard-stock--out]="product.stockQuantity <= 0">
+                {{ product.stockQuantity > 0 ? product.stockQuantity + ' in stock' : 'Currently unavailable' }}
+              </span>
+              <span class="grow"></span>
+              <div class="pcard-foot">
+                <div class="pcard-price">
+                  <s>@if (product.discountPrice) { {{ formatPrice(product.price) }} }</s>
+                  <strong class="d">{{ formatPrice(product.discountPrice ?? product.price) }}</strong>
+                </div>
+                <div class="pcard-actions">
+                  <span class="qty" role="group" aria-label="Quantity">
+                    <button type="button" aria-label="Decrease quantity" [disabled]="qty(product) <= 1" (click)="changeQty(product, -1)">−</button>
+                    <span aria-live="polite">{{ qty(product) }}</span>
+                    <button type="button" aria-label="Increase quantity" (click)="changeQty(product, 1)">+</button>
                   </span>
-                  <span class="prod-price-original">{{ formatPrice(product.price) }}</span>
-                } @else {
-                  <span class="prod-price" [style.color]="accentColor()">
-                    {{ formatPrice(product.price) }}
-                  </span>
-                }
-              </div>
-
-              <!-- Stock row -->
-              <div class="prod-stock-row">
-                @if (product.stockQuantity > 0) {
-                  <span class="prod-stock-available" [style.color]="accentColor()">
-                    {{ product.stockQuantity }} {{ 'PRODUCTS_LIST.IN_STOCK' | translate }}
-                  </span>
-                } @else {
-                  <span class="prod-stock-none">{{ 'PRODUCTS_LIST.NO_STOCK' | translate }}</span>
-                }
-              </div>
-
-            </div>
-
-            <!-- Footer -->
-            <div class="prod-card-footer">
-
-              <a [routerLink]="['/products', product.id]" class="prod-view-btn">
-                {{ 'PRODUCTS_LIST.VIEW_DETAILS' | translate }}
-              </a>
-
-              <div class="prod-cart-section">
-                <label class="prod-qty-label">{{ 'PRODUCTS_LIST.QUANTITY' | translate }}</label>
-                <div class="prod-cart-controls">
-                  <input
-                    type="number"
-                    min="1"
-                    class="prod-qty-input"
-                    [value]="getQuantity(product.id)"
-                    (change)="setQuantity(product.id, $any($event.target).value)"
-                  />
-                  <button
-                    class="prod-add-btn"
-                    [class.prod-add-btn--disabled]="product.price === 0"
-                    [disabled]="product.price === 0"
-                    [style.background-color]="product.price > 0 ? primaryColor() : null"
-                    (click)="addToCart(product)"
-                  >{{ 'PRODUCTS_LIST.ADD_TO_CART' | translate }}</button>
+                  <button type="button" class="pcard-add" aria-label="Add to cart"
+                          [disabled]="product.price === 0"
+                          (click)="addToCart(product)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2"/></svg>Add
+                  </button>
                 </div>
               </div>
-
             </div>
-
           </article>
-
         }
       </div>
+
+      @if (pageCount() > 1) {
+        <nav class="pager" aria-label="Pagination">
+          <button type="button" class="btn btn-s btn-sm" aria-label="Previous page" [disabled]="page() === 1" (click)="goTo(page() - 1)">←</button>
+          @for (p of pages(); track p) {
+            <button type="button" class="btn btn-sm pager-num" [class.btn-p]="p === page()" [class.btn-s]="p !== page()" [attr.aria-current]="p === page() ? 'page' : null" (click)="goTo(p)">{{ p }}</button>
+          }
+          <button type="button" class="btn btn-s btn-sm" aria-label="Next page" [disabled]="page() === pageCount()" (click)="goTo(page() + 1)">→</button>
+        </nav>
+      }
     }
 
   </div>
 </section>
 
-<!-- ─── FOOTER ─── -->
 <app-footer [settings]="settings()" />

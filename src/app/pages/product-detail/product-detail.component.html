@@ -1,189 +1,197 @@
 <app-navbar
   [siteName]="settings()?.siteName || 'Org Name'"
   [logoUrl]="settings()?.logoUrl"
+  [phone]="settings()?.phone"
   [navbarTextColor]="settings()?.navbarTextColor"
   [primaryColor]="settings()?.primaryColor"
   [navItems]="navItems"
 />
 
-<div class="detail-page">
+@if (loading()) {
+  <div class="state"><div class="spinner"></div><span>Loading product…</span></div>
 
-  <!-- ── Breadcrumb ──────────────────────────────────────────────────────── -->
-  <nav class="breadcrumb">
-    <a routerLink="/" class="bc-link">{{ 'PRODUCT_DETAIL.HOME' | translate }}</a>
-    <span class="bc-sep">›</span>
-    <a routerLink="/shop" class="bc-link">{{ 'PRODUCT_DETAIL.SHOP' | translate }}</a>
-    @if (product()) {
-      <span class="bc-sep">›</span>
-      <span class="bc-current">{{ product()!.name }}</span>
-    }
-  </nav>
+} @else if (error()) {
+  <div class="state">
+    <strong>{{ error() }}</strong>
+    <a routerLink="/shop" class="btn btn-p btn-sm">Back to shop</a>
+  </div>
 
-  <!-- ── Loading ─────────────────────────────────────────────────────────── -->
-  @if (loading()) {
-    <div class="state-center">
-      <div class="big-spinner"></div>
-      <div class="state-text">{{ 'PRODUCT_DETAIL.LOADING' | translate }}</div>
-    </div>
+} @else if (product(); as p) {
 
-  <!-- ── Error ───────────────────────────────────────────────────────────── -->
-  } @else if (error()) {
-    <div class="state-center">
-      <div class="state-title">{{ error() }}</div>
-      <a routerLink="/shop" class="back-link">{{ 'PRODUCT_DETAIL.BACK_SHOP' | translate }}</a>
-    </div>
+  <section class="pd-top">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a routerLink="/">Home</a><span>/</span><a routerLink="/shop">Shop</a><span>/</span>
+      @if (category()) {
+        <a [routerLink]="['/categories', category()!.id, 'products-list']">{{ category()!.name }}</a><span>/</span>
+      }
+      <span class="crumb-now">{{ p.name }}</span>
+    </nav>
 
-  <!-- ── Product ─────────────────────────────────────────────────────────── -->
-  } @else if (product(); as p) {
+    <div class="pd-grid">
 
-    <div class="product-grid">
-
-      <!-- ── Image panel ── -->
-      <div class="image-panel">
-        <div class="image-wrap">
-          @if (p.ribbonText) {
-            <div class="img-badge">{{ p.ribbonText }}</div>
-          } @else if (p.isFeatured) {
-            <div class="img-badge">{{ 'PRODUCT_DETAIL.POPULAR' | translate }}</div>
-          }
-          @if (p.primaryImage) {
-            <img [src]="p.primaryImage" [alt]="p.name" class="product-img" />
+      <!-- ── Gallery ── -->
+      <div class="gallery">
+        <div class="gallery-main">
+          @if (gallery().length) {
+            <img [src]="gallery()[imageIndex()]" [alt]="p.name" />
           } @else {
-            <div class="img-placeholder">
-              <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
-                <rect x="8" y="8" width="56" height="56" rx="12" stroke="#9BBCCC" stroke-width="2"/>
-                <circle cx="26" cy="26" r="6" stroke="#9BBCCC" stroke-width="2"/>
-                <path d="M8 48 L22 34 L36 44 L50 28 L64 48" stroke="#9BBCCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <div class="img-placeholder-label">{{ 'PRODUCT_DETAIL.NO_IMAGE' | translate }}</div>
-            </div>
+            <svg width="72" height="72" viewBox="0 0 72 72" fill="none"><rect x="8" y="8" width="56" height="56" rx="12" stroke="#9BBCCC" stroke-width="2"/><circle cx="26" cy="26" r="6" stroke="#9BBCCC" stroke-width="2"/><path d="M8 48 22 34 36 44 50 28 64 48" stroke="#9BBCCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           }
+          @if (p.ribbonText) { <span class="gallery-badge">{{ p.ribbonText }}</span> }
         </div>
-      </div>
-
-      <!-- ── Info panel ── -->
-      <div class="info-panel">
-
-        @if (category()) {
-          <div class="prod-eyebrow">{{ category()!.name }}</div>
-        }
-        @if (p.sku) {
-          <div class="prod-sku">{{ 'PRODUCT_DETAIL.SKU' | translate }}: {{ p.sku }}</div>
-        }
-
-        <h1 class="prod-name">{{ p.name }}</h1>
-
-        @if (p.summary) {
-          <p class="prod-summary">{{ p.summary }}</p>
-        }
-
-        <!-- Price block -->
-        <div class="price-block">
-          <div class="price-main">{{ formatPrice(effectivePrice()) }}</div>
-          @if (hasDiscount()) {
-            <div class="price-original">{{ formatPrice(p.price) }}</div>
-            <div class="price-tag">{{ 'PRODUCT_DETAIL.SALE' | translate }}</div>
-          }
-        </div>
-
-        <!-- Stock -->
-        <div class="stock-row">
-          @if (p.stockQuantity > 0) {
-            <div class="stock-badge stock-badge--in">
-              <span class="stock-dot"></span>{{ 'PRODUCT_DETAIL.IN_STOCK' | translate }} ({{ p.stockQuantity }} {{ 'PRODUCT_DETAIL.UNITS' | translate }})
-            </div>
-          } @else {
-            <div class="stock-badge stock-badge--out">
-              <span class="stock-dot"></span>{{ 'PRODUCT_DETAIL.OUT_OF_STOCK' | translate }}
-            </div>
-          }
-        </div>
-
-        <!-- Quantity + Add to cart -->
-        <div class="purchase-row">
-          <div class="qty-control">
-            <button class="qty-btn" (click)="decrement()" [disabled]="qty() <= 1">−</button>
-            <span class="qty-value">{{ qty() }}</span>
-            <button class="qty-btn" (click)="increment()">+</button>
-          </div>
-          <button class="add-btn"
-                  [class.add-btn--added]="addedToCart()"
-                  [disabled]="p.stockQuantity === 0"
-                  (click)="addToCart()">
-            @if (addedToCart()) {
-              {{ 'PRODUCT_DETAIL.ADDED_TO_CART' | translate }}
-            } @else {
-              {{ 'PRODUCT_DETAIL.ADD_TO_CART' | translate }}
+        @if (gallery().length > 1) {
+          <div class="thumbs">
+            @for (img of gallery(); track img; let i = $index) {
+              <button type="button" class="thumb" [class.thumb--on]="i === imageIndex()" [attr.aria-label]="'Photo ' + (i + 1)" (click)="imageIndex.set(i)">
+                <img [src]="img" alt="" loading="lazy" />
+              </button>
             }
+          </div>
+        }
+      </div>
+
+      <!-- ── Info ── -->
+      <div class="info">
+        <div class="chips">
+          @if (category()) { <span class="chip chip--cat">{{ category()!.name }}</span> }
+          @if (p.stockQuantity > 0) {
+            <span class="chip chip--stock"><i></i>In stock · {{ p.stockQuantity }} units</span>
+          } @else {
+            <span class="chip chip--out">Currently unavailable</span>
+          }
+        </div>
+
+        <h1 class="d pd-title">{{ p.name }}</h1>
+        @if (p.sku) { <div class="pd-sku">SKU <strong>{{ p.sku }}</strong></div> }
+        @if (p.summary) { <p class="pd-summary">{{ p.summary }}</p> }
+
+        <div class="price-block">
+          <span class="d price">{{ formatPrice(effectivePrice()) }}</span>
+          @if (hasDiscount()) {
+            <span class="price-old">{{ formatPrice(p.price) }}</span>
+            <span class="price-save">Save {{ formatPrice(p.price - effectivePrice()) }}</span>
+          }
+        </div>
+
+        @if (keySpecs().length) {
+          <div class="key-specs">
+            @for (k of keySpecs(); track k.label) {
+              <div class="key-spec"><span>{{ k.label }}</span><strong>{{ k.value }}</strong></div>
+            }
+          </div>
+        }
+
+        <div class="buy-row">
+          <div class="qty" role="group" aria-label="Quantity">
+            <button type="button" aria-label="Decrease quantity" [disabled]="qty() <= 1" (click)="decrement()">−</button>
+            <span aria-live="polite">{{ qty() }}</span>
+            <button type="button" aria-label="Increase quantity" (click)="increment()">+</button>
+          </div>
+          <button type="button" class="btn btn-p add-btn" [disabled]="p.price === 0" (click)="addToCart()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2"/></svg>
+            {{ addedToCart() ? 'Added to cart ✓' : 'Add to cart · ' + formatPrice(total()) }}
           </button>
+          <button type="button" class="btn btn-sun" [disabled]="p.price === 0" (click)="buyNow()">Buy now</button>
         </div>
 
-        <!-- Meta chips -->
-        <div class="meta-chips">
-          @if (p.weight) {
-            <div class="meta-chip">
-              <span class="meta-chip-label">{{ 'PRODUCT_DETAIL.WEIGHT' | translate }}</span>
-              <span class="meta-chip-val">{{ p.weight }}</span>
-            </div>
-          }
-          @if (p.vendorName) {
-            <div class="meta-chip">
-              <span class="meta-chip-label">{{ 'PRODUCT_DETAIL.BRAND' | translate }}</span>
-              <span class="meta-chip-val">{{ p.vendorName }}</span>
-            </div>
-          }
-          @if (p.vendorCode) {
-            <div class="meta-chip">
-              <span class="meta-chip-label">{{ 'PRODUCT_DETAIL.MODEL' | translate }}</span>
-              <span class="meta-chip-val">{{ p.vendorCode }}</span>
-            </div>
-          }
+        <div class="perks">
+          <div class="perk">
+            <span class="perk-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h11v9H2zM13 10h4l3 3v3h-7M4.5 18.5a2 2 0 1 0 4 0a2 2 0 1 0-4 0M15 18.5a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/></svg></span>
+            <span><strong>Delivery</strong><small>Chattogram 1–2 days · rest of Bangladesh 3–5 days by courier</small></span>
+          </div>
+          <div class="perk">
+            <span class="perk-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4"/></svg></span>
+            <span><strong>Genuine, with serial-number warranty</strong><small>Registered in your name on delivery. Claims handled locally.</small></span>
+          </div>
+          <div class="perk">
+            <span class="perk-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg></span>
+            <span><strong>7-day replacement</strong><small>For transit damage — just send us a photo on delivery day.</small></span>
+          </div>
         </div>
-
       </div>
     </div>
+  </section>
 
-    <!-- ── Description card ─────────────────────────────────────────────── -->
-    @if (p.description) {
-      <div class="desc-card">
-        <div class="desc-card-title">{{ 'PRODUCT_DETAIL.DESCRIPTION' | translate }}</div>
-        <div class="desc-body" [innerHTML]="p.description"></div>
-      </div>
-    }
+  <!-- ── Tabs ── -->
+  <section class="pd-tabs">
+    <div role="tablist" class="tablist">
+      @for (t of tabs; track t.key) {
+        <button type="button" role="tab" class="tab" [class.tab--on]="tab() === t.key" [attr.aria-selected]="tab() === t.key" (click)="tab.set(t.key)">{{ t.label }}</button>
+      }
+    </div>
 
-    <!-- ── Related products ─────────────────────────────────────────────── -->
-    @if (related().length > 0) {
-      <div class="related-section">
-        <div class="related-header">
-          <div class="related-eyebrow">{{ 'PRODUCT_DETAIL.MORE_LIKE_THIS' | translate }}</div>
-          <h2 class="related-title">{{ 'PRODUCT_DETAIL.RELATED_PRODUCTS' | translate }}</h2>
-        </div>
-        <div class="related-grid">
-          @for (rp of related(); track rp.id) {
-            <a [routerLink]="['/products', rp.id]" class="rel-card">
-              <div class="rel-thumb">
-                @if (rp.primaryImage) {
-                  <img [src]="rp.primaryImage" [alt]="rp.name" class="rel-img" />
-                } @else {
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9BBCCC" stroke-width="1.4">
-                    <rect x="3" y="3" width="18" height="18" rx="2"/>
-                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                    <polyline points="21 15 16 10 5 21"/>
-                  </svg>
-                }
-              </div>
-              <div class="rel-body">
-                <div class="rel-name">{{ rp.name }}</div>
-                <div class="rel-price">{{ formatPrice(rp.discountPrice ?? rp.price) }}</div>
-              </div>
-            </a>
+    @switch (tab()) {
+
+      @case ('overview') {
+        <div class="overview">
+          @if (paragraphs().length) {
+            <h2 class="d tab-title">About this product</h2>
+            @for (para of paragraphs(); track $index) { <p class="para">{{ para }}</p> }
+          } @else {
+            <p class="muted">No description has been added for this product yet.</p>
           }
         </div>
-      </div>
+      }
+
+      @case ('specs') {
+        @if (specs().length) {
+          <table class="spec-table">
+            <tbody>
+              @for (s of specs(); track $index) {
+                <tr>
+                  @if (s.value) { <th scope="row">{{ s.label }}</th><td>{{ s.value }}</td> }
+                  @else { <td colspan="2" class="spec-note">{{ s.label }}</td> }
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <p class="muted">No specifications have been added for this product yet.</p>
+        }
+      }
+
+      @case ('downloads') {
+        @if (pdfUrl()) {
+          <div class="dl">
+            <div class="dl-viewer">
+              <iframe [src]="viewerUrl()" title="Product PDF"></iframe>
+            </div>
+            <aside class="dl-side">
+              <div class="dl-file">
+                <span class="dl-badge">PDF</span>
+                <span class="dl-meta"><strong>{{ p.name }}</strong><small>Datasheet / manual</small></span>
+              </div>
+              <a class="btn btn-p" [href]="downloadHref()" download>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Download PDF
+              </a>
+              <a class="btn btn-s" [href]="pdfUrl()" target="_blank" rel="noopener">Open in a new tab</a>
+              <small class="muted">If the preview doesn't load on your phone, use Download PDF.</small>
+            </aside>
+          </div>
+        } @else {
+          <p class="muted">No downloads are available for this product yet.</p>
+        }
+      }
     }
+  </section>
 
+  <!-- ── Related ── -->
+  @if (related().length) {
+    <section class="pd-related">
+      <h2 class="d tab-title">You may also like</h2>
+      <div class="rel-grid">
+        @for (r of related(); track r.id) {
+          <a [routerLink]="['/products', r.id]" class="rel-card">
+            <span class="rel-media">@if (r.primaryImage) { <img [src]="r.primaryImage" [alt]="r.name" loading="lazy" /> }</span>
+            <span class="rel-body">
+              <strong>{{ r.name }}</strong>
+              <span class="d rel-price">{{ formatPrice(r.discountPrice ?? r.price) }}</span>
+            </span>
+          </a>
+        }
+      </div>
+    </section>
   }
-
-</div>
+}
 
 <app-footer [settings]="settings()" />

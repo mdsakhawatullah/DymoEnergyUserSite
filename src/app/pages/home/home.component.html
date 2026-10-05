@@ -1,99 +1,123 @@
 <app-navbar
   [siteName]="settings()?.siteName || 'Org Name'"
   [logoUrl]="settings()?.logoUrl"
+  [phone]="settings()?.phone"
   [navbarTextColor]="settings()?.navbarTextColor"
   [primaryColor]="settings()?.primaryColor"
   [navItems]="navItems"
 />
 
-<!-- ─── HERO SECTION ─── -->
+<!-- ─── HERO SLIDER ─── -->
 <section class="hero-section">
+  <div class="hero-wrap">
 
-  <div class="hero-images">
+    <div class="hero-card">
 
-    <!-- Left: image/video carousel -->
-    <div class="hero-carousel">
+      <!-- Words + quick estimate -->
+      <div class="hero-words">
+        <span class="hero-eyebrow">Solar, priced before anyone calls you</span>
+        <h1 class="d hero-title">Find out what it costs<br><span>in two minutes.</span></h1>
+        <p class="hero-sub">Put in last month’s bill. You get the system size, the price and the payback — no form, no phone number.</p>
 
-      <div class="hero-slide" [class.active]="heroSlideIndex() === 0">
-        <video #heroVideo class="hero-video" loop playsinline muted>
-          <source src="https://official-oversears-file.sungrowpower.com/page-assets/78a8c56d-634f-4ff5-830f-6121131fd0b2.mp4" type="video/mp4" />
-        </video>
-        <div class="hero-img-overlay"></div>
-      </div>
+        <div class="est-card">
+          <span class="est-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E6B3F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7h6M9 11h6M9 15h3M7 3h10v18H7z"/></svg>
+            Quick estimate
+          </span>
+          <div class="est-fields">
+            <label class="est-field">
+              <span>Last month’s bill</span>
+              <span class="est-input">
+                <i>৳</i>
+                <input type="number" min="0" step="100" [value]="bill()" (input)="onBill($event)" aria-label="Last month's bill in taka" />
+              </span>
+            </label>
+            <label class="est-field">
+              <span>Roof space</span>
+              <select class="est-select" (change)="onRoof($event)" aria-label="Roof space">
+                @for (r of roofOptions; track r.v) { <option [value]="r.v" [selected]="r.v === roof()">{{ r.label }}</option> }
+              </select>
+            </label>
+          </div>
+          <div class="est-result">
+            <span class="est-col"><small>You would need about</small><strong class="d">{{ estimate().kw }} kW hybrid</strong></span>
+            <span class="est-rule"></span>
+            <span class="est-col"><small>Roughly</small><strong class="d">{{ estimate().price }}</strong></span>
+            <span class="grow"></span>
+            <a routerLink="/solar-calculator" class="btn btn-p btn-sm est-btn">See the detail</a>
+          </div>
+          <span class="est-note">An estimate from average Chattogram sun hours. The free roof survey gives the real figure.</span>
+        </div>
 
-      @for (img of siteImages(); track img.id; let i = $index) {
-        <div class="hero-slide"
-             [class.active]="heroSlideIndex() === i + 1"
-             [style.background-image]="'url(' + img.imageUrl + ')'">
-          <div class="hero-img-overlay"></div>
-          @if (img.title || img.altText) {
-            <div class="hero-img-text">
-              @if (img.title) { <div class="hero-img-title">{{ img.title }}</div> }
-              @if (img.altText) { <div class="hero-img-sub">{{ img.altText }}</div> }
-            </div>
+        <div class="hero-checks">
+          @for (c of heroChecks; track c) {
+            <span class="hero-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E6B3F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>{{ c }}</span>
           }
         </div>
-      }
+      </div>
+      <!-- Media: raw video / backend images, no overlay -->
+      <div class="hero-media">
+        <div class="hero-slide" [class.active]="heroSlideIndex() === 0">
+          <video #heroVideo class="hero-video" autoplay loop playsinline muted preload="auto" (loadeddata)="syncHeroVideo()">
+            <source src="https://official-oversears-file.sungrowpower.com/page-assets/78a8c56d-634f-4ff5-830f-6121131fd0b2.mp4" type="video/mp4" />
+          </video>
+        </div>
+
+        @for (img of siteImages(); track img.id; let i = $index) {
+          <div class="hero-slide"
+               [class.active]="heroSlideIndex() === i + 1"
+               [style.background-image]="'url(' + img.imageUrl + ')'"
+               role="img"
+               [attr.aria-label]="img.altText || img.title"></div>
+        }
+      </div>
 
       @if (heroSlideCount() > 1) {
-        <button class="hero-arrow hero-arrow--prev" type="button" (click)="prevHeroSlide()" aria-label="Previous slide">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><polyline points="11,3 5,9 11,15" stroke="#2D3B60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <button class="hero-arrow hero-arrow--next" type="button" (click)="nextHeroSlide()" aria-label="Next slide">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><polyline points="7,3 13,9 7,15" stroke="#2D3B60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
         <div class="hero-dots">
           @for (d of heroDots(); track $index) {
             <button class="hero-dot" type="button" [class.active]="heroSlideIndex() === $index" (click)="goToHeroSlide($index)" [attr.aria-label]="'Go to slide ' + ($index + 1)"></button>
           }
         </div>
       }
-
     </div>
 
-    <!-- Right: info column -->
-    <div class="hero-info">
-
-      <div class="hero-info-card hero-info-card--greet">
-        <div class="hero-greet-avatar">
-          <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
-            <circle cx="11" cy="7" r="4" stroke="#2D3B60" stroke-width="1.6"/>
-            <path d="M3 19c1.4-3.8 4.6-6 8-6s6.6 2.2 8 6" stroke="#2D3B60" stroke-width="1.6" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <div class="hero-greet-text">
-          <span>{{ 'HOME.HERO_GREETING_TITLE' | translate }}</span>
-          <span>{{ 'HOME.HERO_GREETING_SUB' | translate }}</span>
-        </div>
-        <div class="hero-greet-ctas">
-          <button type="button" class="hero-greet-btn hero-greet-btn--primary">{{ 'HOME.HERO_JOIN_NOW' | translate }}</button>
-          <button type="button" class="hero-greet-btn hero-greet-btn--ghost">{{ 'HOME.HERO_LOG_IN' | translate }}</button>
-        </div>
-      </div>
-
-      <a routerLink="/shop" class="hero-info-card hero-info-card--blue">
-        <span>{{ 'HOME.HERO_OFFER_TITLE' | translate }}</span>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><line x1="2" y1="8" x2="13" y2="8" stroke="#2D3B60" stroke-width="1.8" stroke-linecap="round"/><polyline points="9,4 13,8 9,12" stroke="#2D3B60" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-
-      <a routerLink="/quote" class="hero-info-card hero-info-card--green">
-        <span>{{ 'HOME.HERO_QUOTE_TITLE' | translate }}</span>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><line x1="2" y1="8" x2="13" y2="8" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><polyline points="9,4 13,8 9,12" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-
-    </div>
+    @if (heroSlideCount() > 1) {
+      <button class="hero-arrow hero-arrow--prev" type="button" (click)="prevHeroSlide()" aria-label="Previous slide">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#5B6B7F" stroke-width="2.3" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <button class="hero-arrow hero-arrow--next" type="button" (click)="nextHeroSlide()" aria-label="Next slide">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#5B6B7F" stroke-width="2.3" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+    }
 
   </div>
+</section>
 
-</section><!-- /hero-section -->
+<!-- ─── NUMBERS ─── -->
+<section class="stats-section">
+  @for (s of stats; track s.t) {
+    <div class="stat">
+      <span class="stat-icon"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#5E8B2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path [attr.d]="s.d"/></svg></span>
+      <span class="stat-text"><strong class="d">{{ s.v }}</strong><span>{{ s.t }}</span></span>
+    </div>
+  }
+</section>
 
-<!-- ─── CATEGORY SHOWCASE ─── -->
-@if (showcasesLoading()) {
-  <section class="showcase-section" aria-busy="true">
-    <div class="showcase">
+<!-- ─── CATEGORY ROWS ─── -->
+<section class="showcase-section">
+  <div class="section-head">
+    <div class="section-title-wrap">
+      <span class="eyebrow">What we stock</span>
+      <h2 class="d section-title">Browse by product line</h2>
+    </div>
+    <a routerLink="/shop" class="btn btn-s btn-sm">See the whole shop</a>
+  </div>
+
+  @if (showcasesLoading()) {
+    <div class="showcase" aria-busy="true">
       <div class="showcase-hero shimmer"></div>
       <div class="showcase-grid">
-        @for (i of [1,2,3,4,5,6,7,8]; track i) {
+        @for (i of [1,2,3,4]; track i) {
           <div class="showcase-item">
             <div class="sk-line sk-line--name shimmer"></div>
             <div class="sk-line sk-line--meta shimmer"></div>
@@ -102,21 +126,21 @@
         }
       </div>
     </div>
-  </section>
-} @else if (showcases().length) {
-  <section class="showcase-section">
+  } @else {
     @for (cat of showcases(); track cat.id) {
       <div class="showcase">
 
-        <!-- Left: category thumbnail as background -->
-        <div class="showcase-hero"
-             [style.background-image]="cat.thumbnailImageUrl ? 'url(\'' + cat.thumbnailImageUrl + '\')' : null"
-             [style.background-color]="cat.accentColor || '#eaf1f8'">
-          <div class="showcase-hero-overlay"></div>
-          <h2 class="showcase-hero-title">{{ cat.name }}</h2>
+        <!-- Left: category panel -->
+        <div class="showcase-hero">
+          <h3 class="d showcase-hero-title">{{ cat.name }}</h3>
+          <div class="showcase-art">
+            @if (cat.thumbnailImageUrl) {
+              <img [src]="cat.thumbnailImageUrl" [alt]="cat.name" loading="lazy" />
+            }
+          </div>
           @if (cat.hasMore) {
             <a [routerLink]="['/categories', cat.id, 'products-list']" class="showcase-more">
-              {{ 'HOME.SHOW_MORE' | translate }}
+              All {{ cat.totalProductCount }} →
             </a>
           }
         </div>
@@ -125,138 +149,24 @@
         <div class="showcase-grid">
           @for (product of cat.products; track product.id) {
             <a [routerLink]="['/products', product.id]" class="showcase-item">
-              <div class="showcase-item-text">
-                <div class="showcase-item-name">{{ product.name }}</div>
-                <div class="showcase-item-from">{{ 'HOME.SPOTLIGHT_FROM' | translate }}</div>
-                <div class="showcase-item-price">{{ formatPrice(product.discountPrice ?? product.price) }}</div>
-              </div>
-              @if (product.primaryImage) {
-                <img [src]="product.primaryImage" [alt]="product.name" class="showcase-item-img" loading="lazy" />
-              }
+              <span class="showcase-item-text">
+                <strong class="showcase-item-name">{{ product.name }}</strong>
+                <span class="showcase-item-from">{{ 'HOME.SPOTLIGHT_FROM' | translate }}</span>
+                <span class="showcase-item-price">{{ formatPrice(product.discountPrice ?? product.price) }}</span>
+              </span>
+              <span class="showcase-item-img">
+                @if (product.primaryImage) {
+                  <img [src]="product.primaryImage" [alt]="product.name" loading="lazy" />
+                }
+              </span>
             </a>
           }
         </div>
 
       </div>
     }
-  </section>
-}
-
-<!-- ─── ABOUT SECTION ─── -->
-@if (aboutLoading()) {
-  <section class="about-section" aria-busy="true">
-    <div class="about-inner about-inner--skeleton">
-      <div class="sk-about-title shimmer"></div>
-      <div class="about-divider shimmer"></div>
-      <div class="sk-about-desc">
-        <div class="sk-line shimmer"></div>
-        <div class="sk-line shimmer"></div>
-        <div class="sk-line sk-line--short shimmer"></div>
-      </div>
-      <div class="about-stats">
-        @for (i of [1,2,3,4,5]; track i) {
-          <div class="stat-item">
-            <div class="sk-stat-icon shimmer"></div>
-            <div class="sk-stat-value shimmer"></div>
-            <div class="sk-line sk-line--meta shimmer"></div>
-          </div>
-        }
-      </div>
-    </div>
-  </section>
-} @else if (userSiteSetting()?.aboutTitle || userSiteSetting()?.aboutDescription) {
-  <section class="about-section">
-    <div class="about-inner">
-
-      @if (userSiteSetting()?.aboutTitle) {
-        <h2 class="about-title" [style.color]="accentColor()">
-          {{ userSiteSetting()!.aboutTitle }}
-        </h2>
-      }
-
-      <div class="about-divider" [style.background-color]="accentColor()"></div>
-
-      @if (userSiteSetting()?.aboutDescription) {
-        <p class="about-desc">{{ userSiteSetting()!.aboutDescription }}</p>
-      }
-
-      <!-- Stats row -->
-      <div class="about-stats">
-
-        <div class="stat-item">
-          <div class="stat-icon" [style.color]="accentColor()">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/>
-              <rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/>
-            </svg>
-          </div>
-          <div class="stat-value">870 <span class="stat-unit">GW</span></div>
-          <div class="stat-label" [innerHTML]="'HOME.STAT1_LABEL' | translate"></div>
-        </div>
-
-        <div class="stat-item">
-          <div class="stat-icon" [style.color]="accentColor()">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 6v6l4 2"/>
-              <path d="M9 3.5L12 6l3-2.5"/>
-            </svg>
-          </div>
-          <div class="stat-value">NO.1</div>
-          <div class="stat-label" [innerHTML]="'HOME.STAT2_LABEL' | translate"></div>
-        </div>
-
-        <div class="stat-item">
-          <div class="stat-icon" [style.color]="accentColor()">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="10" width="4" height="11"/><rect x="10" y="6" width="4" height="15"/>
-              <rect x="17" y="3" width="4" height="18"/>
-            </svg>
-          </div>
-          <div class="stat-value">6</div>
-          <div class="stat-label">{{ 'HOME.STAT3_LABEL' | translate }}</div>
-        </div>
-
-        <div class="stat-item">
-          <div class="stat-icon" [style.color]="accentColor()">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="2" y1="12" x2="22" y2="12"/>
-              <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
-            </svg>
-          </div>
-          <div class="stat-value">20<sup class="stat-sup">+</sup></div>
-          <div class="stat-label">{{ 'HOME.STAT4_LABEL' | translate }}</div>
-        </div>
-
-        <div class="stat-item">
-          <div class="stat-icon" [style.color]="accentColor()">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2C6 8 4 13 6 17c2 4 5 5 6 5s4-1 6-5c2-4 0-9-6-15z"/>
-              <path d="M12 2v20"/>
-              <path d="M6 17c2-1 4-1.5 6-1.5s4 .5 6 1.5"/>
-            </svg>
-          </div>
-          <div class="stat-value">AAA</div>
-          <div class="stat-label">{{ 'HOME.STAT5_LABEL' | translate }}</div>
-        </div>
-
-      </div><!-- /about-stats -->
-
-      <!-- Source footnotes -->
-      <p class="about-footnote">
-        *1 Source: BloombergNEF<br>
-        *2 Source: Morgan Stanley Capital International
-      </p>
-
-      <!-- CTA -->
-      <a routerLink="/about" class="about-cta" [style.border-color]="accentColor()" [style.color]="accentColor()">
-        {{ 'HOME.ABOUT_CTA' | translate }}
-      </a>
-
-    </div>
-  </section>
-}
+  }
+</section>
 
 <!-- ─── SOCIAL MEDIA ─── -->
 @if (
@@ -310,18 +220,131 @@
 </section>
 }
 
-<!-- ─── NEWSLETTER ─── -->
-<section class="newsletter-section">
-  <div class="newsletter-dots"></div>
-  <div class="newsletter-inner">
-    <div class="newsletter-copy">
-      <h2 class="newsletter-title">{{ 'HOME.NEWSLETTER_TITLE' | translate }}</h2>
-      <p class="newsletter-sub">{{ 'HOME.NEWSLETTER_SUB' | translate }}</p>
+
+<!-- ─── BEST SELLERS ─── -->
+@if (bestSellers().length) {
+  <section class="home-section home-section--muted">
+    <div class="section-head">
+      <div class="section-title-wrap">
+        <span class="eyebrow">Moving fastest</span>
+        <h2 class="d section-title">Best sellers this month</h2>
+      </div>
+      <a routerLink="/shop" class="btn btn-s btn-sm">See all</a>
     </div>
-    <div class="newsletter-form">
-      <input type="email" class="newsletter-input" [placeholder]="'HOME.NEWSLETTER_PLACEHOLDER' | translate" [(ngModel)]="newsletterEmail" />
-      <button class="newsletter-btn" (click)="subscribeNewsletter()">{{ 'HOME.SUBSCRIBE' | translate }}</button>
+    <div class="grid-4">
+      @for (p of bestSellers(); track p.id) {
+        <a [routerLink]="['/products', p.id]" class="card bs-card">
+          <span class="bs-media">
+            @if (discountPct(p) > 0) { <span class="bs-badge">Save {{ discountPct(p) }}%</span> }
+            @if (p.primaryImage) { <img [src]="p.primaryImage" [alt]="p.name" loading="lazy" /> }
+          </span>
+          <span class="bs-body">
+            <strong class="bs-name">{{ p.name }}</strong>
+            <span class="grow"></span>
+            <span class="bs-price">
+              <strong class="d">{{ formatPrice(p.discountPrice ?? p.price) }}</strong>
+              @if (p.discountPrice) { <s>{{ formatPrice(p.price) }}</s> }
+            </span>
+          </span>
+        </a>
+      }
     </div>
+  </section>
+}
+
+<!-- ─── WHY BUY HERE ─── -->
+<section class="home-section">
+  <div class="section-head section-head--stack">
+    <span class="eyebrow">Why buy here</span>
+    <h2 class="d section-title">What you get with every order</h2>
+  </div>
+  <div class="grid-4">
+    @for (w of whyItems; track w.t) {
+      <div class="card why-card">
+        <span class="why-icon" [style.background]="w.bg"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" [attr.stroke]="w.c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path [attr.d]="w.d"/></svg></span>
+        <strong>{{ w.t }}</strong>
+        <span>{{ w.s }}</span>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ─── -->
+<section class="home-section home-section--muted">
+  <div class="section-head section-head--stack">
+    <span class="eyebrow">From order to switch-on</span>
+    <h2 class="d section-title">Four steps, about two weeks</h2>
+  </div>
+  <div class="grid-4">
+    @for (s of steps; track s.t; let i = $index; let last = $last) {
+      <div class="step">
+        <span class="step-head">
+          <span class="step-num">{{ i + 1 }}</span>
+          <span class="step-line" [class.step-line--last]="last"></span>
+        </span>
+        <strong>{{ s.t }}</strong>
+        <span class="step-desc">{{ s.s }}</span>
+        <span class="step-when">{{ s.when }}</span>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- ─── CALCULATOR ─── -->
+<section class="home-section">
+  <div class="calc-cta">
+    <div class="calc-copy">
+      <span class="calc-eyebrow">Free, no sign-up</span>
+      <h2 class="d">How many panels does your house need?</h2>
+      <p>Put in last month’s bill and your roof size. You get the system size, what it costs, and roughly when it pays for itself — before anyone calls you.</p>
+      <span class="calc-actions">
+        <a routerLink="/solar-calculator" class="btn btn-sun">Work out my system</a>
+        <a routerLink="/quote" class="btn btn-ghost">Ask for a quote</a>
+      </span>
+    </div>
+    <div class="calc-example">
+      <span class="calc-example-title">A typical Chattogram home</span>
+      @for (c of calcRows; track c.k) {
+        <span class="calc-row"><span>{{ c.k }}</span><strong>{{ c.v }}</strong></span>
+      }
+      <span class="calc-note">An estimate from average Chattogram sun hours. Your survey gives the real figure.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TOOLS ─── -->
+<section class="home-section home-section--tools">
+  <div class="grid-4">
+    @for (t of tools; track t.t) {
+      <a [routerLink]="t.route" class="card tool-card">
+        <span class="tool-icon" [style.background]="t.bg"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" [attr.stroke]="t.c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path [attr.d]="t.d"/></svg></span>
+        <span class="tool-text"><strong>{{ t.t }}</strong><span>{{ t.s }}</span></span>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#9AA7B5" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
+    }
+  </div>
+</section>
+
+<!-- ─── FAQ ─── -->
+<section class="home-section home-section--muted faq">
+  <div class="faq-intro">
+    <span class="eyebrow">Common questions</span>
+    <h2 class="d section-title section-title--sm">Things people ask before buying</h2>
+    <p>Call
+      @if (settings()?.phone) { <strong>{{ settings()!.phone }}</strong> } @else { us }
+      or message on WhatsApp — someone answers between 9 am and 9 pm.</p>
+    <a routerLink="/quote" class="btn btn-p btn-sm">All questions</a>
+  </div>
+  <div class="faq-list">
+    @for (f of faqs; track f.q; let i = $index) {
+      <div class="card faq-item" [class.open]="openFaq() === i">
+        <button type="button" class="faq-q" (click)="toggleFaq(i)" [attr.aria-expanded]="openFaq() === i">
+          <strong>{{ f.q }}</strong>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9AA7B5" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        @if (openFaq() === i) { <span class="faq-a">{{ f.a }}</span> }
+      </div>
+    }
   </div>
 </section>
 

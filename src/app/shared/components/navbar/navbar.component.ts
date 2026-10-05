@@ -28,9 +28,19 @@ export class NavbarComponent {
   @Input() navbarTextColor: string | undefined;
   @Input() primaryColor: string | undefined;
   @Input() navItems: NavItem[] = DEFAULT_NAV_ITEMS;
+  @Input() phone: string | undefined;
+
+  mainNav = [
+    { label: 'Shop',     route: '/shop',             menu: true,  active: true },
+    { label: 'Packages', route: '/shop',             menu: false, active: false },
+    { label: 'Tools',    route: '/solar-calculator', menu: true,  active: true },
+    { label: 'Services', route: '/quote',            menu: false, active: false },
+    { label: 'Projects', route: '/',                 menu: false, active: false },
+    { label: 'Learn',    route: '/',                 menu: false, active: false },
+  ];
 
   mobileOpen = signal(false);
-  langMenuOpen = signal(false);
+  cartOpen   = signal(false);
 
   constructor(
     public cartService: CartService,
@@ -39,36 +49,21 @@ export class NavbarComponent {
   ) {}
 
   toggleMobile(): void { this.mobileOpen.update(v => !v); }
-  toggleLangMenu(): void { this.langMenuOpen.update(v => !v); }
-  closeLangMenu(): void { this.langMenuOpen.set(false); }
-  openCart(): void { this.router.navigate(['/cart']); }
+  toggleCart(): void { this.cartOpen.update(v => !v); }
+  closeCart(): void  { this.cartOpen.set(false); }
+  fmtPrice(n: number): string { return '৳' + n.toLocaleString('en-IN'); }
 
   onSearch(term: string): void {
     this.router.navigate(['/shop'], term ? { queryParams: { q: term } } : undefined);
   }
 
+  langShort(code: string): string {
+    return code === 'bn' ? 'বাং' : code.toUpperCase();
+  }
+
   selectLang(option: LangOption): void {
     this.langService.setLang(option.code);
-    this.langMenuOpen.set(false);
   }
 
-  get currentLangOption(): LangOption {
-    return this.langService.options.find(o => o.code === this.langService.currentLang()) ?? this.langService.options[0];
-  }
 
-  get brandInitial(): string {
-    return (this.siteName || 'D')[0].toUpperCase();
-  }
-
-  get brandPart1(): string {
-    const s = this.siteName || 'DymoEnergy';
-    const idx = s.search(/(?<=.)[A-Z]/);
-    return idx > 0 ? s.slice(0, idx) : s.slice(0, Math.ceil(s.length / 2));
-  }
-
-  get brandPart2(): string {
-    const s = this.siteName || 'DymoEnergy';
-    const idx = s.search(/(?<=.)[A-Z]/);
-    return idx > 0 ? s.slice(idx) : s.slice(Math.ceil(s.length / 2));
-  }
 }

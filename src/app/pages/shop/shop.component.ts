@@ -1,6 +1,5 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
-import { TranslatePipe } from '../../core/i18n/translate.pipe';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AdminSiteSettingService } from '../../core/services/admin-site-setting.service';
 import { CategoryService } from '../../core/services/category.service';
 import { ProductService } from '../../core/services/product.service';
@@ -11,72 +10,203 @@ import { Product } from '../../core/models/product.model';
 import { NavbarComponent, DEFAULT_NAV_ITEMS } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 
+type SortKey = 'featured' | 'price-asc' | 'price-desc' | 'name';
+
+const PAGE_SIZE = 12;
+
 @Component({
   selector: 'app-shop',
   standalone: true,
-  imports: [RouterLink, NavbarComponent, FooterComponent, TranslatePipe],
+  imports: [RouterLink, NavbarComponent, FooterComponent],
   templateUrl: './shop.component.html',
   styleUrl: './shop.component.scss',
 })
 export class ShopComponent implements OnInit {
 
-  settings   = signal<AdminSiteSetting | null>(null);
-  categories = signal<Category[]>([]);
-  allProducts = signal<Product[]>([]);
-  loading    = signal(true);
-
+  settings         = signal<AdminSiteSetting | null>(null);
   selectedCategoryId = signal<number | null>(null);
+  categories       = signal<Category[]>([]);
+  products         = signal<Product[]>([]);
+  productsLoading  = signal(true);
 
-  navItems = DEFAULT_NAV_ITEMS;
+  // ── Filters / sorting / paging ─────────────────────────────────────────
+  searchQuery  = signal('');
+  minPrice     = signal<number | null>(null);
+  maxPrice     = signal<number | null>(null);
+  inStockOnly  = signal(false);
+  sort         = signal<SortKey>('featured');
+  page         = signal(1);
 
-  filteredProducts = computed<Product[]>(() => {
+  navItems   = DEFAULT_NAV_ITEMS;
+  skeletons  = [1, 2, 3, 4, 5, 6];
+
+  private unitPrice = (p: Product) => p.discountPrice ?? p.price;
+
+  category = computed(() => this.categories().find(c => c.id === this.selectedCategoryId()) ?? null);
+
+  /** Products in the selected category (all when none) — filters and price bounds work on this set */
+  categoryProducts = computed(() => {
     const id = this.selectedCategoryId();
-    if (id === null) return this.allProducts();
-    return this.allProducts().filter(p => p.categoryId === id);
+    return id === null ? this.products() : this.products().filter(p => p.categoryId === id);
   });
 
-  selectedCategoryName = computed<string>(() => {
-    const id = this.selectedCategoryId();
-    if (id === null) return 'All Products';
-    return this.categories().find(c => c.id === id)?.name ?? 'All Products';
+  counts = computed(() => {
+    const m = new Map<number, number>();
+    for (const p of this.products()) m.set(p.categoryId, (m.get(p.categoryId) ?? 0) + 1);
+    return m;
   });
+
+  filteredProducts = computed(() => {
+    const q   = this.searchQuery().toLowerCase().trim();
+    const min = this.minPrice();
+    const max = this.maxPrice();
+    const stock = this.inStockOnly();
+
+    const list = this.categoryProducts().filter(p =>
+      (!q || p.name?.toLowerCase().includes(q) || p.summary?.toLowerCase().includes(q) || p.sku?.toLowerCase().includes(q)) &&
+      (min === null || this.unitPrice(p) >= min) &&
+      (max === null || this.unitPrice(p) <= max) &&
+      (!stock || p.stockQuantity > 0)
+    );
+
+    switch (this.sort()) {
+      case 'price-asc':  return [...list].sort((a, b) => this.unitPrice(a) - this.unitPrice(b));
+      case 'price-desc': return [...list].sort((a, b) => this.unitPrice(b) - this.unitPrice(a));
+      case 'name':       return [...list].sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
+      default:           return [...list].sort((a, b) => a.displayOrder - b.displayOrder);
+    }
+  });
+
+  pageCount = computed(() => Math.max(1, Math.ceil(this.filteredProducts().length / PAGE_SIZE)));
+  pages     = computed(() => Array.from({ length: this.pageCount() }, (_, i) => i + 1));
+  pageItems = computed(() => {
+    const start = (Math.min(this.page(), this.pageCount()) - 1) * PAGE_SIZE;
+    return this.filteredProducts().slice(start, start + PAGE_SIZE);
+  });
+
+  // ── Price slider ───────────────────────────────────────────────────────
+  bounds = computed(() => {
+    const prices = this.categoryProducts().map(this.unitPrice);
+    if (!prices.length) return { min: 0, max: 0, step: 1 };
+    const step = Math.max(...prices) > 5000 ? 100 : 10;
+    return { min: Math.floor(Math.min(...prices) / step) * step, max: Math.ceil(Math.max(...prices) / step) * step, step };
+  });
+  lo = computed(() => Math.max(this.minPrice() ?? this.bounds().min, this.bounds().min));
+  hi = computed(() => Math.min(this.maxPrice() ?? this.bounds().max, this.bounds().max));
+  loPct = computed(() => this.pct(this.lo()));
+  hiPct = computed(() => 100 - this.pct(this.hi()));
+
+  hasFilters = computed(() => this.minPrice() !== null || this.maxPrice() !== null || this.inStockOnly());
 
   constructor(
-    private siteService:      AdminSiteSettingService,
+    private route:           ActivatedRoute,
+    private siteService:     AdminSiteSettingService,
     private categoryService: CategoryService,
-    private productService:   ProductService,
-    public  cartService:      CartService,
+    private productService:  ProductService,
+    public  cartService:     CartService,
   ) {}
 
   ngOnInit(): void {
+    this.route.queryParamMap.subscribe(q => { this.searchQuery.set(q.get('q') ?? ''); this.page.set(1); });
+
     this.siteService.getActive().subscribe(s => {
       this.settings.set(s);
-      if (s?.primaryColor) document.documentElement.style.setProperty('--primary', s.primaryColor);
+      if (s) this.applyTheme(s);
     });
 
-    this.categoryService.getList({ isPublished: true, maxResultCount: 100 }).subscribe(res => {
-      this.categories.set(res.items);
-    });
+    this.categoryService
+      .getList({ isPublished: true, maxResultCount: 100 })
+      .subscribe(result => {
+        this.categories.set(result.items);
+      });
 
-    this.productService.getList({ isAvailable: true, maxResultCount: 200 }).subscribe(res => {
-      this.allProducts.set(res.items);
-      this.loading.set(false);
-    });
+    this.productService
+      .getList({ isAvailable: true, maxResultCount: 200 })
+      .subscribe(result => {
+        this.products.set(result.items);
+        this.productsLoading.set(false);
+      });
   }
 
+  // ── Handlers ───────────────────────────────────────────────────────────
   selectCategory(id: number | null): void {
     this.selectedCategoryId.set(id);
-  }
-
-  addToCart(product: Product): void {
-    this.cartService.addItem(product, 1);
+    this.clearFilters();
   }
 
   categoryName(categoryId: number): string {
     return this.categories().find(c => c.id === categoryId)?.name ?? '';
   }
 
-  formatPrice(value: number): string {
-    return '৳' + (value || 0).toLocaleString('en-IN');
+  onSearch(e: Event): void { this.searchQuery.set((e.target as HTMLInputElement).value); this.page.set(1); }
+  onLo(e: Event): void  { this.setLo(+(e.target as HTMLInputElement).value); }
+  onHi(e: Event): void  { this.setHi(+(e.target as HTMLInputElement).value); }
+  onMin(e: Event): void { this.setLo(this.parse(e)); (e.target as HTMLInputElement).value = this.fmt(this.lo()); }
+  onMax(e: Event): void { this.setHi(this.parse(e)); (e.target as HTMLInputElement).value = this.fmt(this.hi()); }
+  onSort(e: Event): void   { this.sort.set((e.target as HTMLSelectElement).value as SortKey); this.page.set(1); }
+  toggleStock(): void      { this.inStockOnly.update(v => !v); this.page.set(1); }
+
+  clearFilters(): void {
+    this.minPrice.set(null);
+    this.maxPrice.set(null);
+    this.inStockOnly.set(false);
+    this.page.set(1);
+  }
+
+  goTo(p: number): void {
+    this.page.set(Math.min(Math.max(1, p), this.pageCount()));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── Per-card quantity ──────────────────────────────────────────────────
+  private quantities = signal<Record<number, number>>({});
+
+  qty(p: Product): number { return this.quantities()[p.id] ?? 1; }
+
+  changeQty(p: Product, delta: number): void {
+    const next = Math.max(1, this.qty(p) + delta);
+    this.quantities.update(q => ({ ...q, [p.id]: next }));
+  }
+
+  addToCart(product: Product): void {
+    this.cartService.addItem(product, this.qty(product));
+    this.quantities.update(q => ({ ...q, [product.id]: 1 }));
+  }
+
+  formatPrice(price: number): string {
+    if (!price) return '৳0';
+    return '৳' + price.toLocaleString('en-IN');
+  }
+
+  fmt(n: number): string { return n.toLocaleString('en-US'); }
+
+  private setLo(v: number): void {
+    const { min, step } = this.bounds();
+    const val = Math.min(Math.max(v, min), this.hi() - step);
+    this.minPrice.set(val <= min ? null : val);
+    this.page.set(1);
+  }
+
+  private setHi(v: number): void {
+    const { max, step } = this.bounds();
+    const val = Math.max(Math.min(v, max), this.lo() + step);
+    this.maxPrice.set(val >= max ? null : val);
+    this.page.set(1);
+  }
+
+  private pct(v: number): number {
+    const { min, max } = this.bounds();
+    return max > min ? ((v - min) / (max - min)) * 100 : 0;
+  }
+
+  private parse(e: Event): number {
+    return Number((e.target as HTMLInputElement).value.replace(/[^\d]/g, '')) || 0;
+  }
+
+  private applyTheme(s: AdminSiteSetting): void {
+    const root = document.documentElement;
+    if (s.primaryColor)    root.style.setProperty('--primary', s.primaryColor);
+    if (s.backgroundColor) root.style.setProperty('--bg', s.backgroundColor);
+    if (s.fontFamily)      root.style.setProperty('--font', s.fontFamily);
   }
 }
