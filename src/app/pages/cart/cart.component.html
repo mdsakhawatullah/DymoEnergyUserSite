@@ -7,117 +7,110 @@
   [navItems]="navItems"
 />
 
-<div class="cart-page">
-  <div class="cart-layout">
+<main class="cart">
 
-    <!-- ── LEFT: items ─────────────────────────────────────────────── -->
-    <div class="cart-left">
+  <!-- ── Head ── -->
+  <section class="cart-head">
+    <div class="cart-head-text">
+      <nav class="crumb" aria-label="Breadcrumb"><a routerLink="/">Home</a><span>/</span><span class="crumb-now">Cart</span></nav>
+      <h1 class="d">Your cart <span class="count">({{ cartService.totalCount() }} {{ cartService.totalCount() === 1 ? 'item' : 'items' }})</span></h1>
+    </div>
+    <a routerLink="/shop" class="continue">← Continue shopping</a>
+  </section>
 
-      <div class="cart-heading">
-        <div class="cart-eyebrow">{{ 'CART.EYEBROW' | translate }}</div>
-        <h1 class="cart-title">
-          {{ 'CART.TITLE' | translate }}
-          <span class="cart-count">({{ cartService.totalCount() }} {{ 'CART.ITEMS' | translate }})</span>
-        </h1>
+  <section class="cart-body">
+
+    @if (cartService.items().length === 0) {
+
+      <div class="card empty">
+        <span class="empty-icon">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#9AA7B5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        </span>
+        <strong>Your cart is empty</strong>
+        <span class="muted">Add a panel, an inverter or a battery and it will show up here.</span>
+        <a routerLink="/shop" class="btn btn-p">Browse the shop</a>
+        <a routerLink="/solar-calculator" class="link">Not sure what you need? Use the solar calculator →</a>
       </div>
 
-      <!-- Empty state -->
-      @if (cartService.items().length === 0) {
-        <div class="cart-empty">
-          <div class="cart-empty-icon">
-            <svg width="36" height="32" viewBox="0 0 36 32" fill="none">
-              <path d="M1 1h5L10 21h16l4-15.5H8" stroke="#9BBCCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <circle cx="13.5" cy="28" r="2.5" fill="#9BBCCC"/>
-              <circle cx="25" cy="28" r="2.5" fill="#9BBCCC"/>
-            </svg>
-          </div>
-          <div class="cart-empty-title">{{ 'CART.EMPTY_TITLE' | translate }}</div>
-          <div class="cart-empty-sub">{{ 'CART.EMPTY_SUB' | translate }}</div>
-          <a routerLink="/categories" class="cart-empty-btn">{{ 'CART.BROWSE' | translate }}</a>
-        </div>
+    } @else {
 
-      } @else {
+      <div class="cart-grid">
 
-        <!-- Items list -->
-        <div class="cart-items">
+        <!-- ── Items ── -->
+        <div class="items">
           @for (item of cartService.items(); track item.productId) {
-            <div class="cart-item">
-
-              <div class="item-img-wrap">
-                @if (item.imageUrl) {
-                  <img [src]="item.imageUrl" [alt]="item.productName" class="item-img" />
-                } @else {
-                  <div class="item-img-placeholder">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9BBCCC" stroke-width="1.4">
-                      <rect x="3" y="3" width="18" height="18" rx="2"/>
-                      <circle cx="8.5" cy="8.5" r="1.5"/>
-                      <polyline points="21 15 16 10 5 21"/>
-                    </svg>
-                  </div>
+            <div class="card line">
+              <a [routerLink]="['/products', item.productId]" class="line-img">
+                @if (item.imageUrl) { <img [src]="item.imageUrl" [alt]="item.productName" /> }
+                @else {
+                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#9BBCCC" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                 }
+              </a>
+
+              <div class="line-info">
+                @if (item.sku) { <span class="line-sku">{{ item.sku }}</span> }
+                <a [routerLink]="['/products', item.productId]" class="line-name">{{ item.productName }}</a>
+                <span class="line-unit">{{ formatPrice(item.unitPrice) }} each</span>
+                <button type="button" class="remove" (click)="removeItem(item.productId)">Remove</button>
               </div>
 
-              <div class="item-info">
-                <div class="item-name">{{ item.productName }}</div>
-                @if (item.sku) {
-                  <div class="item-sku">{{ 'CART.SKU' | translate }}: {{ item.sku }}</div>
-                }
+              <div class="qty" role="group" aria-label="Quantity">
+                <button type="button" aria-label="Decrease quantity" [disabled]="item.quantity <= 1" (click)="decrement(item.productId, item.quantity)">−</button>
+                <input type="text" inputmode="numeric" aria-label="Quantity" [value]="item.quantity" (change)="changeQty(item.productId, $any($event.target).value)" />
+                <button type="button" aria-label="Increase quantity" (click)="increment(item.productId, item.quantity)">+</button>
               </div>
 
-              <div class="item-right">
-                <div class="item-price">{{ formatPrice(item.lineTotal) }}</div>
-                <div class="item-qty-row">
-                  <button class="qty-btn" (click)="decrement(item.productId, item.quantity)">−</button>
-                  <input
-                    type="number" min="1"
-                    class="qty-input"
-                    [value]="item.quantity"
-                    (change)="changeQty(item.productId, $any($event.target).value)"
-                  />
-                  <button class="qty-btn" (click)="increment(item.productId, item.quantity)">+</button>
-                </div>
-                <button class="item-remove" (click)="removeItem(item.productId)">{{ 'CART.REMOVE' | translate }}</button>
-              </div>
-
+              <span class="d line-total">{{ formatPrice(item.lineTotal) }}</span>
             </div>
           }
         </div>
 
-      }
-    </div>
-
-    <!-- ── RIGHT: summary (only when items exist) ───────────────────── -->
-    @if (cartService.items().length > 0) {
-      <div class="cart-right">
-        <div class="summary-card">
-          <div class="summary-title">{{ 'CART.ORDER_SUMMARY' | translate }}</div>
+        <!-- ── Summary ── -->
+        <aside class="card summary">
+          <strong class="summary-title">Order summary</strong>
 
           <div class="summary-rows">
-            @for (item of cartService.items(); track item.productId) {
-              <div class="summary-row">
-                <span class="summary-row-name">{{ item.productName }} × {{ item.quantity }}</span>
-                <span class="summary-row-price">{{ formatPrice(item.lineTotal) }}</span>
-              </div>
-            }
+            <div><span class="muted">Subtotal ({{ cartService.totalCount() }} {{ cartService.totalCount() === 1 ? 'item' : 'items' }})</span><strong>{{ formatPrice(cartService.subtotal()) }}</strong></div>
+            <div><span class="muted">Delivery</span><strong>Worked out at checkout</strong></div>
           </div>
 
-          <div class="summary-divider"></div>
+          <div class="rule"></div>
 
-          <div class="summary-total-row">
-            <span class="summary-total-label">{{ 'CART.TOTAL' | translate }}</span>
-            <span class="summary-total-price">{{ formatPrice(cartService.subtotal()) }}</span>
+          <div class="total-row">
+            <span>Total</span>
+            <span class="d total">{{ formatPrice(cartService.subtotal()) }}</span>
           </div>
+          <span class="muted small">Delivery is added at the next step. Prices include VAT.</span>
 
-          <button class="checkout-btn" (click)="proceedToCheckout()">
-            {{ 'CART.CHECKOUT' | translate }}
-          </button>
+          <button type="button" class="btn btn-p checkout" (click)="proceedToCheckout()">Proceed to checkout</button>
 
-          <a routerLink="/categories" class="continue-link">{{ 'CART.CONTINUE' | translate }}</a>
-        </div>
+          <span class="secure">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+            Secure checkout · bKash · Nagad · Cards · Cash on delivery
+          </span>
+        </aside>
       </div>
     }
+  </section>
 
-  </div>
-</div>
+  <!-- ── Suggestions ── -->
+  @if (suggestions().length) {
+    <section class="more">
+      <h2 class="d">You may also need</h2>
+      <div class="more-grid">
+        @for (p of suggestions(); track p.id) {
+          <div class="card more-card">
+            <a [routerLink]="['/products', p.id]" class="more-img">@if (p.primaryImage) { <img [src]="p.primaryImage" [alt]="p.name" loading="lazy" /> }</a>
+            <span class="more-text">
+              <a [routerLink]="['/products', p.id]" class="more-name">{{ p.name }}</a>
+              <strong>{{ formatPrice(p.discountPrice ?? p.price) }}</strong>
+            </span>
+            <button type="button" class="more-add" [attr.aria-label]="'Add ' + p.name + ' to cart'" (click)="addSuggestion(p)">+</button>
+          </div>
+        }
+      </div>
+    </section>
+  }
+</main>
 
 <app-footer [settings]="settings()" />

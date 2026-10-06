@@ -7,329 +7,290 @@
   [navItems]="navItems"
 />
 
-<div class="calc-page">
+<main class="sc">
 
-  <!-- ── Page Header ── -->
-  <div class="calc-header">
-    <div class="calc-eyebrow">{{ 'CALC.PAGE_EYEBROW' | translate }}</div>
-    <h1 class="calc-title">{{ 'CALC.PAGE_TITLE' | translate }}</h1>
-    <p class="calc-sub">{{ 'CALC.PAGE_SUB' | translate }}</p>
-  </div>
+  <!-- ── Head ── -->
+  <section class="sc-head">
+    <nav class="crumb" aria-label="Breadcrumb"><a routerLink="/">Home</a><span>·</span><span class="crumb-now">Solar load calculator</span></nav>
+    <div class="sc-head-row">
+      <div class="sc-head-text">
+        <h1 class="d">Solar load calculator</h1>
+        <p>Tick the things you run, say how many hours a day, and we work out the panels, inverter and battery you need. No sign-up, nothing sent to a salesperson.</p>
+      </div>
+      <div class="sc-steps">
+        @for (s of stepsView(); track s.n) {
+          <span class="sc-step" [class.sc-step--done]="s.done">
+            <span class="sc-step-n">{{ s.n }}</span>
+            <span class="sc-step-t"><strong>{{ s.t }}</strong><span>{{ s.s }}</span></span>
+          </span>
+        }
+      </div>
+    </div>
+  </section>
 
-  <!-- ── Tab Bar ── -->
-  <div class="calc-tabs">
-    <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'load'" (click)="setTab('load')">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-      </svg>
-      {{ 'CALC.TABS.LOAD' | translate }}
-    </button>
-    <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'battery'" (click)="setTab('battery')">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3"/>
-      </svg>
-      {{ 'CALC.TABS.BATTERY' | translate }}
-    </button>
-    <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'inverter'" (click)="setTab('inverter')">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-      </svg>
-      {{ 'CALC.TABS.INVERTER' | translate }}
-    </button>
-    <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'ac'" (click)="setTab('ac')">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <rect x="2" y="3" width="20" height="13" rx="2"/><path d="M9 21l3-4 3 4"/><line x1="12" y1="17" x2="12" y2="21"/>
-      </svg>
-      {{ 'CALC.TABS.AC' | translate }}
-    </button>
-    <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'roof'" (click)="setTab('roof')">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-      </svg>
-      {{ 'CALC.TABS.ROOF' | translate }}
-    </button>
-  </div>
+  <div class="sc-body">
 
-  <!-- ── Calculator Panels ── -->
-  <div class="calc-body">
+    <!-- ════════ LEFT ════════ -->
+    <div class="sc-left">
 
-    <!-- ─── SOLAR LOAD ─── -->
-    @if (activeTab() === 'load') {
-      <div class="calc-panel">
-        <div class="panel-intro">
-          <h2 class="panel-title">{{ 'CALC.LOAD.TITLE' | translate }}</h2>
-          <p class="panel-desc">{{ 'CALC.LOAD.DESC' | translate }}</p>
+      <!-- STEP 1 -->
+      <section class="card">
+        <div class="card-head">
+          <span class="num num--on">1</span>
+          <h2 class="d">Pick what you run</h2>
+          <span class="grow"></span>
+          <input class="in in--search" type="search" placeholder="Search an appliance" aria-label="Search an appliance" [value]="search()" (input)="onSearch($event)" />
         </div>
 
-        <div class="load-table-wrap">
-          <table class="load-table">
-            <thead>
-              <tr>
-                <th>{{ 'CALC.LOAD.APPLIANCE' | translate }}</th>
-                <th>{{ 'CALC.LOAD.WATTS' | translate }}</th>
-                <th>{{ 'CALC.LOAD.HOURS' | translate }}</th>
-                <th>{{ 'CALC.LOAD.QTY' | translate }}</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (row of loadRows(); track $index) {
-                <tr>
-                  <td>
-                    <input class="tbl-input" type="text"
-                      [value]="row.appliance"
-                      [placeholder]="'CALC.LOAD.PLACEHOLDER_APPLIANCE' | translate"
-                      (input)="updateLoadRow($index, 'appliance', $any($event.target).value)" />
-                  </td>
-                  <td>
-                    <input class="tbl-input tbl-input--num" type="number" min="0"
-                      [value]="row.watts"
-                      (input)="updateLoadRow($index, 'watts', $any($event.target).value)" />
-                  </td>
-                  <td>
-                    <input class="tbl-input tbl-input--num" type="number" min="0" max="24"
-                      [value]="row.hours"
-                      (input)="updateLoadRow($index, 'hours', $any($event.target).value)" />
-                  </td>
-                  <td>
-                    <input class="tbl-input tbl-input--num" type="number" min="1"
-                      [value]="row.qty"
-                      (input)="updateLoadRow($index, 'qty', $any($event.target).value)" />
-                  </td>
-                  <td>
-                    <button class="row-remove-btn" (click)="removeLoadRow($index)" [disabled]="loadRows().length === 1">
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                        <line x1="2" y1="2" x2="12" y2="12"/><line x1="12" y1="2" x2="2" y2="12"/>
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
+        <div class="cats">
+          @for (c of library; track c.key) {
+            <button type="button" class="cat" [class.cat--on]="!search() && cat() === c.key" (click)="setCat(c.key)">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path [attr.d]="c.icon"/></svg>{{ c.label }}
+            </button>
+          }
+        </div>
+
+        <div class="chips">
+          @for (it of shownItems(); track it[0]; let i = $index) {
+            <button type="button" class="chip" [class.chip--on]="pickedNames().has(it[0])" (click)="toggleItem(it)" [attr.aria-pressed]="pickedNames().has(it[0])">
+              <span class="chip-icon" [style.background]="palette[i % palette.length][0]">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" [attr.stroke]="palette[i % palette.length][1]" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path [attr.d]="iconPath(it[2])"/></svg>
+              </span>
+              <span class="chip-text"><strong>{{ it[0] }}</strong><span>{{ it[1] }} W{{ it[3] ? ' · motor' : '' }}</span></span>
+              <span class="chip-add">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path [attr.d]="pickedNames().has(it[0]) ? 'M20 6L9 17l-5-5' : 'M12 5v14M5 12h14'"/></svg>
+              </span>
+            </button>
+          } @empty {
+            <p class="muted chips-empty">Nothing matches “{{ search() }}”. Add it as your own appliance below.</p>
+          }
+        </div>
+
+        <div class="own">
+          @if (!addOpen()) {
+            <button type="button" class="own-btn" (click)="openAdd()">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>My appliance is not on the list
+            </button>
+          } @else {
+            <div class="own-form">
+              <span class="own-head"><strong>Add your own appliance</strong><span class="grow"></span>
+                <button type="button" class="tbtn" aria-label="Close" (click)="closeAdd()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+              </span>
+              <div class="own-grid">
+                <label class="lbl"><span>What is it</span><input class="in" name="addName" placeholder="e.g. workshop grinder" [(ngModel)]="addName" /></label>
+                <label class="lbl"><span>Watts <small>on the label</small></span><input class="in" name="addWatts" inputmode="numeric" placeholder="750" [(ngModel)]="addWatts" /></label>
+                <label class="lbl"><span>How many</span><input class="in" name="addQty" inputmode="numeric" [(ngModel)]="addQty" /></label>
+                <label class="lbl"><span>Hours a day</span><input class="in" name="addHours" inputmode="decimal" [(ngModel)]="addHours" /></label>
+              </div>
+              <label class="chk"><input type="checkbox" name="addMotor" [(ngModel)]="addMotor" /> It has a motor or compressor — pump, fridge, AC, grinder <span class="muted">(needs extra starting power)</span></label>
+              @if (addError()) { <p class="err">{{ addError() }}</p> }
+              <div class="own-foot">
+                <span class="hint">No label? Most appliances print the watts on the back or on the plug. If you only see amps, multiply by 220.</span>
+                <button type="button" class="btn btn-s btn-sm" (click)="closeAdd()">Cancel</button>
+                <button type="button" class="btn btn-p btn-sm" (click)="addOwn()">Add to my list</button>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="card">
+        <div class="card-head card-head--line">
+          <span class="num" [class.num--on]="!empty()">2</span>
+          <h2 class="d">Your list</h2>
+          @if (!empty()) { <span class="muted small">{{ rows().length }} appliances</span> }
+          <span class="grow"></span>
+          @if (!empty()) { <button type="button" class="tbtn tbtn--danger" (click)="clearAll()">Clear all</button> }
+        </div>
+
+        @if (empty()) {
+          <div class="empty">
+            <span class="empty-icon"><svg width="29" height="29" viewBox="0 0 24 24" fill="none" stroke="#9AA7B5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7h6M9 11h6M9 15h3M7 3h10v18H7z"/></svg></span>
+            <strong>Nothing added yet</strong>
+            <span class="muted">Tap an appliance above and it drops in here with its usual wattage already filled. Change the hours if yours are different.</span>
+            <button type="button" class="btn btn-s btn-sm" (click)="loadPreset()">Start with a typical 2-bedroom home</button>
+          </div>
+        } @else {
+          <div class="table-scroll">
+            <div class="table">
+              <div class="trow thead">
+                <span>Appliance</span><span class="r">Watts each</span><span class="r">How many</span><span class="r">Hours / day</span><span class="r">Of that, night</span><span class="r">Uses per day</span><span></span>
+              </div>
+              @for (r of rows(); track $index; let i = $index) {
+                <div class="trow">
+                  <span class="t-name">
+                    <span class="t-icon" [style.background]="palette[i % palette.length][0]">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" [attr.stroke]="palette[i % palette.length][1]" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path [attr.d]="r.icon"/></svg>
+                    </span>
+                    <span class="t-text"><strong>{{ r.name }}</strong><span>{{ r.note }}</span></span>
+                  </span>
+                  <input class="in in--cell" inputmode="decimal" aria-label="Watts" [value]="r.watts" (change)="setField(i, 'watts', $event)" />
+                  <input class="in in--cell" inputmode="numeric" aria-label="How many" [value]="r.qty" (change)="setField(i, 'qty', $event)" />
+                  <input class="in in--cell" inputmode="decimal" aria-label="Hours per day" [value]="r.hours" (change)="setField(i, 'hours', $event)" />
+                  <input class="in in--cell" inputmode="decimal" aria-label="Night hours" [value]="r.night" (change)="setField(i, 'night', $event)" />
+                  <strong class="r">{{ fmt(rowWh(r)) }} Wh</strong>
+                  <button type="button" class="tbtn tbtn--x" aria-label="Remove" (click)="removeRow(i)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+                </div>
               }
-            </tbody>
-          </table>
-        </div>
-
-        <button class="add-row-btn" (click)="addLoadRow()">{{ 'CALC.LOAD.ADD_ROW' | translate }}</button>
-
-        <div class="calc-actions">
-          <button class="btn-calc" (click)="calculateLoad()">{{ 'CALC.LOAD.CALCULATE' | translate }}</button>
-          <button class="btn-reset" (click)="resetLoad()">{{ 'CALC.LOAD.RESET' | translate }}</button>
-        </div>
-
-        @if (loadResult()) {
-          <div class="result-card">
-            <div class="result-row">
-              <span class="result-label">{{ 'CALC.LOAD.TOTAL_LOAD' | translate }}</span>
-              <span class="result-value">{{ loadResult()!.totalKwh }} <span class="result-unit">{{ 'CALC.LOAD.UNIT_KWH' | translate }}</span></span>
-            </div>
-            <div class="result-divider"></div>
-            <div class="result-subtitle">{{ 'CALC.LOAD.RECOMMENDED' | translate }}</div>
-            <div class="result-row">
-              <span class="result-label">{{ 'CALC.LOAD.PANEL_SIZE' | translate }}</span>
-              <span class="result-value result-value--accent">{{ loadResult()!.panelKw }} <span class="result-unit">{{ 'CALC.LOAD.UNIT_KW' | translate }}</span></span>
-            </div>
-            <div class="result-row">
-              <span class="result-label">{{ 'CALC.LOAD.BATTERY_NEEDED' | translate }}</span>
-              <span class="result-value result-value--accent">{{ loadResult()!.batteryKwh }} <span class="result-unit">{{ 'CALC.LOAD.UNIT_KWH_BATT' | translate }}</span></span>
+              <div class="trow tfoot">
+                <strong>Everything together</strong>
+                <strong class="r">{{ fmtW(calc().connW) }}</strong>
+                <span></span><span></span>
+                <span class="r small muted">{{ calc().nightWh ? fmt(calc().nightWh) + ' Wh at night' : '' }}</span>
+                <strong class="d r total">{{ (calc().dailyWh / 1000).toFixed(2) }} kWh</strong>
+                <span></span>
+              </div>
             </div>
           </div>
         }
-      </div>
-    }
+      </section>
 
-    <!-- ─── BATTERY BACKUP ─── -->
-    @if (activeTab() === 'battery') {
-      <div class="calc-panel">
-        <div class="panel-intro">
-          <h2 class="panel-title">{{ 'CALC.BATTERY.TITLE' | translate }}</h2>
-          <p class="panel-desc">{{ 'CALC.BATTERY.DESC' | translate }}</p>
+      <!-- STEP 3 -->
+      <section class="card card-pad">
+        <div class="card-head card-head--bare">
+          <span class="num" [class.num--on]="!empty()">3</span>
+          <h2 class="d">What kind of system</h2>
+        </div>
+        <div class="kinds">
+          @for (k of kinds; track k.key) {
+            <button type="button" class="kind" [class.kind--on]="kind() === k.key" [attr.aria-pressed]="kind() === k.key" (click)="setKind(k.key)">
+              <span class="kind-head"><span class="radio"><i></i></span><strong>{{ k.title }}</strong></span>
+              <span class="kind-text">{{ k.text }}</span>
+              <span class="kind-tag" [style.color]="k.tagColor">{{ k.tag }}</span>
+            </button>
+          }
         </div>
 
-        <div class="fields-grid">
-          <div class="field-group">
-            <label class="field-label">{{ 'CALC.BATTERY.DAILY_LOAD' | translate }}</label>
-            <input class="field-input" type="number" min="0" [(ngModel)]="battDailyLoad" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">{{ 'CALC.BATTERY.BACKUP_HOURS' | translate }}</label>
-            <input class="field-input" type="number" min="1" max="24" [(ngModel)]="battBackupHours" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">{{ 'CALC.BATTERY.DOD' | translate }}</label>
-            <input class="field-input" type="number" min="1" max="100" [(ngModel)]="battDod" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">{{ 'CALC.BATTERY.BATTERY_VOLTAGE' | translate }}</label>
-            <input class="field-input" type="number" min="12" [(ngModel)]="battVoltage" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">{{ 'CALC.BATTERY.EFFICIENCY' | translate }}</label>
-            <input class="field-input" type="number" min="1" max="100" [(ngModel)]="battEfficiency" />
-          </div>
-        </div>
-
-        <div class="calc-actions">
-          <button class="btn-calc" (click)="calculateBattery()">{{ 'CALC.BATTERY.CALCULATE' | translate }}</button>
-          <button class="btn-reset" (click)="resetBattery()">{{ 'CALC.BATTERY.RESET' | translate }}</button>
-        </div>
-
-        @if (battResult()) {
-          <div class="result-card">
-            <div class="result-row">
-              <span class="result-label">{{ 'CALC.BATTERY.RESULT_CAPACITY' | translate }}</span>
-              <span class="result-value result-value--accent">{{ battResult()!.capacityKwh }} <span class="result-unit">{{ 'CALC.BATTERY.UNIT_KWH' | translate }}</span></span>
-            </div>
-            <div class="result-row">
-              <span class="result-label">{{ 'CALC.BATTERY.RESULT_AH' | translate }}</span>
-              <span class="result-value result-value--accent">{{ battResult()!.ampHours }} <span class="result-unit">{{ 'CALC.BATTERY.UNIT_AH' | translate }}</span></span>
+        @if (kind() !== 'ongrid') {
+          <div class="batt-row">
+            @if (kind() === 'hybrid') {
+              <div class="backup">
+                <span class="backup-head"><span>Backup for</span><strong>{{ backupLabels[backup()] }}</strong></span>
+                <input type="range" min="0" max="2" step="1" class="slider" [value]="backup()" (input)="onBackup($event)" aria-label="How long the battery should carry you" [style.--pct.%]="backup() * 50" />
+                <span class="backup-scale"><span>2 h</span><span>Whole night</span><span>2 days</span></span>
+              </div>
+            } @else {
+              <div class="backup"><span class="backup-head"><span>Backup</span><strong>a full day, no grid</strong></span><span class="hint">Off-grid is sized to carry a whole day on battery.</span></div>
+            }
+            <div class="batt-types">
+              <span class="batt-label">Battery type</span>
+              <div class="batt-btns">
+                @for (b of battTypes; track b.key) {
+                  <button type="button" class="batt" [class.batt--on]="batt() === b.key" [attr.aria-pressed]="batt() === b.key" (click)="setBatt(b.key)"><strong>{{ b.title }}</strong><span>{{ b.sub }}</span></button>
+                }
+              </div>
             </div>
           </div>
         }
-      </div>
-    }
+      </section>
+    </div>
 
-    <!-- ─── INVERTER SIZE ─── -->
-    @if (activeTab() === 'inverter') {
-      <div class="calc-panel">
-        <div class="panel-intro">
-          <h2 class="panel-title">{{ 'CALC.INVERTER.TITLE' | translate }}</h2>
-          <p class="panel-desc">{{ 'CALC.INVERTER.DESC' | translate }}</p>
+    <!-- ════════ RIGHT ════════ -->
+    <aside class="sc-right">
+
+      <section class="card card-pad live">
+        <span class="live-head"><i></i><strong>Your load, as you type</strong></span>
+        <div class="live-kwh">
+          <span class="muted small">Energy you use in a day</span>
+          <span><strong class="d">{{ (calc().dailyWh / 1000).toFixed(2) }}</strong><span class="unit">kWh</span></span>
         </div>
-
-        <div class="fields-grid">
-          <div class="field-group">
-            <label class="field-label">{{ 'CALC.INVERTER.TOTAL_WATTS' | translate }}</label>
-            <input class="field-input" type="number" min="0" [(ngModel)]="invTotalWatts" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">{{ 'CALC.INVERTER.SURGE_FACTOR' | translate }}</label>
-            <input class="field-input" type="number" min="1" max="3" step="0.05" [(ngModel)]="invSurgeFactor" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">{{ 'CALC.INVERTER.EFFICIENCY' | translate }}</label>
-            <input class="field-input" type="number" min="1" max="100" [(ngModel)]="invEfficiency" />
-          </div>
+        <div class="bar-wrap">
+          <span class="bar"><span class="bar-day" [style.width.%]="calc().dailyWh ? calc().dayWh / calc().dailyWh * 100 : 0"></span><span class="bar-night" [style.width.%]="calc().dailyWh ? calc().nightWh / calc().dailyWh * 100 : 0"></span></span>
+          <span class="legend"><span><i class="lg lg--day"></i>Daytime {{ (calc().dayWh / 1000).toFixed(1) }} kWh</span><span><i class="lg lg--night"></i>Night {{ (calc().nightWh / 1000).toFixed(1) }} kWh</span></span>
         </div>
-
-        <div class="calc-actions">
-          <button class="btn-calc" (click)="calculateInverter()">{{ 'CALC.INVERTER.CALCULATE' | translate }}</button>
-          <button class="btn-reset" (click)="resetInverter()">{{ 'CALC.INVERTER.RESET' | translate }}</button>
+        <div class="live-rows">
+          @for (l of liveRows(); track l.k) { <span><span class="muted">{{ l.k }}</span><strong>{{ l.v }}</strong></span> }
         </div>
-
-        @if (invResult()) {
-          <div class="result-card">
-            <div class="result-subtitle">{{ 'CALC.INVERTER.RESULT_TITLE' | translate }}</div>
-            <div class="result-row">
-              <span class="result-label">kVA</span>
-              <span class="result-value result-value--accent">{{ invResult()!.kva }} <span class="result-unit">{{ 'CALC.INVERTER.UNIT_KVA' | translate }}</span></span>
-            </div>
-            <div class="result-row">
-              <span class="result-label">kW</span>
-              <span class="result-value result-value--accent">{{ invResult()!.kw }} <span class="result-unit">{{ 'CALC.INVERTER.UNIT_KW' | translate }}</span></span>
-            </div>
-            <p class="result-note">{{ 'CALC.INVERTER.NOTE' | translate }}</p>
-          </div>
+        @if (!showResult()) {
+          <button type="button" class="btn btn-p w100" [disabled]="empty()" (click)="work()">Work out my system</button>
+          @if (empty()) { <span class="hint">Add at least one appliance first.</span> }
+        } @else {
+          <span class="done-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0B5A34" stroke-width="2.4" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>Worked out below — it updates as you change the list.</span>
         }
+      </section>
+
+      @if (!empty()) {
+        <section class="card card-pad">
+          <strong class="hog-title">What eats the most</strong>
+          @for (h of hogs(); track h.t) {
+            <div class="hog">
+              <span class="hog-row"><span class="hog-name">{{ h.t }}</span><strong>{{ h.pct }}%</strong></span>
+              <span class="hog-bar"><span [style.width.%]="h.w" [style.background]="h.color"></span></span>
+            </div>
+          }
+          <span class="hint">Fans and the fridge usually top this list. Cutting hours here shrinks the system more than anything else.</span>
+        </section>
+      }
+    </aside>
+  </div>
+
+  <!-- ════════ RESULT ════════ -->
+  @if (showResult()) {
+    <section class="sc-result" id="sc-result">
+      <div class="res">
+
+        <div class="res-top">
+          <div class="res-top-text">
+            <span class="res-eyebrow">Recommended for your list</span>
+            <h2 class="d">{{ result().title }}</h2>
+            <p>{{ result().sub }}</p>
+          </div>
+          <div class="res-price">
+            <span>Fitted and switched on, about</span>
+            <strong class="d">৳{{ fmt(calc().price) }}</strong>
+            <span>including fitting, wiring and net-metering papers</span>
+          </div>
+        </div>
+
+        <div class="parts">
+          @for (p of result().parts; track p.k) {
+            <div class="part">
+              <span class="part-head">
+                <span class="part-icon" [style.background]="p.bg"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" [attr.stroke]="p.c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path [attr.d]="p.d"/></svg></span>
+                <span class="part-k">{{ p.k }}</span>
+              </span>
+              <strong class="d part-v">{{ p.v }}</strong>
+              <span class="part-s">{{ p.s }}</span>
+              @if (p.warn) { <span class="part-warn">{{ p.warn }}</span> }
+            </div>
+          }
+        </div>
+
+        <div class="res-cols">
+          <div class="res-col">
+            <strong class="res-h">How we got there</strong>
+            @for (m of result().maths; track m.k) { <div class="math"><span>{{ m.k }}</span><span>{{ m.v }}</span></div> }
+            <span class="hint">Every number above comes from your own list — change an appliance or its hours and the system changes with it.</span>
+          </div>
+          <div class="res-col">
+            <strong class="res-h">What it means for your bill</strong>
+            <div class="sav">
+              @for (v of result().savings; track v.k) { <span><span class="muted">{{ v.k }}</span><strong [style.color]="v.c">{{ v.v }}</strong></span> }
+            </div>
+            <div class="note note--warn">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8A5A00" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01M10.3 3.9L2.5 18a1.7 1.7 0 0 0 1.5 2.5h16a1.7 1.7 0 0 0 1.5-2.5L13.7 3.9a1.7 1.7 0 0 0-3 0z"/></svg>
+              <span>This is an estimate, not a quote. Shade from a tree or a neighbour’s wall, an old roof, or a long cable run can all change it. The free survey gives you the real figure before you pay anything.</span>
+            </div>
+            <div class="note note--info">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2B6CB0" stroke-width="2" stroke-linecap="round"><path d="M12 16v-5M12 8h.01M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18"/></svg>
+              <span>{{ result().battTruth }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="res-foot">
+          <div class="res-pkg">
+            <span class="res-pkg-icon"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#0E6B3F" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5zM3 8v8l9 5 9-5V8M12 13v8"/></svg></span>
+            <span class="res-pkg-text"><strong>{{ result().pkgTitle }}</strong><span>{{ result().pkgSub }}</span></span>
+          </div>
+          <a class="btn btn-s" [href]="result().mail">Email me this</a>
+          <a class="btn btn-s" routerLink="/quote">Book a free survey</a>
+          <a class="btn btn-p" routerLink="/shop">See this package</a>
+        </div>
       </div>
-    }
-
-    <!-- ─── SOLAR AC ─── -->
-    @if (activeTab() === 'ac') {
-      <div class="calc-panel">
-        <div class="panel-intro">
-          <h2 class="panel-title">{{ 'CALC.AC.TITLE' | translate }}</h2>
-          <p class="panel-desc">{{ 'CALC.AC.DESC' | translate }}</p>
-        </div>
-
-        <div class="fields-grid">
-          <div class="field-group">
-            <label class="field-label">{{ 'CALC.AC.AC_CAPACITY' | translate }} ({{ 'CALC.AC.UNIT_TON' | translate }})</label>
-            <input class="field-input" type="number" min="0.5" step="0.5" [(ngModel)]="acCapacity" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">{{ 'CALC.AC.PANEL_WATT' | translate }}</label>
-            <input class="field-input" type="number" min="100" [(ngModel)]="acPanelWatt" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">{{ 'CALC.AC.SUN_HOURS' | translate }}</label>
-            <input class="field-input" type="number" min="1" max="12" step="0.5" [(ngModel)]="acSunHours" />
-          </div>
-        </div>
-
-        <div class="calc-actions">
-          <button class="btn-calc" (click)="calculateAc()">{{ 'CALC.AC.CALCULATE' | translate }}</button>
-          <button class="btn-reset" (click)="resetAc()">{{ 'CALC.AC.RESET' | translate }}</button>
-        </div>
-
-        @if (acResult()) {
-          <div class="result-card">
-            <div class="result-row">
-              <span class="result-label">{{ 'CALC.AC.RESULT_PANELS' | translate }}</span>
-              <span class="result-value result-value--accent">{{ acResult()!.panels }}</span>
-            </div>
-            <div class="result-row">
-              <span class="result-label">{{ 'CALC.AC.RESULT_TOTAL_KW' | translate }}</span>
-              <span class="result-value result-value--accent">{{ acResult()!.totalKw }} <span class="result-unit">kW</span></span>
-            </div>
-          </div>
-        }
-      </div>
-    }
-
-    <!-- ─── ROOF AREA ─── -->
-    @if (activeTab() === 'roof') {
-      <div class="calc-panel">
-        <div class="panel-intro">
-          <h2 class="panel-title">{{ 'CALC.ROOF.TITLE' | translate }}</h2>
-          <p class="panel-desc">{{ 'CALC.ROOF.DESC' | translate }}</p>
-        </div>
-
-        <div class="fields-grid">
-          <div class="field-group">
-            <label class="field-label">{{ 'CALC.ROOF.ROOF_LENGTH' | translate }}</label>
-            <input class="field-input" type="number" min="1" [(ngModel)]="roofLength" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">{{ 'CALC.ROOF.ROOF_WIDTH' | translate }}</label>
-            <input class="field-input" type="number" min="1" [(ngModel)]="roofWidth" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">{{ 'CALC.ROOF.USABLE_PCT' | translate }}</label>
-            <input class="field-input" type="number" min="10" max="100" [(ngModel)]="roofUsablePct" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">{{ 'CALC.ROOF.PANEL_LENGTH' | translate }}</label>
-            <input class="field-input" type="number" min="1" step="0.01" [(ngModel)]="roofPanelLength" />
-          </div>
-          <div class="field-group">
-            <label class="field-label">{{ 'CALC.ROOF.PANEL_WIDTH' | translate }}</label>
-            <input class="field-input" type="number" min="1" step="0.01" [(ngModel)]="roofPanelWidth" />
-          </div>
-        </div>
-
-        <div class="calc-actions">
-          <button class="btn-calc" (click)="calculateRoof()">{{ 'CALC.ROOF.CALCULATE' | translate }}</button>
-          <button class="btn-reset" (click)="resetRoof()">{{ 'CALC.ROOF.RESET' | translate }}</button>
-        </div>
-
-        @if (roofResult()) {
-          <div class="result-card">
-            <div class="result-row">
-              <span class="result-label">{{ 'CALC.ROOF.RESULT_AREA' | translate }}</span>
-              <span class="result-value result-value--accent">{{ roofResult()!.usableArea }} <span class="result-unit">{{ 'CALC.ROOF.UNIT_SQFT' | translate }}</span></span>
-            </div>
-            <div class="result-row">
-              <span class="result-label">{{ 'CALC.ROOF.RESULT_PANELS' | translate }}</span>
-              <span class="result-value result-value--accent">{{ roofResult()!.panels }}</span>
-            </div>
-          </div>
-        }
-      </div>
-    }
-
-  </div><!-- /calc-body -->
-</div>
+    </section>
+  }
+</main>
 
 <app-footer [settings]="settings()" />

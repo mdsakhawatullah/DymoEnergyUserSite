@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CreateOrderDto, OrderDto } from '../models/order.model';
+import { CreateOrderDto, OrderDto, OrderTracking } from '../models/order.model';
 import { PagedResult } from '../models/category.model';
 import { environment } from '../../../environments/environment';
 
@@ -21,6 +21,14 @@ export class OrderService {
     return this.http.post<OrderDto>(
       `${environment.apiUrl}/api/app/order/order-data`,
       dto
+    );
+  }
+
+  /** Public lookup: needs the order number and the mobile number it was placed with. */
+  track(orderNumber: string, phone: string): Observable<OrderTracking> {
+    return this.http.post<OrderTracking>(
+      `${environment.apiUrl}/api/app/order/track-order`,
+      { orderNumber, phone }
     );
   }
 

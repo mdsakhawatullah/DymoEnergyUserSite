@@ -1,338 +1,155 @@
-<app-navbar
-  [siteName]="settings()?.siteName || 'Org Name'"
-  [logoUrl]="settings()?.logoUrl"
-  [phone]="settings()?.phone"
-  [navbarTextColor]="settings()?.navbarTextColor"
-  [primaryColor]="settings()?.primaryColor"
-  [navItems]="navItems"
-/>
+<div class="co">
 
-<div class="checkout-page">
+  <!-- ── Slim header ── -->
+  <header class="co-head">
+    <div class="co-head-in">
+      <a routerLink="/" class="brand" aria-label="DymoEnergy home">
+        <svg width="34" height="34" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0E6B3F"/><path d="M8.5 7h7a9 9 0 0 1 0 18h-7z" fill="#FFFFFF"/><circle cx="16" cy="16" r="3.4" fill="#F29D12"/><path d="M21 16h1.2M16 21v1.2M11 16H9.8M16 11V9.8M19.4 19.4l.8.8M12.6 19.4l-.8.8M12.6 12.6l-.8-.8M19.4 12.6l.8-.8" stroke="#F29D12" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>
+        <span><b>Dymo</b><i>Energy</i></span>
+      </a>
 
-  <!-- ── Heading ──────────────────────────────────────────────────── -->
-  <div class="checkout-heading">
-    <h1 class="checkout-title">{{ 'CHECKOUT.TITLE' | translate }}</h1>
-  </div>
+      <ol class="progress" aria-label="Checkout progress">
+        <li class="p-done"><span>✓</span>Cart</li>
+        <li class="p-line p-line--on" aria-hidden="true"></li>
+        <li class="p-now" aria-current="step"><span>2</span>Details &amp; payment</li>
+        <li class="p-line" aria-hidden="true"></li>
+        <li class="p-next"><span>3</span>Confirmation</li>
+      </ol>
 
-  <!-- ── Stepper ──────────────────────────────────────────────────── -->
-  <div class="stepper">
-    <div class="step">
-      <div class="step-circle" [class.step-circle--active]="step() >= 1" [class.step-circle--done]="step() > 1">
-        @if (step() > 1) { ✓ } @else { 1 }
+      <span class="secure">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Secure checkout
+      </span>
+    </div>
+  </header>
+
+  <main class="co-body">
+
+    @if (cartService.items().length === 0) {
+      <div class="card empty">
+        <strong>Your cart is empty</strong>
+        <span>Add something to your cart first, then come back to check out.</span>
+        <a routerLink="/shop" class="btn btn-p">Browse the shop</a>
       </div>
-      <span class="step-label" [class.step-label--active]="step() >= 1">{{ 'CHECKOUT.SHIPPING' | translate }}</span>
-    </div>
-    <div class="step-line"></div>
-    <div class="step">
-      <div class="step-circle" [class.step-circle--active]="step() >= 2" [class.step-circle--done]="step() > 2">
-        @if (step() > 2) { ✓ } @else { 2 }
-      </div>
-      <span class="step-label" [class.step-label--active]="step() >= 2">{{ 'CHECKOUT.REVIEW' | translate }}</span>
-    </div>
-    <div class="step-line"></div>
-    <div class="step">
-      <div class="step-circle" [class.step-circle--active]="step() >= 3">3</div>
-      <span class="step-label" [class.step-label--active]="step() >= 3">{{ 'CHECKOUT.PAYMENT' | translate }}</span>
-    </div>
-  </div>
+    } @else {
 
-  <!-- ── Empty cart ───────────────────────────────────────────────── -->
-  @if (cartService.items().length === 0) {
-    <div class="empty-state">
-      <div class="empty-icon">
-        <svg width="36" height="32" viewBox="0 0 36 32" fill="none">
-          <path d="M1 1h5L10 21h16l4-15.5H8" stroke="#9BBCCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="13.5" cy="28" r="2.5" fill="#9BBCCC"/>
-          <circle cx="25" cy="28" r="2.5" fill="#9BBCCC"/>
-        </svg>
-      </div>
-      <div class="empty-title">{{ 'CHECKOUT.EMPTY_TITLE' | translate }}</div>
-      <div class="empty-sub">{{ 'CHECKOUT.EMPTY_SUB' | translate }}</div>
-      <a routerLink="/categories" class="empty-btn">{{ 'CHECKOUT.BROWSE' | translate }}</a>
-    </div>
+      <div class="co-grid">
 
-  } @else {
-    <div class="checkout-grid">
+        <div class="co-forms">
 
-      <!-- ════════════════ STEP 1: SHIPPING ════════════════ -->
-      @if (step() === 1) {
-        <div class="form-card">
-          <div class="form-card-title">{{ 'CHECKOUT.SHIPPING_INFO' | translate }}</div>
-
-          <div class="field-row">
-            <div class="field">
-              <label class="field-label">{{ 'CHECKOUT.FIRST_NAME' | translate }}</label>
-              <input type="text" class="field-input" placeholder="Ahmed"
-                     [(ngModel)]="form.firstName" name="firstName" />
+          <!-- 1 · Contact -->
+          <section class="card sec">
+            <div class="sec-head"><h2>1. Contact</h2></div>
+            <div class="grid3">
+              <label class="lbl" [class.field--err]="submitted() && !nameOk">Full name
+                <input class="in" name="name" autocomplete="name" [(ngModel)]="form.name" />
+                @if (submitted() && !nameOk) { <small class="err">Enter your name.</small> }
+              </label>
+              <label class="lbl" [class.field--err]="submitted() && !phoneOk">Mobile number
+                <input class="in" name="phone" type="tel" autocomplete="tel" placeholder="01XXX-XXXXXX" [(ngModel)]="form.phone" />
+                @if (submitted() && !phoneOk) { <small class="err">Enter a number we can call.</small> }
+              </label>
+              <label class="lbl" [class.field--err]="submitted() && !emailOk">Email <small>For the invoice (optional)</small>
+                <input class="in" name="email" type="email" autocomplete="email" placeholder="you@example.com" [(ngModel)]="form.email" />
+                @if (submitted() && !emailOk) { <small class="err">That email doesn't look right.</small> }
+              </label>
             </div>
-            <div class="field">
-              <label class="field-label">{{ 'CHECKOUT.LAST_NAME' | translate }}</label>
-              <input type="text" class="field-input" placeholder="Rahman"
-                     [(ngModel)]="form.lastName" name="lastName" />
-            </div>
-          </div>
+          </section>
 
-          <div class="field-block">
-            <label class="field-label">{{ 'CHECKOUT.EMAIL' | translate }}</label>
-            <input type="email" class="field-input" placeholder="ahmed@email.com"
-                   [(ngModel)]="form.customerEmail" name="customerEmail" />
-          </div>
-
-          <div class="field-block">
-            <label class="field-label">{{ 'CHECKOUT.PHONE' | translate }}</label>
-            <input type="tel" class="field-input" placeholder="+88 017XX-XXXXXX"
-                   [(ngModel)]="form.customerPhone" name="customerPhone" />
-          </div>
-
-          <div class="field-block">
-            <label class="field-label">{{ 'CHECKOUT.STREET' | translate }}</label>
-            <input type="text" class="field-input" placeholder="House 12, Road 3, Block A"
-                   [(ngModel)]="form.streetAddress" name="streetAddress" />
-          </div>
-
-          <div class="field-row" style="margin-bottom: 24px;">
-            <div class="field">
-              <label class="field-label">{{ 'CHECKOUT.CITY' | translate }}</label>
-              <input type="text" class="field-input" placeholder="Dhaka"
-                     [(ngModel)]="form.city" name="city" />
-            </div>
-            <div class="field">
-              <label class="field-label">{{ 'CHECKOUT.DIVISION' | translate }}</label>
-              <select class="field-input field-select" [(ngModel)]="form.division" name="division">
-                <option>Dhaka</option>
-                <option>Chittagong</option>
-                <option>Sylhet</option>
-                <option>Rajshahi</option>
-                <option>Khulna</option>
-                <option>Barishal</option>
-                <option>Rangpur</option>
-                <option>Mymensingh</option>
-              </select>
-            </div>
-          </div>
-
-          <button class="primary-btn" [disabled]="!form.firstName.trim()" (click)="goToReview()">
-            {{ 'CHECKOUT.CONTINUE_REVIEW' | translate }}
-          </button>
-        </div>
-
-        <!-- Summary sidebar -->
-        <ng-container *ngTemplateOutlet="summaryCard" />
-      }
-
-      <!-- ════════════════ STEP 2: REVIEW ════════════════ -->
-      @if (step() === 2) {
-        <div>
-          <!-- Shipping summary -->
-          <div class="form-card" style="margin-bottom: 20px;">
-            <div class="review-card-header">
-              <div class="form-card-title" style="margin-bottom: 0;">{{ 'CHECKOUT.SHIPPING_DETAILS' | translate }}</div>
-              <button class="edit-btn" (click)="back()">{{ 'CHECKOUT.EDIT' | translate }}</button>
-            </div>
-            <div class="review-info-grid">
-              <div class="review-info-item">
-                <div class="review-info-label">{{ 'CHECKOUT.NAME' | translate }}</div>
-                <div class="review-info-value">{{ fullName || '—' }}</div>
+          <!-- 2 · Address -->
+          <section class="card sec">
+            <div class="sec-head"><h2>2. Delivery address</h2></div>
+            @if (isPickup()) {
+              <p class="note">You chose showroom pickup, so no address is needed.</p>
+            } @else {
+              <div class="grid3">
+                <label class="lbl">Division
+                  <select class="in" name="division" [(ngModel)]="form.division">
+                    @for (d of divisions; track d) { <option [value]="d">{{ d }}</option> }
+                  </select>
+                </label>
+                <label class="lbl">District<input class="in" name="district" placeholder="e.g. Chattogram" [(ngModel)]="form.district" /></label>
+                <label class="lbl">Area / thana<input class="in" name="area" placeholder="e.g. Khulshi" [(ngModel)]="form.area" /></label>
+                <label class="lbl span2" [class.field--err]="submitted() && !streetOk">Street address
+                  <input class="in" name="street" autocomplete="street-address" placeholder="House, road, block" [(ngModel)]="form.street" />
+                  @if (submitted() && !streetOk) { <small class="err">Tell us where to deliver.</small> }
+                </label>
+                <label class="lbl">Landmark <small>Optional</small><input class="in" name="landmark" placeholder="Near…" [(ngModel)]="form.landmark" /></label>
               </div>
-              <div class="review-info-item">
-                <div class="review-info-label">{{ 'CHECKOUT.EMAIL' | translate }}</div>
-                <div class="review-info-value">{{ form.customerEmail || '—' }}</div>
-              </div>
-              <div class="review-info-item">
-                <div class="review-info-label">{{ 'CHECKOUT.PHONE' | translate }}</div>
-                <div class="review-info-value">{{ form.customerPhone || '—' }}</div>
-              </div>
-              <div class="review-info-item">
-                <div class="review-info-label">{{ 'CHECKOUT.ADDRESS' | translate }}</div>
-                <div class="review-info-value">{{ deliveryAddress || '—' }}</div>
-              </div>
-            </div>
-          </div>
+            }
+          </section>
 
-          <!-- Items review -->
-          <div class="form-card">
-            <div class="form-card-title">{{ 'CHECKOUT.ORDER_ITEMS' | translate }}</div>
-            <div class="review-items">
-              @for (item of cartService.items(); track item.productId) {
-                <div class="review-item">
-                  <div class="review-item-img">
-                    @if (item.imageUrl) {
-                      <img [src]="item.imageUrl" [alt]="item.productName" class="review-item-img-el" />
-                    } @else {
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9BBCCC" stroke-width="1.4">
-                        <rect x="3" y="3" width="18" height="18" rx="2"/>
-                        <circle cx="8.5" cy="8.5" r="1.5"/>
-                        <polyline points="21 15 16 10 5 21"/>
-                      </svg>
-                    }
-                  </div>
-                  <div class="review-item-info">
-                    <div class="review-item-name">{{ item.productName }}</div>
-                    @if (item.sku) { <div class="review-item-sku">{{ 'CHECKOUT.SKU' | translate }}: {{ item.sku }}</div> }
-                  </div>
-                  <div class="review-item-right">
-                    <div class="review-item-qty">× {{ item.quantity }}</div>
-                    <div class="review-item-price">{{ formatPrice(item.lineTotal) }}</div>
-                  </div>
-                </div>
+          <!-- 3 · Delivery method -->
+          <section class="card sec">
+            <div class="sec-head"><h2>3. Delivery method</h2></div>
+            <div class="grid3" role="radiogroup" aria-label="Delivery method">
+              @for (s of shipOptions; track s.key) {
+                <button type="button" role="radio" class="opt opt--col" [class.opt--on]="ship() === s.key" [attr.aria-checked]="ship() === s.key" (click)="ship.set(s.key)">
+                  <span class="opt-row"><strong>{{ s.title }}</strong><strong class="opt-price">{{ s.cost ? formatPrice(s.cost) : 'Free' }}</strong></span>
+                  <span class="opt-text">{{ s.text }}</span>
+                </button>
               }
             </div>
+          </section>
 
-            <div class="review-totals">
-              <div class="review-total-row">
-                <span>{{ 'CHECKOUT.SUBTOTAL' | translate }}</span>
-                <span>{{ formatPrice(cartService.subtotal()) }}</span>
-              </div>
-              <div class="review-total-row">
-                <span>{{ 'CHECKOUT.SHIPPING_COST' | translate }}</span>
-                <span class="text-green">{{ formatPrice(shippingCost) }}</span>
-              </div>
-              <div class="review-divider"></div>
-              <div class="review-total-row review-total-row--bold">
-                <span>{{ 'CHECKOUT.TOTAL' | translate }}</span>
-                <span>{{ formatPrice(cartService.subtotal() + shippingCost) }}</span>
-              </div>
+          <!-- 4 · Payment -->
+          <section class="card sec">
+            <div class="sec-head"><h2>4. Payment</h2></div>
+            <div class="grid2" role="radiogroup" aria-label="Payment method">
+              @for (p of payOptions; track p.key) {
+                <button type="button" role="radio" class="opt" [class.opt--on]="pay() === p.key" [attr.aria-checked]="pay() === p.key" (click)="pay.set(p.key)">
+                  <span class="dot"></span>
+                  <span class="pay-mark" [style.color]="p.markColor">{{ p.mark }}</span>
+                  <span class="opt-text-col"><strong>{{ p.title }}</strong><span>{{ p.text }}</span></span>
+                </button>
+              }
             </div>
+            <div class="pay-note">{{ payNote() }}</div>
 
-            <div class="btn-row">
-              <button class="back-btn" (click)="back()">{{ 'CHECKOUT.BACK' | translate }}</button>
-              <button class="primary-btn" style="flex:1" (click)="goToPayment()">
-                {{ 'CHECKOUT.PROCEED_PAYMENT' | translate }}
-              </button>
-            </div>
-          </div>
+            <label class="lbl">Order notes <small>Optional</small>
+              <textarea class="in in--area" name="notes" rows="3" placeholder="Anything we should know — gate code, best time to call…" [(ngModel)]="form.notes"></textarea>
+            </label>
+          </section>
         </div>
 
-        <ng-container *ngTemplateOutlet="summaryCard" />
-      }
+        <!-- ── Summary ── -->
+        <aside class="card summary">
+          <strong class="summary-title">Order summary</strong>
 
-      <!-- ════════════════ STEP 3: PAYMENT ════════════════ -->
-      @if (step() === 3) {
-        <div class="form-card">
-          <div class="form-card-title">{{ 'CHECKOUT.PAYMENT_METHOD' | translate }}</div>
-
-          <div class="payment-options">
-
-            <label class="payment-option" [class.payment-option--selected]="paymentMethod === 'cod'">
-              <input type="radio" name="payment" value="cod" [(ngModel)]="paymentMethod" class="payment-radio" />
-              <div class="payment-icon payment-icon--cod">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D3B60" stroke-width="2" stroke-linecap="round">
-                  <rect x="1" y="4" width="22" height="16" rx="2"/>
-                  <line x1="1" y1="10" x2="23" y2="10"/>
-                </svg>
-              </div>
-              <div class="payment-info">
-                <div class="payment-name">{{ 'CHECKOUT.COD' | translate }}</div>
-                <div class="payment-desc">{{ 'CHECKOUT.COD_DESC' | translate }}</div>
-              </div>
-            </label>
-
-            <label class="payment-option" [class.payment-option--selected]="paymentMethod === 'bank'">
-              <input type="radio" name="payment" value="bank" [(ngModel)]="paymentMethod" class="payment-radio" />
-              <div class="payment-icon payment-icon--bank">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D3B60" stroke-width="2" stroke-linecap="round">
-                  <line x1="12" y1="1" x2="12" y2="23"/>
-                  <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
-                </svg>
-              </div>
-              <div class="payment-info">
-                <div class="payment-name">{{ 'CHECKOUT.BANK' | translate }}</div>
-                <div class="payment-desc">{{ 'CHECKOUT.BANK_DESC' | translate }}</div>
-              </div>
-            </label>
-
-            <label class="payment-option" [class.payment-option--selected]="paymentMethod === 'bkash'">
-              <input type="radio" name="payment" value="bkash" [(ngModel)]="paymentMethod" class="payment-radio" />
-              <div class="payment-icon payment-icon--bkash">
-                <span style="font-weight:900; font-size:13px; color:#E2136E;">bK</span>
-              </div>
-              <div class="payment-info">
-                <div class="payment-name">{{ 'CHECKOUT.BKASH' | translate }}</div>
-                <div class="payment-desc">{{ 'CHECKOUT.BKASH_DESC' | translate }}</div>
-              </div>
-            </label>
-
-            <label class="payment-option" [class.payment-option--selected]="paymentMethod === 'nagad'">
-              <input type="radio" name="payment" value="nagad" [(ngModel)]="paymentMethod" class="payment-radio" />
-              <div class="payment-icon payment-icon--nagad">
-                <span style="font-weight:900; font-size:12px; color:#F15A24;">Ng</span>
-              </div>
-              <div class="payment-info">
-                <div class="payment-name">{{ 'CHECKOUT.NAGAD' | translate }}</div>
-                <div class="payment-desc">{{ 'CHECKOUT.NAGAD_DESC' | translate }}</div>
-              </div>
-            </label>
-
-          </div>
-
-          <div class="field-block" style="margin-top: 20px;">
-            <label class="field-label">{{ 'CHECKOUT.ORDER_NOTES' | translate }}</label>
-            <textarea class="field-input field-textarea" rows="3"
-                      [placeholder]="'CHECKOUT.NOTES_PLACEHOLDER' | translate"
-                      [(ngModel)]="form.notes" name="notes"></textarea>
-          </div>
-
-          @if (errorMsg()) {
-            <div class="error-msg">{{ errorMsg() }}</div>
+          @for (i of cartService.items(); track i.productId) {
+            <div class="s-item">
+              <span class="s-img">
+                @if (i.imageUrl) { <img [src]="i.imageUrl" [alt]="i.productName" /> }
+                <span class="s-qty">{{ i.quantity }}</span>
+              </span>
+              <span class="s-name">{{ i.productName }}</span>
+              <span class="s-total">{{ formatPrice(i.lineTotal) }}</span>
+            </div>
           }
 
-          <div class="btn-row" style="margin-top: 24px;">
-            <button class="back-btn" (click)="back()">{{ 'CHECKOUT.BACK' | translate }}</button>
-            <button class="primary-btn" style="flex:1"
-                    [disabled]="submitting()"
-                    [class.primary-btn--loading]="submitting()"
-                    (click)="placeOrder()">
-              @if (submitting()) {
-                <span class="spinner"></span> {{ 'CHECKOUT.PLACING_ORDER' | translate }}
-              } @else {
-                {{ 'CHECKOUT.PLACE_ORDER' | translate }}
-              }
-            </button>
+          <div class="rule"></div>
+          <div class="s-rows">
+            <div><span>Subtotal</span><strong>{{ formatPrice(cartService.subtotal()) }}</strong></div>
+            <div><span>Delivery</span><strong>{{ shippingCost() ? formatPrice(shippingCost()) : 'Free' }}</strong></div>
           </div>
+          <div class="rule"></div>
+          <div class="s-totalrow"><span>Total</span><span class="d">{{ formatPrice(total()) }}</span></div>
 
-          <p class="order-note">{{ 'CHECKOUT.TERMS' | translate }}</p>
-        </div>
+          @if (errorMsg()) { <div class="error-box" role="alert">{{ errorMsg() }}</div> }
 
-        <ng-container *ngTemplateOutlet="summaryCard" />
-      }
+          <button type="button" class="btn btn-p place" [disabled]="submitting()" (click)="placeOrder()">
+            @if (submitting()) { <span class="spinner"></span> Placing your order… } @else { Place order · {{ formatPrice(total()) }} }
+          </button>
+          <span class="terms">By placing this order you agree to our Terms and Refund &amp; warranty policy.</span>
+          <a routerLink="/cart" class="back">← Back to cart</a>
+        </aside>
+      </div>
+    }
+  </main>
 
+  <footer class="co-foot">
+    <div class="co-foot-in">
+      <span>© {{ settings()?.siteName || 'Dymo Energy' }}</span>
+      <span>Need help? @if (settings()?.phone) { Call <a [href]="'tel:' + settings()!.phone">{{ settings()!.phone }}</a> } @else { <a routerLink="/quote">Contact us</a> }</span>
     </div>
-  }
-
+  </footer>
 </div>
-
-<!-- ── Reusable summary card template ───────────────────────────── -->
-<ng-template #summaryCard>
-  <div class="summary-card">
-    <div class="summary-title">{{ 'CHECKOUT.ORDER_SUMMARY' | translate }}</div>
-
-    <div class="summary-items">
-      @for (item of cartService.items(); track item.productId) {
-        <div class="summary-item">
-          <span class="summary-item-name">{{ item.productName }} ×{{ item.quantity }}</span>
-          <span class="summary-item-price">{{ formatPrice(item.lineTotal) }}</span>
-        </div>
-      }
-    </div>
-
-    <div class="summary-divider"></div>
-
-    <div class="summary-rows">
-      <div class="summary-row">
-        <span class="summary-row-label">{{ 'CHECKOUT.SUBTOTAL' | translate }}</span>
-        <span class="summary-row-value">{{ formatPrice(cartService.subtotal()) }}</span>
-      </div>
-      <div class="summary-row">
-        <span class="summary-row-label">{{ 'CHECKOUT.SHIPPING_COST' | translate }}</span>
-        <span class="summary-row-value summary-row-value--green">{{ formatPrice(shippingCost) }}</span>
-      </div>
-      <div class="summary-divider"></div>
-      <div class="summary-row summary-row--total">
-        <span>{{ 'CHECKOUT.TOTAL' | translate }}</span>
-        <span class="summary-total-price">{{ formatPrice(cartService.subtotal() + shippingCost) }}</span>
-      </div>
-    </div>
-  </div>
-</ng-template>
-
-<app-footer [settings]="settings()" />

@@ -29,6 +29,7 @@ export interface UserSiteSetting {
   fontSizeBase?: string;
   aboutTitle?: string;
   aboutDescription?: string;
+  aboutPageContent?: string;   // JSON — see AboutContent in about.component.ts
   categoriesTitle?: string;
   categoriesDescription?: string;
   socialLinkedinUrl?: string;

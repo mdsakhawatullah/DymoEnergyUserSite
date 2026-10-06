@@ -2,15 +2,18 @@ import { Component, OnInit, signal, computed } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AdminSiteSettingService } from '../../core/services/admin-site-setting.service';
 import { AdminSiteSetting } from '../../core/models/admin-site-setting.model';
-import { OrderDto, OrderStatus } from '../../core/models/order.model';
-import { TranslatePipe } from '../../core/i18n/translate.pipe';
+import { OrderDto, OrderShipmentType } from '../../core/models/order.model';
+import { CartItem } from '../../core/services/cart.service';
 import { NavbarComponent, DEFAULT_NAV_ITEMS } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
+
+interface Line { name: string; qty: number; total: number; imageUrl?: string; }
+interface Step { title: string; text: string; state: 'done' | 'now' | 'todo'; }
 
 @Component({
   selector: 'app-order-confirmation',
   standalone: true,
-  imports: [RouterLink, NavbarComponent, FooterComponent, TranslatePipe],
+  imports: [RouterLink, NavbarComponent, FooterComponent],
   templateUrl: './order-confirmation.component.html',
   styleUrl: './order-confirmation.component.scss',
 })
@@ -18,11 +21,45 @@ export class OrderConfirmationComponent implements OnInit {
 
   settings = signal<AdminSiteSetting | null>(null);
   order    = signal<OrderDto | null>(null);
+  placed   = signal<CartItem[]>([]);
   error    = signal('');
 
   navItems = DEFAULT_NAV_ITEMS;
 
-  primaryColor = computed(() => this.settings()?.primaryColor  || '#2D3B60');
+  firstName = computed(() => (this.order()?.customerName ?? '').trim().split(/\s+/)[0] || '');
+  isPickup  = computed(() => this.order()?.shipmentType === OrderShipmentType.Pickup);
+
+  /** Lines to show: the server's items when it sends them, otherwise what was in the cart. */
+  lines = computed<Line[]>(() => {
+    const o = this.order();
+    if (o?.items?.length) return o.items.map(i => ({ name: i.productName ?? 'Item', qty: i.quantity, total: i.lineTotal }));
+    return this.placed().map(i => ({ name: i.productName, qty: i.quantity, total: i.lineTotal, imageUrl: i.imageUrl }));
+  });
+
+  /** "Payment: bKash" is written into the order notes at checkout. */
+  paymentLabel = computed(() => this.noteValue('Payment') ?? 'Cash on delivery');
+  deliveryLabel = computed(() => this.noteValue('Delivery') ?? (this.isPickup() ? 'Showroom pickup' : 'Home delivery'));
+  customerNotes = computed(() =>
+    (this.order()?.notes ?? '').split('\n').filter(l => !/^(Payment|Delivery):/.test(l)).join('\n').trim());
+
+  steps = computed<Step[]>(() => {
+    const o = this.order();
+    if (!o) return [];
+    const pay = this.paymentLabel();
+    const payText = /bkash|nagad/i.test(pay)
+      ? `We will message you the ${pay} number and the amount to send (${this.formatPrice(o.grandTotal)}).`
+      : /bank/i.test(pay)
+        ? 'We will send you our bank account details to transfer the amount to.'
+        : `You pay ${this.formatPrice(o.grandTotal)} in cash when the order is delivered.`;
+    return [
+      { title: 'Order placed', text: `Just now — ${this.formatPrice(o.grandTotal)} for ${this.lines().length} ${this.lines().length === 1 ? 'product' : 'products'}.`, state: 'done' },
+      { title: 'Confirmation call', text: `Our team will call ${o.customerPhone ? 'you on ' + o.customerPhone : 'you'} to confirm the details.`, state: 'now' },
+      { title: 'Payment', text: payText, state: 'todo' },
+      this.isPickup()
+        ? { title: 'Pickup', text: 'We will let you know when your order is ready to collect from the showroom.', state: 'todo' }
+        : { title: 'Delivery', text: 'Your order is packed and sent by courier, usually within 1–3 days of confirmation.', state: 'todo' },
+    ];
+  });
 
   constructor(
     private router:      Router,
@@ -31,11 +68,11 @@ export class OrderConfirmationComponent implements OnInit {
 
   ngOnInit(): void {
     const nav = this.router.getCurrentNavigation();
-    const order: OrderDto | undefined = nav?.extras?.state?.['order']
-      ?? (history.state as { order?: OrderDto })?.order;
+    const state = (nav?.extras?.state ?? history.state) as { order?: OrderDto; items?: CartItem[] } | undefined;
 
-    if (order) {
-      this.order.set(order);
+    if (state?.order) {
+      this.order.set(state.order);
+      this.placed.set(state.items ?? []);
     } else {
       this.error.set('Order details not available.');
     }
@@ -46,18 +83,14 @@ export class OrderConfirmationComponent implements OnInit {
     });
   }
 
-  statusLabel(status: OrderStatus): string {
-    return OrderStatus[status] ?? 'Pending';
-  }
+  print(): void { window.print(); }
 
   formatPrice(value: number): string {
     return '৳' + (value || 0).toLocaleString('en-IN');
   }
 
-  formatDate(iso: string | undefined): string {
-    if (!iso) return '—';
-    return new Date(iso).toLocaleDateString('en-GB', {
-      day: '2-digit', month: 'short', year: 'numeric',
-    });
+  private noteValue(key: string): string | null {
+    const m = (this.order()?.notes ?? '').match(new RegExp(`^${key}:\\s*(.+)$`, 'm'));
+    return m ? m[1].trim() : null;
   }
 }

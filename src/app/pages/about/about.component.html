@@ -1,0 +1,106 @@
+<app-navbar
+  [siteName]="settings()?.siteName || 'Org Name'"
+  [logoUrl]="settings()?.logoUrl"
+  [phone]="settings()?.phone"
+  [navbarTextColor]="settings()?.navbarTextColor"
+  [primaryColor]="settings()?.primaryColor"
+  [navItems]="navItems"
+/>
+
+<main class="ab" [class.ab--loading]="!loaded()">
+
+  <!-- ── Intro ── -->
+  <section class="intro">
+    <div class="intro-text">
+      <span class="eyebrow">{{ c().eyebrow }}</span>
+      <h1 class="d">{{ c().heading }}</h1>
+      @for (p of c().paragraphs; track $index) { <p>{{ p }}</p> }
+    </div>
+
+    <div class="intro-media">
+      @if (c().heroImageUrl) {
+        <img [src]="c().heroImageUrl" [alt]="c().heroCaption || c().heading" />
+      } @else {
+        <svg width="100%" height="100%" viewBox="0 0 560 460" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle cx="420" cy="120" r="70" fill="#F29D12"/><circle cx="420" cy="120" r="110" fill="none" stroke="#F29D12" stroke-opacity=".25" stroke-width="2"/><path d="M0 360 Q140 300 280 340 T560 320 V460 H0z" fill="#0E6B3F"/><g transform="translate(80 250) skewX(-20)"><rect width="200" height="90" rx="4" fill="#1C3553"/><path d="M50 0v90M100 0v90M150 0v90M0 45h200" stroke="#3B5F87" stroke-width="2"/></g></svg>
+      }
+      @if (c().heroCaption) { <span class="intro-caption">{{ c().heroCaption }}</span> }
+    </div>
+  </section>
+
+  <!-- ── Numbers ── -->
+  @if (c().stats.length) {
+    <section class="nums">
+      @for (n of c().stats; track $index) {
+        <div class="num"><span class="d">{{ n.value }}</span><span>{{ n.label }}</span></div>
+      }
+    </section>
+  }
+
+  <!-- ── Values ── -->
+  @if (c().values.length) {
+    <section class="values">
+      <div class="values-inner">
+        <div class="head"><span class="eyebrow eyebrow--sun">{{ c().valuesEyebrow }}</span><h2 class="d">{{ c().valuesHeading }}</h2></div>
+        <div class="values-grid">
+          @for (v of c().values; track $index; let i = $index) {
+            <div class="value">
+              <span class="d value-n">{{ i < 9 ? '0' + (i + 1) : i + 1 }}</span>
+              <strong>{{ v.title }}</strong>
+              <span>{{ v.text }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- ── Team ── -->
+  @if (c().team.length) {
+    <section class="team">
+      <div class="head"><span class="eyebrow">{{ c().teamEyebrow }}</span><h2 class="d">{{ c().teamHeading }}</h2></div>
+      <div class="team-grid">
+        @for (m of c().team; track $index; let i = $index) {
+          <div class="member">
+            <div class="member-photo" [style.background]="teamBg(i)">
+              @if (m.photoUrl) { <img [src]="m.photoUrl" [alt]="m.name" loading="lazy" /> }
+              @else { <span class="d">{{ initials(m.name) }}</span> }
+            </div>
+            <strong>{{ m.name }}</strong>
+            @if (m.role) { <span>{{ m.role }}</span> }
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ── Certifications & partners ── -->
+  @if (c().certs.length) {
+    <section class="certs">
+      <h2 class="d">{{ c().certsHeading }}</h2>
+      <div class="certs-grid">
+        @for (x of c().certs; track $index) {
+          <div class="cert">
+            @if (x.logoUrl) { <img [src]="x.logoUrl" [alt]="x.name" loading="lazy" /> }
+            <span>{{ x.name }}</span>
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ── Showroom ── -->
+  <section class="showroom-wrap">
+    <div class="showroom">
+      <div class="showroom-text">
+        <h2 class="d">{{ c().showroomTitle }}</h2>
+        <p>{{ c().showroomText }}</p>
+      </div>
+      <div class="showroom-actions">
+        @if (mapsUrl()) { <a [href]="mapsUrl()" target="_blank" rel="noopener" class="btn btn-p">Get directions</a> }
+        <a routerLink="/quote" class="btn" [class.btn-s]="mapsUrl()" [class.btn-p]="!mapsUrl()">Get a quote</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-footer [settings]="settings()" />

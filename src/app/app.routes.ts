@@ -46,5 +46,15 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/solar-calculator/solar-calculator.component').then(m => m.SolarCalculatorComponent),
   },
+  {
+    path: 'track',
+    loadComponent: () =>
+      import('./pages/track-order/track-order.component').then(m => m.TrackOrderComponent),
+  },
+  {
+    path: 'about',
+    loadComponent: () =>
+      import('./pages/about/about.component').then(m => m.AboutComponent),
+  },
   { path: '**', redirectTo: '' },
 ];

@@ -10,9 +10,12 @@ export enum OrderStage {
 }
 
 export enum OrderPriority     { Low = 1, Normal = 2, High = 3, Urgent = 4 }
-export enum OrderShipmentType { Standard = 1, Express = 2, Pickup = 3 }
-export enum OrderPaymentType  { Cash = 1, BankTransfer = 2, Card = 3, Credit = 4 }
-export enum OrderCreateMethod { Web = 1, Phone = 2, Email = 3, Manual = 4 }
+export enum OrderShipmentType { Standard = 1, Express = 2, Overnight = 3, Pickup = 4, LocalDelivery = 5, Freight = 6, DeliveryAndInstall = 7 }
+export enum OrderPaymentType {
+  Cash = 1, CreditCard = 2, DebitCard = 3, BankTransfer = 4, MobileBanking = 5, Cheque = 6,
+  Online = 7, CashOnDelivery = 8, Other = 9, BKash = 10, Nagad = 11, CardEmi = 12,
+}
+export enum OrderCreateMethod { Web = 1, Phone = 2, Admin = 3, InStore = 4, API = 5, Marketplace = 6 }
 
 // ─── Create DTOs ──────────────────────────────────────────────────────────────
 export interface CreateOrderItemDto {
@@ -99,4 +102,37 @@ export interface OrderDto {
   balanceDue:         number;
   notes?:             string;
   creationTime?:      string;
+  items?:             OrderItemDto[];
+}
+
+// ─── Public order tracking (POST /api/app/order/track-order) ─────────────────
+export interface OrderTrackingItem {
+  productId?:   number;
+  productName?: string;
+  sku?:         string;
+  quantity:     number;
+  unitPrice:    number;
+  lineTotal:    number;
+}
+
+export interface OrderTracking {
+  orderNumber?:          string;
+  orderDate:             string;
+  estimatedDeliveryDate?: string;
+  actualDeliveryDate?:   string;
+  lastUpdated?:          string;
+  status:                OrderStatus;
+  stage:                 OrderStage;
+  shipmentType:          OrderShipmentType;
+  paymentType?:          OrderPaymentType;
+  customerName?:         string;
+  deliveryAddress?:      string;
+  currencyCode:          string;
+  subtotal:              number;
+  discountTotal:         number;
+  shippingCost:          number;
+  grandTotal:            number;
+  amountPaid:            number;
+  balanceDue:            number;
+  items:                 OrderTrackingItem[];
 }

@@ -62,23 +62,17 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   heroDots       = computed(() => Array.from({ length: this.heroSlideCount() }));
   private heroAutoplayId?: ReturnType<typeof setInterval>;
 
-  // ── Quick estimate (hero) ────────────────────────────────────────────────
-  heroChecks  = ['BSTI & IEC certified', 'Our own install crew', '25-year panel warranty'];
-  roofOptions = [
-    { v: 1, label: 'Enough for 2–5 panels',   maxKw: 2 },
-    { v: 2, label: 'Enough for 6–10 panels',  maxKw: 4 },
-    { v: 3, label: 'Enough for 11+ panels',   maxKw: 10 },
-  ];
-  bill = signal(4500);
-  roof = signal(2);
-  estimate = computed(() => {
-    const maxKw = this.roofOptions.find(r => r.v === this.roof())?.maxKw ?? 4;
-    const kw = Math.min(Math.max(Math.round(this.bill() / 1500), 1), maxKw);
-    return { kw, price: this.formatPrice(Math.round(kw * 325000 / 3 / 1000) * 1000) };
+  /** Short intro for the About page, taken from what the owner wrote in Admin → About Page. */
+  aboutTeaser = computed(() => {
+    let a: { eyebrow?: string; heading?: string; story?: string } = {};
+    try { a = JSON.parse(this.userSiteSetting()?.aboutPageContent || '{}'); } catch { /* fall back to the defaults */ }
+    const story = (a.story ?? '').split(/\r?\n/).map(p => p.trim()).find(Boolean);
+    return {
+      eyebrow: a.eyebrow?.trim() || 'About Dymo Energy',
+      heading: a.heading?.trim() || 'Clean, reliable power for every Bangladeshi home and business.',
+      text: story || 'Our own engineers design, supply and service solar systems across the country — the same team that sold it comes back to look after it.',
+    };
   });
-
-  onBill(e: Event): void { this.bill.set(Math.max(0, +(e.target as HTMLInputElement).value || 0)); }
-  onRoof(e: Event): void { this.roof.set(+(e.target as HTMLSelectElement).value); }
 
   // ── Static page content ──────────────────────────────────────────────────
   stats = [
@@ -113,7 +107,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     { t: 'Solar calculator',   s: 'Size a system from your bill', route: '/solar-calculator', bg: '#EFF4EC', c: '#5E8B2A', d: ICON.calc },
     { t: 'Net metering guide', s: 'Sell what you do not use',     route: '/quote',            bg: '#EEF3F8', c: '#2B6CB0', d: ICON.meter },
     { t: 'Check a warranty',   s: 'Type a serial number',         route: '/shop',             bg: '#FEF6E4', c: '#A98B4A', d: ICON.verify },
-    { t: 'Track your order',   s: 'See where the parcel is',      route: '/cart',             bg: '#F0EAFE', c: '#5B21B6', d: ICON.truck },
+    { t: 'Track your order',   s: 'See where the parcel is',      route: '/track',            bg: '#F0EAFE', c: '#5B21B6', d: ICON.truck },
   ];
 
   faqs = [

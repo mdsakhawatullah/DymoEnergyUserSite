@@ -7,147 +7,90 @@
   [navItems]="navItems"
 />
 
-<div class="confirm-page">
+<main class="oc">
 
-  <!-- ── Error ───────────────────────────────────────────────────── -->
   @if (error()) {
-    <div class="state-center">
-      <div class="error-icon">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#cf1322" stroke-width="2.5" stroke-linecap="round">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="12"/>
-          <line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
+    <div class="oc-inner">
+      <div class="card state">
+        <strong>We couldn't find that order</strong>
+        <span class="muted">{{ error() }} If you just placed an order, we will still call you to confirm it.</span>
+        <a routerLink="/shop" class="btn btn-p">Continue shopping</a>
       </div>
-      <div class="state-title">{{ 'ORDER_CONFIRM.ERROR_TITLE' | translate }}</div>
-      <div class="state-text">{{ error() }}</div>
-      <a routerLink="/" class="cta-primary">{{ 'ORDER_CONFIRM.BACK_HOME' | translate }}</a>
     </div>
 
-  <!-- ── Success ─────────────────────────────────────────────────── -->
   } @else if (order(); as o) {
 
-    <!-- Success hero -->
-    <div class="success-hero">
-      <div class="success-check">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none"
-             stroke="#2D3B60" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="20 6 9 17 4 12"/>
-        </svg>
-      </div>
-      <h1 class="success-title">{{ 'ORDER_CONFIRM.ORDER_CONFIRMED' | translate }}</h1>
-      <p class="success-sub">
-        {{ 'ORDER_CONFIRM.THANK_YOU' | translate }}{{ o.customerName ? ', ' + o.customerName : '' }}! {{ 'ORDER_CONFIRM.ORDER_RECEIVED' | translate }}
-        @if (o.customerEmail) {
-          {{ 'ORDER_CONFIRM.CONFIRM_SENT' | translate }} <strong>{{ o.customerEmail }}</strong>.
-        }
-      </p>
-    </div>
+    <div class="oc-inner">
 
-    <!-- Order meta chips -->
-    <div class="meta-row">
-      <div class="meta-chip">
-        <div class="meta-label">{{ 'ORDER_CONFIRM.ORDER_NUMBER' | translate }}</div>
-        <div class="meta-value">{{ o.orderNumber || '—' }}</div>
+      <!-- ── Hero ── -->
+      <div class="hero">
+        <span class="hero-check"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M5 12l5 5L20 7"/></svg></span>
+        <h1 class="d">Thank you@if (firstName()) {, {{ firstName() }}} — order placed!</h1>
+        <p>Order <strong class="mono">{{ o.orderNumber || ('#' + o.id) }}</strong> · We will call you shortly to confirm it.</p>
       </div>
-      <div class="meta-chip">
-        <div class="meta-label">{{ 'ORDER_CONFIRM.ORDER_DATE' | translate }}</div>
-        <div class="meta-value">{{ formatDate(o.orderDate) }}</div>
-      </div>
-      <div class="meta-chip">
-        <div class="meta-label">{{ 'ORDER_CONFIRM.STATUS' | translate }}</div>
-        <span class="status-badge">{{ statusLabel(o.status) }}</span>
-      </div>
-      <div class="meta-chip">
-        <div class="meta-label">{{ 'ORDER_CONFIRM.ORDER_TOTAL' | translate }}</div>
-        <div class="meta-value meta-value--accent">{{ formatPrice(o.grandTotal) }}</div>
-      </div>
-    </div>
 
-    <!-- Detail grid -->
-    <div class="detail-grid">
+      <div class="oc-grid">
 
-      <!-- Customer details -->
-      <div class="detail-card">
-        <div class="detail-card-title">{{ 'ORDER_CONFIRM.CUSTOMER_DETAILS' | translate }}</div>
-        <div class="detail-rows">
-          @if (o.customerName) {
-            <div class="detail-row">
-              <span class="detail-label">{{ 'ORDER_CONFIRM.NAME' | translate }}</span>
-              <span class="detail-value">{{ o.customerName }}</span>
+        <!-- ── Timeline ── -->
+        <section class="card next">
+          <h2>What happens next</h2>
+          @for (s of steps(); track s.title; let i = $index; let last = $last) {
+            <div class="step">
+              <div class="step-rail">
+                <span class="step-dot" [class.step-dot--done]="s.state === 'done'" [class.step-dot--now]="s.state === 'now'">{{ s.state === 'done' ? '✓' : i + 1 }}</span>
+                @if (!last) { <span class="step-line" [class.step-line--on]="s.state === 'done'"></span> }
+              </div>
+              <div class="step-text"><strong>{{ s.title }}</strong><span>{{ s.text }}</span></div>
             </div>
           }
-          @if (o.customerEmail) {
-            <div class="detail-row">
-              <span class="detail-label">{{ 'ORDER_CONFIRM.EMAIL' | translate }}</span>
-              <span class="detail-value">{{ o.customerEmail }}</span>
+          <div class="next-actions">
+            <a routerLink="/track" [queryParams]="{ order: o.orderNumber }" class="btn btn-p">Track your order</a>
+            <a routerLink="/shop" class="btn btn-s">Continue shopping</a>
+            <button type="button" class="btn btn-s" (click)="print()">Print receipt</button>
+          </div>
+        </section>
+
+        <!-- ── Details ── -->
+        <div class="side">
+          <section class="card details">
+            <strong class="details-title">Order details</strong>
+
+            <div class="lines">
+              @for (l of lines(); track $index) {
+                <div class="line">
+                  @if (l.imageUrl) { <span class="line-img"><img [src]="l.imageUrl" [alt]="l.name" /></span> }
+                  <span class="line-name">{{ l.name }} × {{ l.qty }}</span>
+                  <strong>{{ formatPrice(l.total) }}</strong>
+                </div>
+              }
             </div>
-          }
-          @if (o.customerPhone) {
-            <div class="detail-row">
-              <span class="detail-label">{{ 'ORDER_CONFIRM.PHONE' | translate }}</span>
-              <span class="detail-value">{{ o.customerPhone }}</span>
+
+            <div class="rule"></div>
+            <div class="sum-row"><span>Delivery ({{ deliveryLabel() }})</span><strong>{{ o.shippingCost ? formatPrice(o.shippingCost) : 'Free' }}</strong></div>
+            <div class="rule"></div>
+            <div class="total"><strong>Total</strong><span class="d">{{ formatPrice(o.grandTotal) }}</span></div>
+            <span class="pill">{{ paymentLabel() }} · {{ o.balanceDue > 0 ? 'to pay' : 'paid' }}</span>
+
+            <div class="addr">
+              <strong>{{ isPickup() ? 'Pick up at' : 'Deliver to' }}</strong>
+              {{ o.customerName }}@if (o.customerPhone) { · {{ o.customerPhone }} }<br />
+              {{ o.deliveryAddress }}
+              @if (customerNotes()) { <br /><span class="muted">Note: {{ customerNotes() }}</span> }
             </div>
-          }
-          @if (o.deliveryAddress) {
-            <div class="detail-row">
-              <span class="detail-label">{{ 'ORDER_CONFIRM.ADDRESS' | translate }}</span>
-              <span class="detail-value">{{ o.deliveryAddress }}</span>
-            </div>
-          }
-          @if (o.notes) {
-            <div class="detail-row">
-              <span class="detail-label">{{ 'ORDER_CONFIRM.NOTES' | translate }}</span>
-              <span class="detail-value">{{ o.notes }}</span>
-            </div>
-          }
+          </section>
+
+          <section class="help">
+            <strong>Need to change something?</strong>
+            <span>
+              @if (settings()?.phone) { Call us on <a [href]="'tel:' + settings()!.phone">{{ settings()!.phone }}</a> and quote your order number. }
+              @else { Contact us and quote your order number. }
+            </span>
+            <a routerLink="/quote" class="btn btn-sun btn-sm">Contact us</a>
+          </section>
         </div>
       </div>
-
-      <!-- Financial summary -->
-      <div class="detail-card">
-        <div class="detail-card-title">{{ 'ORDER_CONFIRM.ORDER_SUMMARY' | translate }}</div>
-        <div class="detail-rows">
-          <div class="detail-row">
-            <span class="detail-label">{{ 'ORDER_CONFIRM.SUBTOTAL' | translate }}</span>
-            <span class="detail-value">{{ formatPrice(o.subtotal) }}</span>
-          </div>
-          @if (o.shippingCost) {
-            <div class="detail-row">
-              <span class="detail-label">{{ 'ORDER_CONFIRM.SHIPPING' | translate }}</span>
-              <span class="detail-value">{{ formatPrice(o.shippingCost) }}</span>
-            </div>
-          }
-          @if (o.discountTotal) {
-            <div class="detail-row">
-              <span class="detail-label">{{ 'ORDER_CONFIRM.DISCOUNT' | translate }}</span>
-              <span class="detail-value detail-value--green">−{{ formatPrice(o.discountTotal) }}</span>
-            </div>
-          }
-          <div class="detail-divider"></div>
-          <div class="detail-row detail-row--total">
-            <span>{{ 'ORDER_CONFIRM.GRAND_TOTAL' | translate }}</span>
-            <span>{{ formatPrice(o.grandTotal) }}</span>
-          </div>
-          @if (o.balanceDue > 0) {
-            <div class="detail-row">
-              <span class="detail-label">{{ 'ORDER_CONFIRM.BALANCE_DUE' | translate }}</span>
-              <span class="detail-value detail-value--accent">{{ formatPrice(o.balanceDue) }}</span>
-            </div>
-          }
-        </div>
-      </div>
-
     </div>
-
-    <!-- CTA buttons -->
-    <div class="cta-row">
-      <a routerLink="/categories" class="cta-primary">{{ 'ORDER_CONFIRM.CONTINUE_SHOPPING' | translate }}</a>
-      <a routerLink="/" class="cta-secondary">{{ 'ORDER_CONFIRM.BACK_TO_HOME' | translate }}</a>
-    </div>
-
   }
-
-</div>
+</main>
 
 <app-footer [settings]="settings()" />

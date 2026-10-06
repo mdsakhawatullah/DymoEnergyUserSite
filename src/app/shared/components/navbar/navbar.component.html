@@ -17,7 +17,7 @@
         <a [href]="'tel:' + phone" class="topbar-link topbar-link--strong">Hotline {{ phone }}</a>
       }
       <a routerLink="/shop" class="topbar-link">Verify product</a>
-      <a routerLink="/cart" class="topbar-link">Track order</a>
+      <a routerLink="/track" class="topbar-link">Track order</a>
       <a routerLink="/quote" class="topbar-link">Help</a>
       <span class="topbar-langs">
         @for (opt of langService.options; track opt.code) {

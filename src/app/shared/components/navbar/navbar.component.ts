@@ -37,6 +37,7 @@ export class NavbarComponent {
     { label: 'Services', route: '/quote',            menu: false, active: false },
     { label: 'Projects', route: '/',                 menu: false, active: false },
     { label: 'Learn',    route: '/',                 menu: false, active: false },
+    { label: 'About',    route: '/about',            menu: false, active: true },
   ];
 
   mobileOpen = signal(false);

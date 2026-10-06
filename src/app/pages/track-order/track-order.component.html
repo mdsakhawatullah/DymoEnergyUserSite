@@ -1,0 +1,108 @@
+<app-navbar
+  [siteName]="settings()?.siteName || 'Org Name'"
+  [logoUrl]="settings()?.logoUrl"
+  [phone]="settings()?.phone"
+  [navbarTextColor]="settings()?.navbarTextColor"
+  [primaryColor]="settings()?.primaryColor"
+  [navItems]="navItems"
+/>
+
+<main class="tr">
+  <div class="tr-inner">
+
+    <nav class="crumb" aria-label="Breadcrumb"><a routerLink="/">Home</a><span>/</span><span class="crumb-now">Track order</span></nav>
+    <h1 class="d">Track your order</h1>
+
+    <!-- ── Lookup ── -->
+    <form class="card lookup" (ngSubmit)="submit()">
+      <label class="lbl">Order number
+        <input class="in in--mono" name="orderNumber" autocomplete="off" placeholder="ORD-20261006-0002" [(ngModel)]="orderNumber" />
+      </label>
+      <label class="lbl">Mobile number used for the order
+        <input class="in" name="phone" type="tel" autocomplete="tel" placeholder="01XXX-XXXXXX" [(ngModel)]="phone" />
+      </label>
+      <button type="submit" class="btn btn-p" [disabled]="loading()">
+        @if (loading()) { <span class="spinner"></span> } @else { Track }
+      </button>
+    </form>
+
+    @if (error()) { <div class="error-box" role="alert">{{ error() }}</div> }
+
+    <!-- ── Result ── -->
+    @if (order(); as o) {
+
+      <section class="card status">
+        <div class="status-top">
+          <div class="status-text">
+            <span class="status-meta">Order <strong class="mono">{{ o.orderNumber }}</strong> · placed {{ formatDate(o.orderDate) }}</span>
+            <h2 class="d">{{ headline() }}</h2>
+            <p>{{ subline() }}</p>
+          </div>
+          <span class="pill" [class.pill--warn]="pillTone() === 'warn'" [class.pill--bad]="pillTone() === 'bad'">{{ statusText() }}</span>
+        </div>
+
+        <ol class="steps" aria-label="Order progress">
+          @for (s of steps(); track s.label; let last = $last) {
+            <li class="step" [class.step--now]="s.state === 'now'" [class.step--warn]="s.tone === 'warn'" [class.step--bad]="s.tone === 'bad'">
+              <span class="step-row">
+                <span class="dot">@if (s.state === 'done') { ✓ } @else if (s.tone === 'bad') { ✕ } @else if (s.tone === 'warn') { ! } @else { {{ $index + 1 }} }</span>
+                @if (!last) { <span class="bar"></span> }
+              </span>
+              <strong>{{ s.label }}</strong>
+              @if (s.when) { <span class="when">{{ s.when }}</span> }
+            </li>
+          }
+        </ol>
+
+        @if (nextHint()) { <p class="next">{{ nextHint() }}</p> }
+      </section>
+
+      <div class="detail-grid">
+
+        <section class="card detail">
+          <strong class="detail-title">Order details</strong>
+          <div class="lines">
+            @for (i of o.items; track $index) {
+              <div class="line">
+                <span class="line-name">{{ i.productName }} × {{ i.quantity }}@if (i.sku) { <small>{{ i.sku }}</small> }</span>
+                <strong>{{ formatPrice(i.lineTotal) }}</strong>
+              </div>
+            }
+          </div>
+          <div class="rule"></div>
+          <div class="rows">
+            <div><span>Subtotal</span><strong>{{ formatPrice(o.subtotal) }}</strong></div>
+            @if (o.discountTotal > 0) { <div class="green"><span>Discount</span><strong>− {{ formatPrice(o.discountTotal) }}</strong></div> }
+            <div><span>Delivery</span><strong>{{ o.shippingCost ? formatPrice(o.shippingCost) : 'Free' }}</strong></div>
+          </div>
+          <div class="rule"></div>
+          <div class="total"><strong>Total</strong><span class="d">{{ formatPrice(o.grandTotal) }}</span></div>
+          <div class="rows">
+            <div><span>Paid so far</span><strong>{{ formatPrice(o.amountPaid) }}</strong></div>
+            <div><span>Balance due</span><strong [class.green]="o.balanceDue <= 0">{{ o.balanceDue > 0 ? formatPrice(o.balanceDue) : 'Nothing due' }}</strong></div>
+          </div>
+        </section>
+
+        <section class="card detail">
+          <strong class="detail-title">Delivery &amp; payment</strong>
+          <dl class="facts">
+            <div><dt>{{ isPickup() ? 'Pick up at' : 'Deliver to' }}</dt><dd>{{ o.customerName }}<br />{{ o.deliveryAddress }}</dd></div>
+            @if (shipmentLabel()) { <div><dt>Method</dt><dd>{{ shipmentLabel() }}</dd></div> }
+            @if (paymentLabel()) { <div><dt>Payment</dt><dd>{{ paymentLabel() }}</dd></div> }
+            <div><dt>Placed</dt><dd>{{ formatDateTime(o.orderDate) }}</dd></div>
+          </dl>
+          <div class="help">
+            <strong>Questions about this order?</strong>
+            <span>@if (settings()?.phone) { Call <a [href]="'tel:' + settings()!.phone">{{ settings()!.phone }}</a> and } quote <span class="mono">{{ o.orderNumber }}</span>.</span>
+            <a routerLink="/quote" class="btn btn-sun btn-sm">Contact us</a>
+          </div>
+        </section>
+      </div>
+
+    } @else if (!error()) {
+      <p class="hint-line">Your order number is on the confirmation page and on your receipt. Use the same mobile number you gave when you ordered.</p>
+    }
+  </div>
+</main>
+
+<app-footer [settings]="settings()" />
