@@ -1,4 +1,5 @@
 import { Component, signal, ViewChild, ElementRef, AfterViewChecked, inject } from '@angular/core';
+import { environment } from '../../../../environments/environment';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -25,7 +26,7 @@ export class ChatbotComponent implements AfterViewChecked {
   @ViewChild('messagesEl') messagesEl!: ElementRef<HTMLDivElement>;
 
   private http = inject(HttpClient);
-  private readonly API = 'https://localhost:44371/api/chat';
+  private readonly API = `${environment.apiUrl}/api/chat`;
 
   open = signal(false);
   loading = signal(false);
