@@ -91,6 +91,14 @@ $body : #3D5068;
   justify-content: center;
 }
 
+// The bKash and Nagad marks are bitmaps, so they are sized by height and left
+// to find their own width — the two lockups are not the same shape.
+.pay-logo {
+  display: block;
+  height: 22px;
+  width: auto;
+}
+
 @media (max-width: 1200px) { .footer-inner { padding: 0 40px; } }
 
 @media (max-width: 1024px) {

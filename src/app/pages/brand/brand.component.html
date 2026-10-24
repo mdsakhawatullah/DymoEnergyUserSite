@@ -1,0 +1,403 @@
+<app-navbar
+  [siteName]="settings()?.siteName || 'Org Name'"
+  [logoUrl]="settings()?.logoUrl"
+  [phone]="settings()?.phone"
+  [navbarTextColor]="settings()?.navbarTextColor"
+  [primaryColor]="settings()?.primaryColor"
+  [navItems]="navItems"
+/>
+
+<!-- ── Brands we carry ─────────────────────────────────────────────────── -->
+@if (brandStrip().length) {
+  <nav class="strip" aria-label="Brands we carry">
+    <span class="strip-label">Brands we carry</span>
+    <span class="strip-items">
+      @for (b of brandStrip(); track b.id) {
+        <a [routerLink]="['/brands', b.slug]"
+           class="strip-pill"
+           [class.is-active]="b.slug === brand()?.slug">{{ b.name }}</a>
+      }
+    </span>
+    <a routerLink="/shop" class="strip-all">All products &rarr;</a>
+  </nav>
+}
+
+<main class="bp">
+
+@if (loading()) {
+  <div class="state"><span class="spinner" aria-label="Loading"></span></div>
+}
+
+@else if (missing()) {
+  <div class="state state--missing">
+    <h1 class="d">We do not have a page for that brand</h1>
+    <p>It may not be published yet, or the address may have changed.</p>
+    <span class="state-actions">
+      <a routerLink="/brands" class="btn btn-p">See the brands we carry</a>
+      <a routerLink="/shop" class="btn btn-s">Browse all products</a>
+    </span>
+  </div>
+}
+
+@else if (brand(); as b) {
+
+  <!-- ── Breadcrumb ────────────────────────────────────────────────────── -->
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a routerLink="/">Home</a><span>·</span>
+    <a routerLink="/shop">Shop</a><span>·</span>
+    <span class="crumbs-now">{{ b.name }}</span>
+  </nav>
+
+  <!-- ── Hero ──────────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-text">
+      <span class="hero-head">
+        @if (b.logoUrl) {
+          <img [src]="b.logoUrl" [alt]="b.name + ' logo'" class="hero-logo" />
+        } @else {
+          <span class="hero-logo hero-logo--text"
+                [style.color]="b.brandColor || '#0E6B3F'">{{ initials(b.name) }}</span>
+        }
+        <span class="hero-names">
+          <h1 class="d">{{ b.name }}</h1>
+          @if (b.tagline) { <em>{{ b.tagline }}</em> }
+        </span>
+      </span>
+
+      @if (b.distributorSince) {
+        <span class="badge">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4"></path>
+          </svg>
+          Authorised distributor in Bangladesh since {{ b.distributorSince }}
+        </span>
+      }
+
+      @if (b.shortIntro) { <p class="hero-intro">{{ b.shortIntro }}</p> }
+
+      <span class="hero-actions">
+        <a routerLink="/shop" [queryParams]="{ brand: b.slug }" class="btn btn-p">
+          See all @if (productTotal()) { [{{ productTotal() }}] } products
+        </a>
+        @if (hasCatalogue()) {
+          <a [href]="catalogueUrl()" target="_blank" rel="noopener" class="btn btn-s">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.9" stroke-linecap="round" aria-hidden="true">
+              <path d="M12 4v12M8 13l4 4 4-4M4 20h16"></path>
+            </svg>
+            Download catalogue
+          </a>
+        }
+      </span>
+    </div>
+
+    <div class="hero-media" [style.background]="b.brandColor ? 'transparent' : '#E9F1EC'">
+      @if (b.heroMediaUrl && b.heroKind === heroKinds.Video) {
+        <video [src]="b.heroMediaUrl" [autoplay]="b.heroAutoplayMuted" [muted]="b.heroAutoplayMuted"
+               [loop]="b.heroAutoplayMuted" playsinline controls></video>
+      } @else if (b.heroMediaUrl) {
+        <img [src]="b.heroMediaUrl" [alt]="b.heroCaption || (b.name + ' products')" />
+      } @else {
+        <svg width="100%" height="100%" viewBox="0 0 560 320" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="560" height="320" fill="#E9F1EC"/>
+          <rect x="60" y="70" width="180" height="150" rx="10" fill="#fff"/>
+          <rect x="268" y="110" width="110" height="90" rx="10" fill="#fff"/>
+          <rect x="396" y="128" width="96" height="62" rx="10" fill="#fff"/>
+        </svg>
+      }
+      @if (b.heroCaption) { <span class="hero-caption">{{ b.heroCaption }}</span> }
+    </div>
+  </section>
+
+  <!-- ── Quick stats ───────────────────────────────────────────────────── -->
+  @if (content().quickStats.length) {
+    <section class="stats" aria-label="Key figures">
+      @for (s of content().quickStats; track $index) {
+        <div class="stat">
+          <span class="stat-icon" [style.background]="lineTint($index)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" [attr.stroke]="lineInk($index)"
+                 stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 8l-9-5-9 5 9 5zM3 8v8l9 5 9-5V8M12 13v8"></path>
+            </svg>
+          </span>
+          <span class="stat-text">
+            <strong class="d">{{ s.value }}</strong>
+            <span>{{ s.label }}</span>
+          </span>
+        </div>
+      }
+    </section>
+  }
+
+  <!-- ── Story ─────────────────────────────────────────────────────────── -->
+  @if (content().paragraphs.length || content().reasons.length || content().facts.length) {
+    <section class="story">
+      <div class="story-main">
+        @if (content().paragraphs.length) {
+          <span class="eyebrow">About the maker</span>
+          @if (b.storyHeadline) { <h2 class="d">{{ b.storyHeadline }}</h2> }
+          @for (p of content().paragraphs; track $index) { <p>{{ p.text }}</p> }
+        }
+
+        @if (storyPhotos().length) {
+          <div class="story-photos">
+            @for (m of storyPhotos(); track m.id) {
+              <figure class="story-photo">
+                <img [src]="m.imageUrl" [alt]="m.altText || m.caption || ''" />
+                @if (m.caption) { <figcaption>{{ m.caption }}</figcaption> }
+              </figure>
+            }
+          </div>
+        }
+      </div>
+
+      <aside class="story-side">
+        @if (content().reasons.length) {
+          <div class="panel">
+            <h3>Why we carry them</h3>
+            <ul class="ticks">
+              @for (r of content().reasons; track $index) {
+                <li>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E6B3F"
+                       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M20 6L9 17l-5-5"></path>
+                  </svg>
+                  <span><strong>{{ r.title }}</strong>@if (r.text) { <span>{{ r.text }}</span> }</span>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+
+        @if (content().facts.length) {
+          <div class="panel">
+            <h3>At a glance</h3>
+            <dl class="facts">
+              @for (f of content().facts; track $index) {
+                <div class="fact"><dt>{{ f.key }}</dt><dd>{{ f.value }}</dd></div>
+              }
+            </dl>
+          </div>
+        }
+      </aside>
+    </section>
+  }
+
+  <!-- ── Certificates ──────────────────────────────────────────────────── -->
+  @if (certificates().length) {
+    <section class="certs">
+      <div class="certs-head">
+        <span class="band">
+          <span class="eyebrow">Paperwork you can check</span>
+          <h2 class="d">Certificates and test reports</h2>
+        </span>
+        <span class="certs-count">[{{ certificates().length }}] documents</span>
+      </div>
+
+      <div class="certs-grid">
+        @for (c of certificates(); track c.id) {
+          <article class="cert">
+            <span class="cert-top">
+              <span class="cert-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2B6CB0"
+                     stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M9 3h6v3H9zM7 4.5H5V21h14V4.5h-2M9 12h6M9 16h4"></path>
+                </svg>
+              </span>
+              <span class="cert-names">
+                <strong>{{ c.mark }}</strong>
+                @if (c.certificateNumber) { <span class="cert-no">{{ c.certificateNumber }}</span> }
+              </span>
+            </span>
+
+            @if (c.covers) { <p class="cert-covers">{{ c.covers }}</p> }
+
+            <span class="cert-foot">
+              <span class="cert-state" [class]="'is-' + certState(c).tone">{{ certState(c).label }}</span>
+              @if (c.fileUrl) {
+                <a [href]="c.fileUrl" target="_blank" rel="noopener" class="cert-link">View PDF &rarr;</a>
+              }
+            </span>
+          </article>
+        }
+      </div>
+
+      <p class="certs-note">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5B6B7F" stroke-width="2"
+             stroke-linecap="round" aria-hidden="true"><path d="M12 8h.01M11 12h1v4h1"></path><circle cx="12" cy="12" r="9"></circle></svg>
+        Every certificate here is the maker's own document, uploaded as supplied. Ask us for the original PDF
+        with its certificate number if you need to verify it with the issuing body &mdash; we will send it.
+      </p>
+    </section>
+  }
+
+  <!-- ── Product lines ─────────────────────────────────────────────────── -->
+  @if (productLines().length) {
+    <section class="lines">
+      <div class="lines-head">
+        <span class="band">
+          <span class="eyebrow">What we stock from them</span>
+          <h2 class="d">The lines we keep in stock</h2>
+        </span>
+        <a routerLink="/shop" [queryParams]="{ brand: b.slug }" class="btn btn-s">Shop the brand</a>
+      </div>
+
+      <div class="lines-grid">
+        @for (l of productLines(); track l.id; let i = $index) {
+          <article class="line">
+            <span class="line-icon" [style.background]="lineTint(i)">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" [attr.stroke]="lineInk(i)"
+                   stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 6h18v12H3zM7 10h4M7 14h7M16 9.5h3M16 13h3"></path>
+              </svg>
+            </span>
+            <strong>{{ l.name }}</strong>
+            @if (l.blurb) { <p>{{ l.blurb }}</p> }
+            @if (l.productCount) {
+              <span class="line-meta">
+                [{{ l.productCount }}] models@if (l.fromPrice != null) { from <b>{{ money(l.fromPrice) }}</b> }
+              </span>
+            }
+          </article>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ── Warranty + downloads ──────────────────────────────────────────── -->
+  @if (content().warrantyTerms.length || content().warrantyNotes.length || downloads().length) {
+    <section class="service">
+
+      @if (content().warrantyTerms.length || content().warrantyNotes.length) {
+        <div class="card">
+          <h3 class="card-title">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0E6B3F" stroke-width="1.9"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4"></path>
+            </svg>
+            Warranty and service
+          </h3>
+
+          @if (content().warrantyTerms.length) {
+            <div class="terms">
+              @for (t of content().warrantyTerms; track $index) {
+                <div class="term"><span>{{ t.category }}</span><strong>{{ t.term }}</strong></div>
+              }
+            </div>
+          }
+
+          @if (content().warrantyNotes.length) {
+            <ul class="ticks ticks--sm">
+              @for (n of content().warrantyNotes; track $index) {
+                <li>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0E6B3F"
+                       stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M20 6L9 17l-5-5"></path>
+                  </svg>
+                  <span>{{ n.text }}</span>
+                </li>
+              }
+            </ul>
+          }
+
+          <a routerLink="/track" class="btn btn-s btn-sm">Check a serial number</a>
+        </div>
+      }
+
+      @if (downloads().length) {
+        <div class="card">
+          <h3 class="card-title">Downloads</h3>
+          <ul class="files">
+            @for (d of downloads(); track d.id) {
+              <li class="file">
+                <span class="file-icon">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B4553A"
+                       stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7zM14 3v4h4"></path>
+                  </svg>
+                </span>
+                <span class="file-text">
+                  <strong>{{ d.title }}</strong>
+                  <span>
+                    {{ fileLine(d.kind, d.fileSize) }}@if (d.dealersOnly) { · [sign-in needed] }
+                  </span>
+                </span>
+                @if (d.fileUrl) {
+                  <button type="button" class="file-get"
+                          (click)="openDownload(d.fileUrl, d.dealersOnly)"
+                          [attr.aria-label]="'Download ' + d.title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="1.9" stroke-linecap="round" aria-hidden="true">
+                      <path d="M12 4v12M8 13l4 4 4-4M4 20h16"></path>
+                    </svg>
+                  </button>
+                }
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </section>
+  }
+
+  <!-- ── Projects ──────────────────────────────────────────────────────── -->
+  @if (projects().length) {
+    <section class="jobs">
+      <div class="lines-head">
+        <span class="band">
+          <span class="eyebrow">Running in the field</span>
+          <h2 class="d">Jobs we have done with this brand</h2>
+        </span>
+        <a routerLink="/shop" class="btn btn-s">All projects</a>
+      </div>
+
+      <div class="jobs-grid">
+        @for (p of projects(); track p.id) {
+          <article class="job">
+            <span class="job-photo">
+              @if (p.imageUrl) {
+                <img [src]="p.imageUrl" [alt]="p.title || ''" />
+              }
+            </span>
+            <strong>{{ p.title }}</strong>
+            @if (p.subtitle) { <span>{{ p.subtitle }}</span> }
+          </article>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ── Gallery ───────────────────────────────────────────────────────── -->
+  @if (restPhotos().length) {
+    <section class="gallery">
+      <h2 class="d">More from the factory</h2>
+      <div class="gallery-grid">
+        @for (m of restPhotos(); track m.id) {
+          <figure class="shot">
+            <img [src]="m.imageUrl" [alt]="m.altText || m.caption || ''" />
+            @if (m.caption) { <figcaption>{{ m.caption }}</figcaption> }
+          </figure>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ── Call to action ────────────────────────────────────────────────── -->
+  @if (b.ctaHeadline) {
+    <section class="cta">
+      <div class="cta-text">
+        <h2 class="d">{{ b.ctaHeadline }}</h2>
+        @if (b.ctaSubline) { <p>{{ b.ctaSubline }}</p> }
+      </div>
+      <span class="cta-actions">
+        <a routerLink="/quote" class="btn btn-p">Get a free quote</a>
+        <a routerLink="/shop" [queryParams]="{ brand: b.slug }" class="btn btn-s">Browse the range</a>
+      </span>
+    </section>
+  }
+
+}
+</main>
+
+<app-footer [settings]="settings()" />

@@ -1,0 +1,360 @@
+// Brand page — tokens follow the rest of the storefront (see about.component.scss).
+$green  : #0E6B3F;
+$greenD : #0B5A34;
+$ink    : #172433;
+$muted  : #5B6B7F;
+$line   : #E2E9F1;
+$surface: #F4F8FC;
+$gutter : 80px;
+
+.d { font-family: 'Bricolage Grotesque', var(--font), sans-serif; letter-spacing: -0.02em; }
+
+.eyebrow {
+  font-size: 13px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: $green;
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 50px; padding: 0 26px; border: 0; border-radius: 999px;
+  font-family: inherit; font-size: 15px; font-weight: 700;
+  text-decoration: none; cursor: pointer; white-space: nowrap;
+}
+.btn-p { background: $green; color: #fff; &:hover { background: $greenD; } }
+.btn-s { background: #fff; color: $ink; box-shadow: inset 0 0 0 1.5px #C9D5E3; &:hover { background: $surface; } }
+.btn-sm { height: 42px; padding: 0 20px; font-size: 14px; align-self: flex-start; }
+
+.band { display: flex; flex-direction: column; gap: 8px; }
+h2.d { margin: 0; font-size: 38px; font-weight: 700; color: $ink; }
+
+// ── Brands strip ────────────────────────────────────────────────────────
+.strip {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px $gutter; border-bottom: 1px solid $line; background: #fff;
+  overflow-x: auto;
+}
+.strip-label { font-size: 13px; color: $muted; flex-shrink: 0; }
+.strip-items { display: flex; gap: 8px; flex-grow: 1; }
+.strip-pill {
+  height: 28px; padding: 0 14px; border-radius: 999px;
+  display: inline-flex; align-items: center; white-space: nowrap;
+  font-size: 13px; font-weight: 700; text-decoration: none;
+  color: $ink; background: $surface;
+  &:hover { background: #E7EEF6; }
+  &.is-active { background: $ink; color: #fff; }
+}
+.strip-all { font-size: 13px; font-weight: 600; color: $green; text-decoration: none; flex-shrink: 0; }
+
+// ── Page states ─────────────────────────────────────────────────────────
+.bp { background: #fff; }
+
+.state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 14px; min-height: 52vh; padding: 60px $gutter; text-align: center;
+  h1 { margin: 0; font-size: 34px; color: $ink; }
+  p { margin: 0; color: $muted; font-size: 16px; }
+}
+.state-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+
+.spinner {
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 3px solid $line; border-top-color: $green;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// ── Breadcrumb ──────────────────────────────────────────────────────────
+.crumbs {
+  display: flex; align-items: center; gap: 8px;
+  padding: 18px $gutter 0; font-size: 13px; color: $muted;
+  a { color: $muted; text-decoration: none; &:hover { color: $green; } }
+}
+.crumbs-now { color: $ink; font-weight: 600; }
+
+// ── Hero ────────────────────────────────────────────────────────────────
+.hero {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center;
+  padding: 28px $gutter 56px;
+}
+.hero-text { display: flex; flex-direction: column; gap: 18px; }
+.hero-head { display: flex; align-items: center; gap: 16px; }
+
+.hero-logo {
+  width: 52px; height: 52px; flex-shrink: 0; border-radius: 14px;
+  object-fit: contain; background: $surface; border: 1px solid $line;
+}
+.hero-logo--text {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; text-align: center; padding: 3px; overflow: hidden;
+}
+
+.hero-names {
+  display: flex; flex-direction: column; gap: 2px; min-width: 0;
+  h1 { margin: 0; font-size: 46px; line-height: 1.05; font-weight: 700; color: $ink; }
+  em { font-size: 15px; color: $muted; }
+}
+
+.badge {
+  display: inline-flex; align-items: center; gap: 8px; align-self: flex-start;
+  height: 32px; padding: 0 14px; border-radius: 999px;
+  background: #E6F2EA; color: $greenD; font-size: 13.5px; font-weight: 600;
+}
+
+.hero-intro { margin: 0; font-size: 16.5px; line-height: 1.6; color: #4A5A6E; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+
+.hero-media {
+  position: relative; height: 330px; border-radius: 24px; overflow: hidden;
+  img, video { width: 100%; height: 100%; object-fit: cover; display: block; }
+}
+.hero-caption {
+  position: absolute; left: 20px; bottom: 20px;
+  padding: 9px 14px; border-radius: 12px; background: #fff;
+  font-size: 13.5px; font-weight: 600; color: $ink;
+}
+
+// ── Quick stats ─────────────────────────────────────────────────────────
+.stats {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 18px; padding: 0 $gutter 64px;
+}
+.stat { display: flex; align-items: center; gap: 13px; }
+.stat-icon {
+  width: 40px; height: 40px; flex-shrink: 0; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.stat-text {
+  display: flex; flex-direction: column; line-height: 1.25; min-width: 0;
+  strong { font-size: 21px; font-weight: 700; color: $ink; }
+  span { font-size: 13.5px; color: $muted; }
+}
+
+// ── Story ───────────────────────────────────────────────────────────────
+.story {
+  display: grid; grid-template-columns: 1.15fr 1fr; gap: 48px;
+  padding: 64px $gutter; background: #fff; align-items: start;
+}
+.story-main {
+  display: flex; flex-direction: column; gap: 14px;
+  h2 { margin: 4px 0 6px; font-size: 34px; font-weight: 700; color: $ink; }
+  p { margin: 0; font-size: 15.5px; line-height: 1.68; color: #4A5A6E; }
+}
+.story-photos { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+.story-photo {
+  margin: 0; position: relative; height: 170px; border-radius: 18px;
+  overflow: hidden; background: $surface;
+  img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  figcaption {
+    position: absolute; left: 10px; bottom: 10px;
+    padding: 5px 10px; border-radius: 8px;
+    background: rgba(255, 255, 255, 0.92);
+    font-size: 12px; font-weight: 600; color: $ink;
+  }
+}
+
+.story-side { display: flex; flex-direction: column; gap: 18px; }
+.panel {
+  padding: 24px; border-radius: 20px; background: $surface;
+  display: flex; flex-direction: column; gap: 14px;
+  h3 { margin: 0; font-size: 18px; font-weight: 700; color: $ink; }
+}
+
+.ticks {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 13px;
+  li { display: flex; gap: 10px; align-items: flex-start; }
+  svg { flex-shrink: 0; margin-top: 3px; }
+  strong { display: block; font-size: 14.5px; color: $ink; }
+  strong + span { display: block; font-size: 13.5px; line-height: 1.5; color: $muted; margin-top: 2px; }
+}
+.ticks--sm li { font-size: 13.5px; color: #4A5A6E; line-height: 1.5; }
+
+.facts { margin: 0; display: flex; flex-direction: column; }
+.fact {
+  display: flex; justify-content: space-between; gap: 16px;
+  padding: 10px 0; border-bottom: 1px solid #DCE6F0;
+  &:last-child { border-bottom: 0; }
+  dt { font-size: 14px; color: $muted; }
+  dd { margin: 0; font-size: 14px; font-weight: 600; color: $ink; text-align: right; }
+}
+
+// ── Certificates ────────────────────────────────────────────────────────
+.certs { padding: 64px $gutter; background: $surface; }
+.certs-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 16px; margin-bottom: 28px; flex-wrap: wrap;
+}
+.certs-count { font-size: 13px; color: $muted; }
+
+.certs-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr)); gap: 16px;
+}
+.cert {
+  background: #fff; border: 1px solid $line; border-radius: 16px;
+  padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;
+}
+.cert-top { display: flex; align-items: center; gap: 10px; }
+.cert-icon {
+  width: 30px; height: 30px; flex-shrink: 0; border-radius: 9px; background: #EDF3F9;
+  display: flex; align-items: center; justify-content: center;
+}
+.cert-names {
+  display: flex; flex-direction: column; line-height: 1.25; min-width: 0;
+  strong { font-size: 15px; color: $ink; }
+}
+.cert-no {
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  font-size: 11.5px; color: $muted;
+}
+.cert-covers {
+  margin: 0; font-size: 13px; line-height: 1.5; color: $muted;
+  flex-grow: 1;
+}
+.cert-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; padding-top: 10px; border-top: 1px solid #EEF2F7;
+}
+.cert-state {
+  font-size: 13px; font-weight: 700;
+  &.is-ok   { color: $green; }
+  &.is-soon { color: #8A5A00; }
+  &.is-todo { color: #B4553A; }
+}
+.cert-link { font-size: 13px; font-weight: 600; color: $green; text-decoration: none; &:hover { text-decoration: underline; } }
+
+.certs-note {
+  display: flex; gap: 10px; align-items: flex-start;
+  margin: 20px 0 0; padding: 14px 16px; border-radius: 14px; background: #fff;
+  font-size: 13px; line-height: 1.55; color: $muted;
+  svg { flex-shrink: 0; margin-top: 1px; }
+}
+
+// ── Product lines ───────────────────────────────────────────────────────
+.lines { padding: 64px $gutter; }
+.lines-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 16px; margin-bottom: 28px; flex-wrap: wrap;
+}
+.lines-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr)); gap: 18px;
+}
+.line {
+  border: 1px solid $line; border-radius: 20px; overflow: hidden;
+  padding: 0 20px 20px; display: flex; flex-direction: column; gap: 9px;
+  strong { font-size: 16.5px; color: $ink; }
+  p { margin: 0; font-size: 13.5px; line-height: 1.55; color: $muted; flex-grow: 1; }
+}
+.line-icon {
+  width: calc(100% + 40px); margin: 0 -20px 6px; height: 96px;
+  display: flex; align-items: center; justify-content: center;
+}
+.line-meta { font-size: 13px; color: $muted; b { color: $ink; } }
+
+// ── Warranty + downloads ────────────────────────────────────────────────
+.service {
+  display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px;
+  padding: 0 $gutter 64px; align-items: start;
+}
+.card {
+  border: 1px solid $line; border-radius: 20px; padding: 24px;
+  display: flex; flex-direction: column; gap: 16px; background: #fff;
+}
+.card-title {
+  margin: 0; display: flex; align-items: center; gap: 9px;
+  font-size: 18px; font-weight: 700; color: $ink;
+}
+
+.terms { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.term {
+  padding: 13px 15px; border-radius: 14px; background: $surface;
+  display: flex; flex-direction: column; gap: 3px;
+  span { font-size: 12px; color: $muted; }
+  strong { font-size: 17px; color: $ink; }
+}
+
+.files { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.file {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid #EEF2F7;
+  &:last-child { border-bottom: 0; }
+}
+.file-icon {
+  width: 30px; height: 30px; flex-shrink: 0; border-radius: 9px; background: #FDF4EE;
+  display: flex; align-items: center; justify-content: center;
+}
+.file-text {
+  display: flex; flex-direction: column; line-height: 1.3; flex-grow: 1; min-width: 0;
+  strong { font-size: 14.5px; color: $ink; }
+  span { font-size: 12.5px; color: $muted; }
+}
+.file-get {
+  width: 34px; height: 34px; flex-shrink: 0; border: 0; border-radius: 10px;
+  background: transparent; color: $muted; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  &:hover { background: $surface; color: $green; }
+}
+
+// ── Projects ────────────────────────────────────────────────────────────
+.jobs { padding: 64px $gutter; background: $surface; }
+.jobs-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 18px;
+}
+.job {
+  display: flex; flex-direction: column; gap: 7px;
+  strong { font-size: 16px; color: $ink; }
+  > span:last-child { font-size: 13.5px; color: $muted; }
+}
+.job-photo {
+  height: 170px; border-radius: 18px; overflow: hidden; background: #E3EEF9; display: block;
+  img { width: 100%; height: 100%; object-fit: cover; display: block; }
+}
+
+// ── Gallery ─────────────────────────────────────────────────────────────
+.gallery {
+  padding: 64px $gutter; display: flex; flex-direction: column; gap: 24px;
+  h2 { margin: 0; font-size: 30px; color: $ink; }
+}
+.gallery-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); gap: 16px;
+}
+.shot {
+  margin: 0; position: relative; height: 160px; border-radius: 16px;
+  overflow: hidden; background: $surface;
+  img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  figcaption {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 10px 8px;
+    background: linear-gradient(180deg, transparent, rgba(12, 24, 38, 0.65));
+    color: #fff; font-size: 12.5px;
+  }
+}
+
+// ── Call to action ──────────────────────────────────────────────────────
+.cta {
+  margin: 0 $gutter 72px; padding: 40px 44px; border-radius: 28px;
+  background: #E6F2EA; display: flex; align-items: center;
+  justify-content: space-between; gap: 28px; flex-wrap: wrap;
+}
+.cta-text {
+  display: flex; flex-direction: column; gap: 8px;
+  h2 { margin: 0; font-size: 32px; color: $ink; }
+  p  { margin: 0; font-size: 16px; color: #3D5068; }
+}
+.cta-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+// ── Narrow screens ──────────────────────────────────────────────────────
+@media (max-width: 1100px) {
+  .hero, .story, .service { grid-template-columns: 1fr; }
+  .hero { gap: 32px; }
+  .hero-media { height: 260px; }
+}
+
+@media (max-width: 760px) {
+  $g: 20px;
+  .strip, .crumbs, .hero, .stats, .story, .certs, .lines, .jobs, .gallery { padding-left: $g; padding-right: $g; }
+  .service { padding-left: $g; padding-right: $g; }
+  .cta { margin-left: $g; margin-right: $g; padding: 28px 24px; }
+
+  .hero-names h1 { font-size: 34px; }
+  h2.d { font-size: 28px; }
+  .story-photos, .terms { grid-template-columns: 1fr; }
+}

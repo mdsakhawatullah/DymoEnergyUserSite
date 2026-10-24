@@ -769,3 +769,63 @@ $gutter  : 80px;
   .calc-cta     { padding: 28px 22px; }
   .calc-copy h2 { font-size: 26px; }
 }
+
+// ── Brands we carry — dealer spotlight bands ────────────────────
+.spot-head {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: 14px 32px; margin-bottom: 36px;
+  .section-title { margin-top: 12px; }
+}
+.spot-all {
+  font-size: 15px; font-weight: 700; color: $green; text-decoration: none;
+  &:hover { text-decoration: underline; }
+  &:focus-visible { outline: 3px solid $green; outline-offset: 3px; }
+}
+
+.spot-list { display: flex; flex-direction: column; gap: 20px; }
+
+.spot {
+  display: flex; flex-wrap: wrap; overflow: hidden;
+  border: 1.5px solid #DFE7EF; border-radius: 24px; background: #fff;
+  transition: box-shadow 0.18s ease;
+  &:hover { box-shadow: 0 16px 36px rgba(11, 31, 51, 0.10); }
+}
+
+.spot-brand {
+  flex: 1 1 320px; min-width: 0; min-height: 240px; padding: 32px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  background: #F3F6FA;
+}
+.spot-logo { max-width: 220px; max-height: 110px; object-fit: contain; }
+.spot-wordmark {
+  font-size: 44px; font-weight: 800; letter-spacing: 0.02em; text-align: center;
+  color: var(--brand, #{$ink}); overflow-wrap: anywhere;
+}
+.spot-since { font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; color: #4A5B6D; text-align: center; }
+
+.spot-body {
+  flex: 1.25 1 420px; min-width: 0; padding: clamp(24px, 3vw, 40px);
+  display: flex; flex-direction: column; gap: 18px;
+}
+.spot-pill {
+  align-self: flex-start; display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 12px; border-radius: 999px;
+  background: #EAF5E0; color: $green-d;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+}
+.spot-name { margin: 0; font-size: clamp(26px, 2.8vw, 34px); line-height: 1.1; font-weight: 800; color: $ink; }
+.spot-text { margin: 0; max-width: 520px; font-size: 16px; line-height: 1.55; color: #4A5B6D; }
+
+.spot-facts {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  span { padding: 10px 14px; border: 1px solid #DFE7EF; border-radius: 10px; font-size: 13px; color: #33475B; }
+}
+
+.spot-actions { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 12px; }
+.spot-primary, .spot-ghost {
+  display: inline-flex; align-items: center; gap: 10px; height: 50px; border-radius: 12px;
+  font-size: 15px; font-weight: 700; text-decoration: none; box-sizing: border-box;
+  &:focus-visible { outline: 3px solid $green; outline-offset: 3px; }
+}
+.spot-primary { padding: 0 24px; background: $green; color: #fff; transition: background 0.16s ease; &:hover { background: $green-d; } }
+.spot-ghost   { padding: 0 22px; border: 1.5px solid #C7D3E0; color: $ink; transition: border-color 0.16s ease; &:hover { border-color: $ink; } }

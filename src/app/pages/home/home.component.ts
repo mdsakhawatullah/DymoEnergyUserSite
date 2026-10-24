@@ -1,9 +1,12 @@
 import { Component, OnInit, effect, AfterViewInit, OnDestroy, ViewChild, ElementRef, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { AdminSiteSettingService } from '../../core/services/admin-site-setting.service';
 import { UserSiteSettingService } from '../../core/services/user-site-setting.service';
 import { CategoryService } from '../../core/services/category.service';
 import { ProductService } from '../../core/services/product.service';
+import { BrandPortfolioService } from '../../core/services/brand-portfolio.service';
+import { BrandPortfolio, parseBrandContent } from '../../core/models/brand-portfolio.model';
 import { Product } from '../../core/models/product.model';
 import { AdminSiteSetting } from '../../core/models/admin-site-setting.model';
 import { UserSiteSetting, UserSiteSettingImage } from '../../core/models/user-site-setting.model';
@@ -11,6 +14,9 @@ import { HomeCategoryShowcase } from '../../core/models/category.model';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { NavbarComponent, DEFAULT_NAV_ITEMS } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
+
+/** How many brand bands the home page shows before sending people to /brands. */
+const HOME_BRAND_LIMIT = 3;
 
 // Line-icon paths (24×24 viewBox) shared by the static sections below
 const ICON = {
@@ -45,6 +51,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   loading           = signal(true);
   showcasesLoading  = signal(true);
   bestSellers       = signal<Product[]>([]);
+  /** The brands spotlighted on the home page — the section is left out when there are none. */
+  brandSpots        = signal<BrandPortfolio[]>([]);
   openFaq           = signal(0);
 
   navItems = DEFAULT_NAV_ITEMS;
@@ -123,6 +131,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private userSettingService: UserSiteSettingService,
     private categoryService:    CategoryService,
     private productService:     ProductService,
+    private brandService:       BrandPortfolioService,
   ) {
     effect(() => { this.heroSlideIndex(); this.syncHeroVideo(); });
   }
@@ -146,10 +155,33 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.productService.getList({ isAvailable: true, maxResultCount: 4 })
       .subscribe(r => this.bestSellers.set(r.items));
+
+    // The index rows carry no "since" year or fact chips, so the first few brands are read in full.
+    this.brandService.getPublished().subscribe(rows => {
+      const spots = rows.filter(r => r.slug).slice(0, HOME_BRAND_LIMIT);
+      if (!spots.length) return;
+      forkJoin(spots.map(r => this.brandService.getBySlug(r.slug!)))
+        .subscribe(pages => this.brandSpots.set(pages.filter((p): p is BrandPortfolio => !!p)));
+    });
   }
 
   toggleFaq(i: number): void {
     this.openFaq.set(this.openFaq() === i ? -1 : i);
+  }
+
+  /** Up to three short facts for a brand band, taken from the figures the admin wrote. */
+  brandFacts(b: BrandPortfolio): string[] {
+    const facts = parseBrandContent(b.contentJson).quickStats
+      // the "distributor since" figure already has its own line on the band
+      .filter(s => s.iconKey !== 'cal')
+      .map(s => `${s.value} ${s.label ?? ''}`.trim());
+
+    if (!facts.length) {
+      const lines = (b.productLines ?? []).filter(l => l.isVisible);
+      const total = lines.reduce((n, l) => n + (l.productCount ?? 0), 0);
+      if (total) facts.push(`${total} products in stock`);
+    }
+    return facts.slice(0, 3);
   }
 
   formatPrice(price: number): string {

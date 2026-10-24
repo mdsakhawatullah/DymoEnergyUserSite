@@ -154,6 +154,56 @@
   </section>
 }
 
+<!-- ─── BRANDS WE CARRY ─── -->
+@if (brandSpots().length) {
+  <section class="home-section" aria-labelledby="brands-h">
+    <div class="spot-head">
+      <div>
+        <span class="eyebrow">Brands we carry</span>
+        <h2 id="brands-h" class="d section-title">The makers behind your system</h2>
+      </div>
+      <a routerLink="/brands" class="spot-all">See all brands <span aria-hidden="true">→</span></a>
+    </div>
+
+    <div class="spot-list">
+      @for (b of brandSpots(); track b.id) {
+        <article class="spot">
+          <div class="spot-brand" [style.--brand]="b.brandColor || '#16293F'">
+            @if (b.logoUrl) {
+              <img [src]="b.logoUrl" [alt]="b.name + ' logo'" class="spot-logo" loading="lazy" />
+            } @else {
+              <span class="spot-wordmark">{{ b.name }}</span>
+            }
+            <span class="spot-since">
+              Supplied by DymoEnergy@if (b.distributorSince) { since {{ b.distributorSince }} }
+            </span>
+          </div>
+
+          <div class="spot-body">
+            <span class="spot-pill">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+              Authorised dealer
+            </span>
+            <h3 class="d spot-name">{{ b.name }}</h3>
+            @if (b.tagline || b.shortIntro) { <p class="spot-text">{{ b.tagline || b.shortIntro }}</p> }
+
+            @if (brandFacts(b).length) {
+              <div class="spot-facts">
+                @for (f of brandFacts(b); track f) { <span>{{ f }}</span> }
+              </div>
+            }
+
+            <div class="spot-actions">
+              <a [routerLink]="['/brands', b.slug]" class="spot-primary">View the range <span aria-hidden="true">→</span></a>
+              <a routerLink="/quote" class="spot-ghost">Ask for a quote</a>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+}
+
 <!-- ─── WHY BUY HERE ─── -->
 <section class="home-section">
   <div class="section-head section-head--stack">

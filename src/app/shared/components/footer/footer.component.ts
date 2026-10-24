@@ -1,3 +1,4 @@
+import { BrandMarkComponent } from '../brand-mark/brand-mark.component';
 import { Component, Input, OnInit, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AdminSiteSetting } from '../../../core/models/admin-site-setting.model';
@@ -7,7 +8,7 @@ import { UserSiteSettingService } from '../../../core/services/user-site-setting
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [RouterLink],
+  imports: [BrandMarkComponent, RouterLink],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss',
 })
@@ -43,7 +44,7 @@ export class FooterComponent implements OnInit {
       { label: 'Accessories', route: '/shop' },
     ] },
     { title: 'Company', links: [
-      { label: 'About us', route: '/about' }, { label: 'Services', route: '/quote' },
+      { label: 'About us', route: '/about' }, { label: 'Brands we carry', route: '/brands' }, { label: 'Services', route: '/quote' },
       { label: 'Solar for farmers', route: '/quote' }, { label: 'Projects', route: '/' },
       { label: 'Learn', route: '/' }, { label: 'Refer a neighbour', route: '/' },
       { label: 'Contact', route: '/quote' },

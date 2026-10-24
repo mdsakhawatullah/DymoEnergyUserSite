@@ -1,3 +1,4 @@
+import { BrandMarkComponent } from '../brand-mark/brand-mark.component';
 import { Component, Input, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
@@ -18,7 +19,7 @@ export const DEFAULT_NAV_ITEMS: NavItem[] = [
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, TranslatePipe],
+  imports: [BrandMarkComponent, RouterLink, RouterLinkActive, TranslatePipe],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
@@ -32,6 +33,7 @@ export class NavbarComponent {
 
   mainNav = [
     { label: 'Shop',     route: '/shop',             menu: true,  active: true },
+    { label: 'Brands',   route: '/brands',           menu: false, active: true },
     { label: 'Packages', route: '/shop',             menu: false, active: false },
     { label: 'Tools',    route: '/solar-calculator', menu: true,  active: true },
     { label: 'Services', route: '/quote',            menu: false, active: false },

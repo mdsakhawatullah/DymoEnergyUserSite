@@ -1,0 +1,62 @@
+<app-navbar
+  [siteName]="settings()?.siteName || 'Org Name'"
+  [logoUrl]="settings()?.logoUrl"
+  [phone]="settings()?.phone"
+  [navbarTextColor]="settings()?.navbarTextColor"
+  [primaryColor]="settings()?.primaryColor"
+  [navItems]="navItems"
+/>
+
+<main class="bx">
+
+  <header class="bx-head">
+    <span class="eyebrow">Brands we carry</span>
+    <h1 class="d">The makers behind your system</h1>
+    <p>
+      Every brand here is one we stock, install and settle warranty claims for ourselves.
+      Open a page to see its certificates, the lines we keep and what the warranty covers.
+    </p>
+  </header>
+
+  @if (loading()) {
+    <div class="state"><span class="spinner" aria-label="Loading"></span></div>
+  }
+
+  @else if (!brands().length) {
+    <div class="state">
+      <h2 class="d">No brand pages yet</h2>
+      <p>We are still writing these up. In the meantime, the shop lists everything we carry.</p>
+      <a routerLink="/shop" class="btn btn-p">Browse all products</a>
+    </div>
+  }
+
+  @else {
+    <div class="bx-grid">
+      @for (b of brands(); track b.id) {
+        <a [routerLink]="['/brands', b.slug]" class="bx-card">
+          <span class="bx-logo-wrap">
+            @if (b.logoUrl) {
+              <img [src]="b.logoUrl" [alt]="b.name + ' logo'" class="bx-logo" />
+            } @else {
+              <span class="bx-logo bx-logo--text"
+                    [style.color]="b.brandColor || '#0E6B3F'">{{ initials(b.name) }}</span>
+            }
+          </span>
+
+          <strong>{{ b.name }}</strong>
+          @if (b.tagline) { <em>{{ b.tagline }}</em> }
+
+          <span class="bx-meta">
+            @if (b.productLineCount) { <span>{{ b.productLineCount }} lines</span> }
+            @if (b.certificateCount) { <span>{{ b.certificateCount }} certificates</span> }
+          </span>
+
+          <span class="bx-go">See the brand &rarr;</span>
+        </a>
+      }
+    </div>
+  }
+
+</main>
+
+<app-footer [settings]="settings()" />

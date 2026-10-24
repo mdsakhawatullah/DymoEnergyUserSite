@@ -1,3 +1,4 @@
+import { BrandMarkComponent } from '../../shared/components/brand-mark/brand-mark.component';
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -21,7 +22,7 @@ const SHIPPING_COST = 1500;
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [RouterLink, FormsModule],
+  imports: [BrandMarkComponent, RouterLink, FormsModule],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss',
 })
